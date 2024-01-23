@@ -1,0 +1,134 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read instruction
+  31
+000d: read 2nd byte
+  31 10
+    srp 10
+
+000e: read instruction
+  0c
+000f: read 2nd byte
+  0c 09
+    ld r0, #09
+    reg[10] = 09
+
+0010: read instruction
+  0e
+    inc r0
+    alu:    09       00    =>    0a
+         00001001 00000000 => 00001010
+    flags = 0000_0000
+    reg[10] = 0a
+
+0011: read instruction
+  00
+0012: read 2nd byte
+  00 10
+    dec 10
+    alu:    0a       00    =>    09
+         00001010 00000000 => 00001001
+    flags = 0000_0000
+    reg[10] = 09
+
+0013: read instruction
+  0c
+0014: read 2nd byte
+  0c 7f
+    ld r0, #7f
+    reg[10] = 7f
+
+0015: read instruction
+  20
+0016: read 2nd byte
+  20 10
+    inc 10
+    alu:    7f       00    =>    80
+         01111111 00000000 => 10000000
+    flags = 0011_0000
+    reg[10] = 80
+
+0017: read instruction
+  00
+0018: read 2nd byte
+  00 10
+    dec 10
+    alu:    80       00    =>    7f
+         10000000 00000000 => 01111111
+    flags = 0001_0000
+    reg[10] = 7f
+
+0019: read instruction
+  0c
+001a: read 2nd byte
+  0c fe
+    ld r0, #fe
+    reg[10] = fe
+
+001b: read instruction
+  20
+001c: read 2nd byte
+  20 10
+    inc 10
+    alu:    fe       00    =>    ff
+         11111110 00000000 => 11111111
+    flags = 0010_0000
+    reg[10] = ff
+
+001d: read instruction
+  20
+001e: read 2nd byte
+  20 10
+    inc 10
+    alu:    ff       00    =>    00
+         11111111 00000000 => 00000000
+    flags = 0100_0000
+    reg[10] = 00
+
+001f: read instruction
+  00
+0020: read 2nd byte
+  00 10
+    dec 10
+    alu:    00       00    =>    ff
+         00000000 00000000 => 11111111
+    flags = 0010_0000
+    reg[10] = ff
+
+0021: read instruction
+  00
+0022: read 2nd byte
+  00 10
+    dec 10
+    alu:    ff       00    =>    fe
+         11111111 00000000 => 11111110
+    flags = 0010_0000
+    reg[10] = fe
+
+0023: read instruction
+  1c
+0024: read 2nd byte
+  1c 10
+    ld r1, #10
+    reg[11] = 10
+
+0025: read instruction
+  01
+0026: read 2nd byte
+  01 e1
+    dec @e1
+    alu:    fe       00    =>    fd
+         11111110 00000000 => 11111101
+    flags = 0010_0000
+    reg[10] = fd
+
+0027: read instruction
+  8d
+0028: read 2nd byte
+  8d 00
+0029: read 3rd byte
+  8d 00 0c
+    jmp    , 000c
+
+000c: read instruction
+testSoC: SUCCESS

@@ -1,0 +1,95 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read instruction
+  e6
+000d: read 2nd byte
+  e6 f8
+000e: read 3rd byte
+  e6 f8 92
+    ld f8, #92
+    reg[f8] = 92
+
+000f: read instruction
+  b0
+0010: read 2nd byte
+  b0 fe
+    clr fe
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0000_0000
+    reg[fe] = 00
+
+0011: read instruction
+  b0
+0012: read 2nd byte
+  b0 ff
+    clr ff
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0000_0000
+    reg[ff] = 00
+
+0013: read instruction
+  d6
+0014: read 2nd byte
+  d6 00
+0015: read 3rd byte
+  d6 00 26
+    call 0026
+
+0026: read instruction
+  31
+0027: read 2nd byte
+  31 20
+    srp 20
+
+0028: read instruction
+  af
+    ret
+
+0016: read instruction
+  0c
+0017: read 2nd byte
+  0c 00
+    ld r0, #00
+    reg[20] = 00
+
+0018: read instruction
+  1c
+0019: read 2nd byte
+  1c 0c
+    ld r1, #0c
+    reg[21] = 0c
+
+001a: read instruction
+  2c
+001b: read 2nd byte
+  2c a5
+    ld r2, #a5
+    reg[22] = a5
+
+001c: read instruction
+  70
+001d: read 2nd byte
+  70 e1
+    push e1
+
+001e: read instruction
+  70
+001f: read 2nd byte
+  70 e0
+    push e0
+
+0020: read instruction
+  70
+0021: read 2nd byte
+  70 e2
+    push e2
+
+0022: read instruction
+  bf
+    iret
+    reg[fc] = a5
+
+000c: read instruction
+testSoC: SUCCESS

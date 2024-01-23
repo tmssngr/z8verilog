@@ -1,0 +1,167 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read instruction
+  e6
+000d: read 2nd byte
+  e6 10
+000e: read 3rd byte
+  e6 10 01
+    ld 10, #01
+    reg[10] = 01
+
+000f: read instruction
+  e6
+0010: read 2nd byte
+  e6 11
+0011: read 3rd byte
+  e6 11 02
+    ld 11, #02
+    reg[11] = 02
+
+0012: read instruction
+  a0
+0013: read 2nd byte
+  a0 10
+    incw 10
+    reg[11] = 03
+    alu:    01       03    =>    01
+         00000001 00000011 => 00000001
+    flags = 0000_0000
+    reg[10] = 01
+
+0014: read instruction
+  80
+0015: read 2nd byte
+  80 10
+    decw 10
+    reg[11] = 02
+    alu:    01       02    =>    01
+         00000001 00000010 => 00000001
+    flags = 0000_0000
+    reg[10] = 01
+
+0016: read instruction
+  e6
+0017: read 2nd byte
+  e6 11
+0018: read 3rd byte
+  e6 11 7f
+    ld 11, #7f
+    reg[11] = 7f
+
+0019: read instruction
+  a0
+001a: read 2nd byte
+  a0 10
+    incw 10
+    reg[11] = 80
+    alu:    01       80    =>    01
+         00000001 10000000 => 00000001
+    flags = 0000_0000
+    reg[10] = 01
+
+001b: read instruction
+  80
+001c: read 2nd byte
+  80 10
+    decw 10
+    reg[11] = 7f
+    alu:    01       7f    =>    01
+         00000001 01111111 => 00000001
+    flags = 0000_0000
+    reg[10] = 01
+
+001d: read instruction
+  e6
+001e: read 2nd byte
+  e6 11
+001f: read 3rd byte
+  e6 11 ff
+    ld 11, #ff
+    reg[11] = ff
+
+0020: read instruction
+  a0
+0021: read 2nd byte
+  a0 10
+    incw 10
+    reg[11] = 00
+    alu:    01       00    =>    02
+         00000001 00000000 => 00000010
+    flags = 0000_0000
+    reg[10] = 02
+
+0022: read instruction
+  80
+0023: read 2nd byte
+  80 10
+    decw 10
+    reg[11] = ff
+    alu:    02       ff    =>    01
+         00000010 11111111 => 00000001
+    flags = 0000_0000
+    reg[10] = 01
+
+0024: read instruction
+  e6
+0025: read 2nd byte
+  e6 10
+0026: read 3rd byte
+  e6 10 ff
+    ld 10, #ff
+    reg[10] = ff
+
+0027: read instruction
+  a0
+0028: read 2nd byte
+  a0 10
+    incw 10
+    reg[11] = 00
+    alu:    ff       00    =>    00
+         11111111 00000000 => 00000000
+    flags = 0100_0000
+    reg[10] = 00
+
+0029: read instruction
+  a0
+002a: read 2nd byte
+  a0 10
+    incw 10
+    reg[11] = 01
+    alu:    00       01    =>    00
+         00000000 00000001 => 00000000
+    flags = 0000_0000
+    reg[10] = 00
+
+002b: read instruction
+  80
+002c: read 2nd byte
+  80 10
+    decw 10
+    reg[11] = 00
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0100_0000
+    reg[10] = 00
+
+002d: read instruction
+  80
+002e: read 2nd byte
+  80 10
+    decw 10
+    reg[11] = ff
+    alu:    00       ff    =>    ff
+         00000000 11111111 => 11111111
+    flags = 0010_0000
+    reg[10] = ff
+
+002f: read instruction
+  8d
+0030: read 2nd byte
+  8d 00
+0031: read 3rd byte
+  8d 00 0c
+    jmp    , 000c
+
+000c: read instruction
+testSoC: SUCCESS

@@ -1,0 +1,5 @@
+*.history
+*.fs
+*.json
+*.o
+*.vcd

@@ -1,0 +1,156 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read instruction
+  31
+000d: read 2nd byte
+  31 00
+    srp 00
+
+000e: read instruction
+  3c
+000f: read 2nd byte
+  3c 0f
+    ld r3, #0f
+    reg[03] = 0f
+
+0010: read instruction
+  ff
+    nop
+
+0011: read instruction
+  76
+0012: read 2nd byte
+  76 e3
+0013: read 3rd byte
+  76 e3 04
+     tm e3, #04
+    alu:    0f       04    =>    04
+         00001111 00000100 => 00000100
+    flags = 0000_0000
+
+0014: read instruction
+  3c
+0015: read 2nd byte
+  3c ff
+    ld r3, #ff
+    reg[03] = ff
+
+0016: read instruction
+  eb
+0017: read 2nd byte
+  eb 05
+    jr  nz, 05
+
+001d: read instruction
+  e6
+001e: read 2nd byte
+  e6 f8
+001f: read 3rd byte
+  e6 f8 b6
+    ld f8, #b6
+    reg[f8] = b6
+
+0020: read instruction
+  e6
+0021: read 2nd byte
+  e6 f7
+0022: read 3rd byte
+  e6 f7 08
+    ld f7, #08
+    reg[f7] = 08
+
+0023: read instruction
+  4c
+0024: read 2nd byte
+  4c 08
+    ld r4, #08
+    reg[04] = 08
+
+0025: read instruction
+  5c
+0026: read 2nd byte
+  5c 12
+    ld r5, #12
+    reg[05] = 12
+
+0027: read instruction
+  c2
+0028: read 2nd byte
+  c2 64
+    ldc r6, Irr4
+    reg[06] = 00
+
+0029: read instruction
+  60
+002a: read 2nd byte
+  60 e6
+    com e6
+    alu:    00       00    =>    ff
+         00000000 00000000 => 11111111
+    flags = 0010_0000
+    reg[06] = ff
+
+002b: read instruction
+  d2
+002c: read 2nd byte
+  d2 64
+    ldc Irr4, r6
+
+002d: read instruction
+  c2
+002e: read 2nd byte
+  c2 74
+    ldc r7, Irr4
+    reg[07] = 00
+
+002f: read instruction
+  60
+0030: read 2nd byte
+  60 e6
+    com e6
+    alu:    ff       00    =>    00
+         11111111 00000000 => 00000000
+    flags = 0100_0000
+    reg[06] = 00
+
+0031: read instruction
+  d2
+0032: read 2nd byte
+  d2 64
+    ldc Irr4, r6
+
+0033: read instruction
+  b2
+0034: read 2nd byte
+  b2 67
+    xor r6, r7
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0100_0000
+    reg[06] = 00
+
+0035: read instruction
+  31
+0036: read 2nd byte
+  31 f0
+    srp f0
+
+0037: read instruction
+  ed
+0038: read 2nd byte
+  ed e0
+0039: read 3rd byte
+  ed e0 00
+    jmp  nz, e000
+
+003a: read instruction
+  8d
+003b: read 2nd byte
+  8d 08
+003c: read 3rd byte
+  8d 08 12
+    jmp    , 0812
+
+0812: read instruction
+testSoC: SUCCESS
+  00
