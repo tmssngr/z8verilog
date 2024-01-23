@@ -45,13 +45,13 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `ldci Ir1, Irr2`
     - [x] `ldci Irr1, Ir2`
     - [ ] let `lde`/`ldei` work the same as `ldc`/`ldci`
-  - [ ] stack operations
-    - [ ] internal stack
+  - [x] stack operations
+    - [x] internal stack
       - [x] `pop R`
       - [x] `pop IR`
       - [x] `push R`
       - [x] `push IR`
-      - [ ] `call IRR`
+      - [x] `call IRR`
       - [x] `call DA`
       - [x] `ret`
       - [x] `iret`

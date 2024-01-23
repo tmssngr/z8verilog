@@ -62,9 +62,11 @@ module Processor(
     wire [3:0] instrL = instruction[3:0];
     wire isJumpRel = instrL == 4'hB;
     wire isJumpDA = instrL == 4'hD;
-    wire isInstrSize1 = (instrL[3:1] == 3'b111);
-    wire isInstrSize3 = (instrL[3:2] == 2'b01)
-                      | isJumpDA;
+    wire isCallIRR = instrH == 4'hD && instrL == 4'h4;
+    wire isInstrSize1 = instrL[3:1] == 3'b111;
+    wire isInstrSize3 = ( (instrL[3:2] == 2'b01) // columns 04-07
+                         | isJumpDA
+                        ) & ~isCallIRR;
     wire isInstrSize2 = ~isInstrSize1 & ~isInstrSize3;
 
     reg  [7:0] second;
@@ -245,16 +247,15 @@ module Processor(
                          | state == STATE_READ_2
                          | state == STATE_READ_3)
                          ? pc + 1
-                         : ((state == STATE_DECODE & isJumpDA & takeBranch)
-                           |(state == STATE_CALL_I3)
-                           |(state == STATE_CALL_E3))
+                         : (state == STATE_DECODE & isJumpDA & takeBranch)
                             ? directAddress
                             : ( (state == STATE_DECODE & isJumpRel & takeBranch)
                               || (state == STATE_DJNZ2 && flagsOut[FLAG_INDEX_Z] == 1'b0 )
                               ) 
                                 ? nextRelativePc
                                 : (state == STATE_RET_I3
-                                  |state == STATE_RET_E6)
+                                  |state == STATE_RET_E6
+                                  |state == STATE_CALL_PC3)
                                   ? addr
                                   : pc;
     assign memAddr = (state == STATE_PUSH_E3)
@@ -531,9 +532,10 @@ module Processor(
                     $display("    ? %h", instruction);
                 end
                 4'hD: begin
-                    $display("    call IRR%h", directAddress);
+                    $display("    call @%h", second);
                     // 20 cycles
-                    //TODO
+                    sp <= sp - 1;
+                    state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
                 end
                 4'hE: begin
                     $display("    ld %h, %h", third, second);
@@ -833,9 +835,7 @@ module Processor(
             aluA <= pc[15:8];
             register <= sp[7:0];
             writeRegister <= 1;
-        end
-        STATE_CALL_I3: begin
-            state <= STATE_FETCH_INSTR;
+            state <= STATE_CALL_PC1;
         end
         STATE_CALL_E1: begin
             addr <= sp;
@@ -847,6 +847,18 @@ module Processor(
             aluA <= pc[15:8];
         end
         STATE_CALL_E3: begin
+        end
+        STATE_CALL_PC1: begin
+			addr[15:8] = isCallIRR
+			           ? readRegister8(r8({second[7:1], 1'b0}))
+			           : second;
+        end
+        STATE_CALL_PC2: begin
+			addr[7:0] = isCallIRR
+			           ? readRegister8(r8({second[7:1], 1'b1}))
+			           : third;
+        end
+        STATE_CALL_PC3: begin
             state <= STATE_FETCH_INSTR;
         end
 

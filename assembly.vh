@@ -410,6 +410,12 @@ task asm_call;
         asm3(8'hD6, addr[15:8], addr[7:0]);
     end
 endtask
+task asm_call_IRR;
+    input [7:0] rr;
+    begin
+        asm2(8'hD4, rr);
+    end
+endtask
 task asm_ret;
     begin
         asm1(8'hAF);

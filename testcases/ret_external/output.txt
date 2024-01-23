@@ -34,16 +34,16 @@ VCD info: dumpfile SoC.vcd opened for output.
 0014: read 2nd byte
   d6 00
 0015: read 3rd byte
-  d6 00 26
-    call 0026
+  d6 00 2c
+    call 002c
 
-0026: read instruction
+002c: read instruction
   31
-0027: read 2nd byte
+002d: read 2nd byte
   31 20
     srp 20
 
-0028: read instruction
+002e: read instruction
   af
     ret
 
@@ -57,36 +57,66 @@ VCD info: dumpfile SoC.vcd opened for output.
 0018: read instruction
   1c
 0019: read 2nd byte
+  1c 2c
+    ld r1, #2c
+    reg[21] = 2c
+
+001a: read instruction
+  d4
+001b: read 2nd byte
+  d4 e0
+    call @e0
+
+002c: read instruction
+  31
+002d: read 2nd byte
+  31 20
+    srp 20
+
+002e: read instruction
+  af
+    ret
+
+001c: read instruction
+  0c
+001d: read 2nd byte
+  0c 00
+    ld r0, #00
+    reg[20] = 00
+
+001e: read instruction
+  1c
+001f: read 2nd byte
   1c 0c
     ld r1, #0c
     reg[21] = 0c
 
-001a: read instruction
+0020: read instruction
   2c
-001b: read 2nd byte
+0021: read 2nd byte
   2c a5
     ld r2, #a5
     reg[22] = a5
 
-001c: read instruction
+0022: read instruction
   70
-001d: read 2nd byte
+0023: read 2nd byte
   70 e1
     push e1
 
-001e: read instruction
+0024: read instruction
   70
-001f: read 2nd byte
+0025: read 2nd byte
   70 e0
     push e0
 
-0020: read instruction
+0026: read instruction
   70
-0021: read 2nd byte
+0027: read 2nd byte
   70 e2
     push e2
 
-0022: read instruction
+0028: read instruction
   bf
     iret
     reg[fc] = a5
