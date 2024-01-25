@@ -42,7 +42,7 @@ endmodule
 
 module Processor(
     input  wire        clk,
-    input  wire        reset,
+    //input  wire        reset,
     output wire [15:0] memAddr,
     input  wire  [7:0] memDataRead,
     output wire  [7:0] memDataWrite,
