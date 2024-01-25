@@ -471,7 +471,7 @@ module Processor(
                     register <= r4(secondH);
                     state <= STATE_LDC_WRITE1;
                 end
-                4'b111x: begin
+                4'b111?: begin
                     $display("    ? %h", second);
                 end
                 default: begin
@@ -531,8 +531,8 @@ module Processor(
                 endcase
             end
             4'h4: begin
-                case (instrH)
-                4'b100x,
+                casez (instrH)
+                4'b100?,
                 4'b1100,
                 4'b1111: begin
                     $display("    ? %h", instruction);
@@ -563,8 +563,8 @@ module Processor(
                 endcase
             end
             4'h6: begin
-                case (instrH)
-                4'b100x,
+                casez (instrH)
+                4'b100?,
                 4'b1100,
                 4'b1111: begin
                     $display("    ? %h", instruction);
