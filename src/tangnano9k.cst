@@ -5,8 +5,8 @@ IO_LOC  "leds[3]" 14;
 IO_LOC  "leds[4]" 15;
 IO_LOC  "leds[5]" 16;
 
-IO_LOC  "btn" 3;
-IO_PORT "btn" PULL_MODE=UP;
+//IO_LOC  "btn" 3;
+//IO_PORT "btn" PULL_MODE=UP;
 
 IO_LOC  "clk" 52;
 IO_PORT "clk" PULL_MODE=UP;
