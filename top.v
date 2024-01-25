@@ -3,8 +3,15 @@ module top(
     output wire[5:0] leds
 );
 
+    reg[20:0] counter = 0;
+
+    always @(posedge clk) begin
+        counter <= counter + 1;
+    end
+
     SoC soC(
-        .clk(clk)
+        .clk(counter[20]),
+        .port2(leds)
     );
 
 endmodule
