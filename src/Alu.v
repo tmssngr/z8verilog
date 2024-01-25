@@ -3,10 +3,10 @@
 
 // see https://github.com/Time0o/z80-verilog/blob/master/source/rtl/alu.v
 module Alu(
-    input [4:0] mode,
-    input [7:0] a,
-    input [7:0] b,
-    input [7:0] flags,
+    input wire [4:0] mode,
+    input wire [7:0] a,
+    input wire [7:0] b,
+    input wire [7:0] flags,
     output reg [7:0] out,
     output reg [7:0] outFlags
 );

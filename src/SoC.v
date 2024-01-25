@@ -3,12 +3,12 @@
 module Memory #(
     parameter addrBusWidth = 8
 ) (
-    input                      clk,
-    input [addrBusWidth - 1:0] addr,
-    input                [7:0] dataIn,
-    output            reg[7:0] dataOut,
-    input                      write,
-    input                      strobe
+    input  wire                      clk,
+    input  wire [addrBusWidth - 1:0] addr,
+    input  wire                [7:0] dataIn,
+    output reg                 [7:0] dataOut,
+    input  wire                      write,
+    input  wire                      strobe
 );
     localparam size = 1 << addrBusWidth;
     reg [7:0] memory[0 : size - 1];
@@ -41,14 +41,14 @@ endmodule
 `include "Alu.v"
 
 module Processor(
-    input         clk,
-    input         reset,
-    output [15:0] memAddr,
-    input   [7:0] memDataRead,
-    output  [7:0] memDataWrite,
-    output        memWrite,
-    output        memStrobe,
-    output  [7:0] port2Out
+    input  wire        clk,
+    input  wire        reset,
+    output wire [15:0] memAddr,
+    input  wire  [7:0] memDataRead,
+    output wire  [7:0] memDataWrite,
+    output wire        memWrite,
+    output wire        memStrobe,
+    output wire  [7:0] port2Out
 );
     `include "flags.vh"
 
@@ -926,8 +926,8 @@ module Processor(
 endmodule
 
 module SoC(
-    input clk,
-    output wire[7:0] port2
+    input  wire       clk,
+    output wire [7:0] port2
 );
     wire [15:0] memAddr;
     wire [7:0]  memDataRead, romRead, ramRead;
