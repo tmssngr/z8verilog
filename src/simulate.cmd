@@ -23,6 +23,7 @@ call :test push_pop_external
 call :test ret
 call :test ret_external
 call :test u8830
+call :test device
 
 pause
 goto :repeat

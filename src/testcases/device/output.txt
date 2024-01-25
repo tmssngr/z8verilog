@@ -1,0 +1,221 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read instruction
+  31
+000d: read 2nd byte
+  31 00
+    srp 00
+
+000e: read instruction
+  4c
+000f: read 2nd byte
+  4c 05
+    ld r4, #05
+    reg[04] = 05
+
+0010: read instruction
+  2c
+0011: read 2nd byte
+  2c 01
+    ld r2, #01
+    reg[02] = 01
+
+0012: read instruction
+  5c
+0013: read 2nd byte
+  5c 02
+    ld r5, #02
+    reg[05] = 02
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 01
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 00
+
+0016: read instruction
+  90
+0017: read 2nd byte
+  90 e2
+     rl e2
+    alu:    01       00    =>    02
+         00000001 00000000 => 00000010
+    flags = 0000_0000
+    reg[02] = 02
+
+0018: read instruction
+  4a
+0019: read 2nd byte
+  4a f8
+    djnz r4, f8
+    reg[04] = 04
+
+0012: read instruction
+  5c
+0013: read 2nd byte
+  5c 02
+    ld r5, #02
+    reg[05] = 02
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 01
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 00
+
+0016: read instruction
+  90
+0017: read 2nd byte
+  90 e2
+     rl e2
+    alu:    02       00    =>    04
+         00000010 00000000 => 00000100
+    flags = 0000_0000
+    reg[02] = 04
+
+0018: read instruction
+  4a
+0019: read 2nd byte
+  4a f8
+    djnz r4, f8
+    reg[04] = 03
+
+0012: read instruction
+  5c
+0013: read 2nd byte
+  5c 02
+    ld r5, #02
+    reg[05] = 02
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 01
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 00
+
+0016: read instruction
+  90
+0017: read 2nd byte
+  90 e2
+     rl e2
+    alu:    04       00    =>    08
+         00000100 00000000 => 00001000
+    flags = 0000_0000
+    reg[02] = 08
+
+0018: read instruction
+  4a
+0019: read 2nd byte
+  4a f8
+    djnz r4, f8
+    reg[04] = 02
+
+0012: read instruction
+  5c
+0013: read 2nd byte
+  5c 02
+    ld r5, #02
+    reg[05] = 02
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 01
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 00
+
+0016: read instruction
+  90
+0017: read 2nd byte
+  90 e2
+     rl e2
+    alu:    08       00    =>    10
+         00001000 00000000 => 00010000
+    flags = 0000_0000
+    reg[02] = 10
+
+0018: read instruction
+  4a
+0019: read 2nd byte
+  4a f8
+    djnz r4, f8
+    reg[04] = 01
+
+0012: read instruction
+  5c
+0013: read 2nd byte
+  5c 02
+    ld r5, #02
+    reg[05] = 02
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 01
+
+0014: read instruction
+  5a
+0015: read 2nd byte
+  5a fe
+    djnz r5, fe
+    reg[05] = 00
+
+0016: read instruction
+  90
+0017: read 2nd byte
+  90 e2
+     rl e2
+    alu:    10       00    =>    20
+         00010000 00000000 => 00100000
+    flags = 0000_0000
+    reg[02] = 20
+
+0018: read instruction
+  4a
+0019: read 2nd byte
+  4a f8
+    djnz r4, f8
+    reg[04] = 00
+
+001a: read instruction
+  8b
+001b: read 2nd byte
+  8b f0
+    jr    , f0
+
+000c: read instruction
+testSoC: SUCCESS
+  31
