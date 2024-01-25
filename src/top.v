@@ -6,7 +6,7 @@ module top(
     reg[20:0] counter = 0;
 
     always @(posedge clk) begin
-        counter <= counter + 1;
+        counter <= counter + 20'b1;
     end
 
     SoC soC(

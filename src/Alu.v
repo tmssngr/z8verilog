@@ -97,7 +97,7 @@ module Alu(
         end
         ALU2_ADD,
         ALU2_ADC: begin
-            { cL, out[3:0] } = { 1'b0, a[3:0] } + { 1'b0, b[3:0] } + { 8'b0, flags[FLAG_INDEX_C] & mode[0] };
+            { cL, out[3:0] } = { 1'b0, a[3:0] } + { 1'b0, b[3:0] } + { 4'b0, flags[FLAG_INDEX_C] & mode[0] };
             outFlags[FLAG_INDEX_H] = cL;
             { cH, out[7:4] } = { 1'b0, a[7:4] } + { 1'b0, b[7:4] } + { 4'b0000, cL };
             outFlags[FLAG_INDEX_C] = cH;
@@ -107,7 +107,7 @@ module Alu(
         ALU2_SUB,
         ALU2_SBC,
         ALU2_CP: begin
-            { cL, out[3:0] } = { 1'b0, a[3:0] } - { 1'b0, b[3:0] } - { 8'b0, flags[FLAG_INDEX_C] & mode[0] };
+            { cL, out[3:0] } = { 1'b0, a[3:0] } - { 1'b0, b[3:0] } - { 4'b0, flags[FLAG_INDEX_C] & mode[0] };
             outFlags[FLAG_INDEX_H] = cL;
             { cH, out[7:4] } = { 1'b0, a[7:4] } - { 1'b0, b[7:4] } - { 4'b0000, cL };
             outFlags[FLAG_INDEX_C] = cH;

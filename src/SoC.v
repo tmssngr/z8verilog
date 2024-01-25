@@ -249,7 +249,7 @@ module Processor(
     wire [15:0] nextPc = ( state == STATE_READ_INSTR
                          | state == STATE_READ_2
                          | state == STATE_READ_3)
-                         ? pc + 1
+                         ? pc + 16'b1
                          : (state == STATE_DECODE & isJumpDA & takeBranch)
                             ? directAddress
                             : ( (state == STATE_DECODE & isJumpRel & takeBranch)
@@ -315,7 +315,7 @@ module Processor(
         end
         writeRegister <= 0;
 
-        state <= state + 1;
+        state <= state + 6'b1;
 
         case (state)
         STATE_FETCH_INSTR: begin
@@ -540,7 +540,7 @@ module Processor(
                 4'hD: begin
                     $display("    call @%h", second);
                     // 20 cycles
-                    sp <= sp - 1;
+                    sp <= sp - 16'b1;
                     state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
                 end
                 4'hE: begin
@@ -573,7 +573,7 @@ module Processor(
                     $display("    call %h", directAddress);
                     // 20 cycles
                     // push PCL, PCH
-                    sp <= sp - 1;
+                    sp <= sp - 16'b1;
                     state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
                 end
                 4'hE: begin
@@ -718,7 +718,7 @@ module Processor(
         end
 
         STATE_PUSH_I1: begin
-            sp <= sp - 1;
+            sp <= sp - 16'b1;
         end
         STATE_PUSH_I2: begin
             aluMode <= ALU1_LD;
@@ -729,7 +729,7 @@ module Processor(
         end
 
         STATE_PUSH_E1: begin
-            sp <= sp - 1;
+            sp <= sp - 16'b1;
         end
         STATE_PUSH_E2: begin
             aluA <= readRegister8(register);
@@ -742,7 +742,7 @@ module Processor(
         STATE_POP_I: begin
             aluMode <= ALU1_LD;
             aluA <= readRegister8(sp[7:0]);
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
             writeRegister <= 1;
             state <= STATE_FETCH_INSTR;
         end
@@ -755,7 +755,7 @@ module Processor(
         STATE_POP_E3: begin
             aluMode <= ALU1_LD;
             aluA <= memDataRead;
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
             writeRegister <= 1;
             state <= STATE_FETCH_INSTR;
         end
@@ -831,7 +831,7 @@ module Processor(
         end
 
         STATE_CALL_I1: begin
-            sp <= sp - 1;
+            sp <= sp - 16'b1;
             aluMode <= ALU1_LD;
             aluA <= pc[7:0];
             register <= sp[7:0];
@@ -845,7 +845,7 @@ module Processor(
         end
         STATE_CALL_E1: begin
             addr <= sp;
-            sp <= sp - 1;
+            sp <= sp - 16'b1;
             aluA <= pc[7:0];
         end
         STATE_CALL_E2: begin
@@ -871,17 +871,17 @@ module Processor(
         STATE_IRET_I: begin
             aluMode <= ALU1_LD;
             aluA <= readRegister8(sp[7:0]);
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
             register <= FLAGS;
             writeRegister <= 1;
         end
         STATE_RET_I1: begin
             addr[15:8] <= readRegister8(sp[7:0]);
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
         end
         STATE_RET_I2: begin
             addr[7:0] <= readRegister8(sp[7:0]);
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
         end
         STATE_RET_I3: begin
             state <= STATE_FETCH_INSTR;
@@ -889,7 +889,7 @@ module Processor(
         end
         STATE_IRET_E1: begin
             addr <= sp;
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
         end
         STATE_IRET_E2: begin
             aluMode <= ALU1_LD;
@@ -899,14 +899,14 @@ module Processor(
         end
         STATE_RET_E1: begin
             addr <= sp;
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
         end
         STATE_RET_E2: begin
         end
         STATE_RET_E3: begin
             aluA <= memDataRead;// temp
             addr <= sp;
-            sp <= sp + 1;
+            sp <= sp + 16'b1;
         end
         STATE_RET_E4: begin
         end
