@@ -3,3 +3,5 @@
 *.json
 *.o
 *.vcd
+/impl/
+*.gprj.user
