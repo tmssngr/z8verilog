@@ -131,7 +131,7 @@ module Alu(
             outFlags[FLAG_INDEX_V] = 0;
         end
         ALU1_LD: begin
-            out <= a;
+            out = a;
         end
         // ALU1_CLR
         default : begin
