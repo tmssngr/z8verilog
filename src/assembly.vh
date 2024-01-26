@@ -1,20 +1,31 @@
-integer memPC = 0;
+`ifdef BENCH
+reg[15:0] memPC = 0;
 
 task label;
-    input [7:0] l;
+    input [15:0] addr;
     begin
-        if (l != memPC) begin
+        $fwrite(file, "// label\n");
+        if (addr != memPC) begin
             $display("%m expected label at %h", memPC);
             $finish(0);
         end
     end
 endtask
 
+task _asm_;
+    input [7:0] a;
+    begin
+        $fwrite(file, "memory[16'h%h] = 8'h%h;\n", memPC, a);
+        memory[memPC] = a;
+        memPC = memPC + 1;
+    end
+endtask
+
 task asm1;
     input [7:0] a;
     begin
-        memory[memPC] = a;
-        memPC = memPC + 1;
+        _asm_(a);
+        $fwrite(file, "\n");
     end
 endtask
 
@@ -22,8 +33,9 @@ task asm2;
     input [7:0] a;
     input [7:0] b;
     begin
-        asm1(a);
-        asm1(b);
+        _asm_(a);
+        _asm_(b);
+        $fwrite(file, "\n");
     end
 endtask
 
@@ -32,9 +44,10 @@ task asm3;
     input [7:0] b;
     input [7:0] c;
     begin
-        asm1(a);
-        asm1(b);
-        asm1(c);
+        _asm_(a);
+        _asm_(b);
+        _asm_(c);
+        $fwrite(file, "\n");
     end
 endtask
 
@@ -233,6 +246,7 @@ task asm_jr;
     input [15:0] addr;
     integer ra;
     begin
+        $fwrite(file, "// jr %h\n", addr);
         ra = addr - memPC - 2;
         asm2({ condition, 4'hB }, ra);
     end
@@ -241,6 +255,7 @@ task asm_jp;
 	input [3:0] condition;
     input [15:0] addr;
     begin
+        $fwrite(file, "// jp %h\n", addr);
         asm3({ condition, 4'hD }, addr[15:8], addr[7:0]);
     end
 endtask
@@ -249,6 +264,7 @@ task asm_djnz;
     input [15:0] addr;
     integer ra;
     begin
+        $fwrite(file, "// djnz %h\n", addr);
         ra = addr - memPC - 2;
         asm2({ dst, 4'hA }, ra);
     end
@@ -426,3 +442,4 @@ task asm_iret;
         asm1(8'hBF);
     end
 endtask
+`endif

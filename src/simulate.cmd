@@ -24,6 +24,7 @@ call :test ret
 call :test ret_external
 call :test u8830
 call :test device
+copy /Y testcases\device\memory.txt memory.txt
 
 pause
 goto :repeat

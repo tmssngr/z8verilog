@@ -1,3 +1,5 @@
+`ifdef BENCH
+
 localparam L0_ = 16'h000C;
 localparam L1_ = 16'h0014;
 localparam L2_ = 16'h0012;
@@ -20,3 +22,9 @@ label(L1_);
 	asm_djnz(4, L2_);
 	asm_jr(JC_ALWAYS, L0_);
 end
+
+`else
+initial begin
+`include "memory.txt"
+end
+`endif

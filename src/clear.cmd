@@ -3,6 +3,7 @@ call del *.history
 call del *.json
 call del *.o
 call del *.vcd
+call del memory.txt
 exit
 
 :del

@@ -13,16 +13,23 @@ module Memory #(
     localparam size = 1 << addrBusWidth;
     reg [7:0] memory[0 : size - 1];
 `ifdef BENCH
-    integer i;
+    integer i, file;
     initial begin
         for (i = 0; i < size; i = i + 1) begin
             memory[i] = 8'h0;
         end
+
+        file = $fopen("memory.txt", "w");
     end
 `endif
 
 `include "assembly.vh"
 `include "program.vh"
+`ifdef BENCH
+    initial begin
+        $fclose(file);
+    end
+`endif
 `include "sfr.vh"
 
     always @(posedge clk) begin
