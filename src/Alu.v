@@ -1,6 +1,8 @@
 `ifndef ALU_V
 `define ALU_V
 
+`default_nettype none
+
 // see https://github.com/Time0o/z80-verilog/blob/master/source/rtl/alu.v
 module Alu(
     input wire [4:0] mode,
