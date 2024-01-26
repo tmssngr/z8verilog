@@ -1,0 +1,115 @@
+
+Usage: yosys.exe [options] [<infile> [..]]
+
+    -Q
+        suppress printing of banner (copyright, disclaimer, version)
+
+    -T
+        suppress printing of footer (log hash, version, timing statistics)
+
+    -q
+        quiet operation. only write warnings and error messages to console
+        use this option twice to also quiet warning messages
+
+    -v <level>
+        print log headers up to level <level> to the console. (this
+        implies -q for everything except the 'End of script.' message.)
+
+    -t
+        annotate all log messages with a time stamp
+
+    -d
+        print more detailed timing stats at exit
+
+    -l logfile
+        write log messages to the specified file
+
+    -L logfile
+        like -l but open log file in line buffered mode
+
+    -o outfile
+        write the design to the specified file on exit
+
+    -b backend
+        use this backend for the output file specified on the command line
+
+    -f frontend
+        use the specified frontend for the input files on the command line
+
+    -H
+        print the command list
+
+    -h command
+        print the help message for the specified command
+
+    -s scriptfile
+        execute the commands in the script file
+
+    -c tcl_scriptfile
+        execute the commands in the tcl script file (see 'help tcl' for details)
+
+    -C
+        enters TCL interatcive shell mode
+
+    -p command
+        execute the commands (to chain commands, separate them with semicolon + whitespace: 'cmd1; cmd2')
+
+    -m module_file
+        load the specified module (aka plugin)
+
+    -X
+        enable tracing of core data structure changes. for debugging
+
+    -M
+        will slightly randomize allocated pointer addresses. for debugging
+
+    -A
+        will call abort() at the end of the script. for debugging
+
+    -r <module_name>
+        elaborate command line arguments using the specified top module
+
+    -D <macro>[=<value>]
+        set the specified Verilog define (via "read -define")
+
+    -P <header_id>[:<filename>]
+        dump the design when printing the specified log header to a file.
+        yosys_dump_<header_id>.il is used as filename if none is specified.
+        Use 'ALL' as <header_id> to dump at every header.
+
+    -W regex
+        print a warning for all log messages matching the regex.
+
+    -w regex
+        if a warning message matches the regex, it is printed as regular
+        message instead.
+
+    -e regex
+        if a warning message matches the regex, it is printed as error
+        message instead and the tool terminates with a nonzero return code.
+
+    -E <depsfile>
+        write a Makefile dependencies file with in- and output file names
+
+    -x <feature>
+        do not print warnings for the specified experimental feature
+
+    -g
+        globally enable debug log messages
+
+    -V
+        print version information and exit
+
+The option -S is an shortcut for calling the "synth" command, a default
+script for transforming the Verilog input to a gate-level netlist. For example:
+
+    yosys -o output.blif -S input.v
+
+For more complex synthesis jobs it is recommended to use the read_* and write_*
+commands in a script file instead of specifying input and output files on the
+command line.
+
+When no commands, script files or input files are specified on the command
+line, yosys automatically enters the interactive command mode. Use the 'help'
+command to get information on the individual commands.
+

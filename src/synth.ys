@@ -1,0 +1,7 @@
+read_verilog  top.v  SoC.v  Alu.v
+
+#abc -liberty mycells.lib
+
+#clean
+
+#write_verilog -noattr synth.v
