@@ -862,14 +862,14 @@ module Processor(
         STATE_CALL_E3: begin
         end
         STATE_CALL_PC1: begin
-			addr[15:8] = isCallIRR
-			           ? readRegister8(r8({second[7:1], 1'b0}))
-			           : second;
+            addr[15:8] = isCallIRR
+                       ? readRegister8(r8({second[7:1], 1'b0}))
+                       : second;
         end
         STATE_CALL_PC2: begin
-			addr[7:0] = isCallIRR
-			           ? readRegister8(r8({second[7:1], 1'b1}))
-			           : third;
+            addr[7:0] = isCallIRR
+                       ? readRegister8(r8({second[7:1], 1'b1}))
+                       : third;
         end
         STATE_CALL_PC3: begin
             state <= STATE_FETCH_INSTR;

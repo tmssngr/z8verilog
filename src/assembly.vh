@@ -52,14 +52,14 @@ task asm3;
 endtask
 
 task default_interrupt_vectors;
-	begin
-		asm2('h8, 0);
-		asm2('h8, 3);
-		asm2('h8, 6);
-		asm2('h8, 9);
-		asm2('h8, 'hC);
-		asm2('h8, 'hF);
-	end
+    begin
+        asm2('h8, 0);
+        asm2('h8, 3);
+        asm2('h8, 6);
+        asm2('h8, 9);
+        asm2('h8, 'hC);
+        asm2('h8, 'hF);
+    end
 endtask
 
 task asm_nop;
@@ -242,7 +242,7 @@ localparam JC_PL = 13;
 localparam JC_NZ = 14;
 localparam JC_NC = 15;
 task asm_jr;
-	input [3:0] condition;
+    input [3:0] condition;
     input [15:0] addr;
     integer ra;
     begin
@@ -252,7 +252,7 @@ task asm_jr;
     end
 endtask
 task asm_jp;
-	input [3:0] condition;
+    input [3:0] condition;
     input [15:0] addr;
     begin
         $fwrite(file, "// jp %h\n", addr);
@@ -392,32 +392,32 @@ task asm_popIn;
 endtask
 
 task asm_ldc_r_Irr;
-	input [3:0] dst;
-	input [3:0] src;
-	begin
-		asm2(8'hC2, { dst, src});
-	end
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2(8'hC2, { dst, src});
+    end
 endtask
 task asm_ldc_Irr_r;
-	input [3:0] dst;
-	input [3:0] src;
-	begin
-		asm2(8'hD2, { src, dst});
-	end
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2(8'hD2, { src, dst});
+    end
 endtask
 task asm_ldci_Ir_Irr;
-	input [3:0] dst;
-	input [3:0] src;
-	begin
-		asm2(8'hC3, { dst, src});
-	end
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2(8'hC3, { dst, src});
+    end
 endtask
 task asm_ldci_Irr_Ir;
-	input [3:0] dst;
-	input [3:0] src;
-	begin
-		asm2(8'hD3, { src, dst});
-	end
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2(8'hD3, { src, dst});
+    end
 endtask
 
 task asm_call;
