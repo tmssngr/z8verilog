@@ -259,6 +259,13 @@ task asm_jp;
         asm3({ condition, 4'hD }, addr[15:8], addr[7:0]);
     end
 endtask
+task asm_jp_IRR;
+    input [7:0] irr;
+    begin
+        $fwrite(file, "// jp @%h\n", irr);
+        asm2(8'h30, irr);
+    end
+endtask
 task asm_djnz;
     input [3:0] dst;
     input [15:0] addr;

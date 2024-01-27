@@ -71,6 +71,7 @@ module Processor(
     wire isJumpRel = instrL == 4'hB;
     wire isJumpDA = instrL == 4'hD;
     wire isCallIRR = instrH == 4'hD && instrL == 4'h4;
+    wire isCallDA = instrH == 4'hD && instrL == 4'h6;
     wire isInstrSize1 = instrL[3:1] == 3'b111;
     wire isInstrSize3 = ( (instrL[3:2] == 2'b01) // columns 04-07
                          | isJumpDA
@@ -399,9 +400,9 @@ module Processor(
                 case (instrH)
                 4'h3: begin
 `ifdef BENCH
-                    $display("    jp IRR%h", second);
+                    $display("    jp @%h", second);
 `endif
-                    //TODO
+                    state <= STATE_JP1;
                 end
                 4'h5: begin
 `ifdef BENCH
@@ -979,14 +980,14 @@ module Processor(
         STATE_CALL_E3: begin
         end
         STATE_JP1: begin
-            addr[15:8] = isCallIRR
-                       ? readRegister8(r8({second[7:1], 1'b0}))
-                       : second;
+            addr[15:8] = isCallDA
+                       ? second
+                       : readRegister8(r8({second[7:1], 1'b0}));
         end
         STATE_JP2: begin
-            addr[7:0] = isCallIRR
-                       ? readRegister8(r8({second[7:1], 1'b1}))
-                       : third;
+            addr[7:0] = isCallDA
+                       ? third
+                       : readRegister8(r8({second[7:1], 1'b1}));
         end
         STATE_JP3: begin
             state <= STATE_FETCH_INSTR;

@@ -33,11 +33,11 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [ ] `ld IR, #IM`
     - [ ] `ld r1, r2(x)`
     - [ ] `ld r1(x), r2`
-  - [ ] control flow operations
+  - [x] control flow operations
     - [x] `djnz r, RA`
     - [x] `jr cc, RA`
     - [x] `jp cc, DA`
-    - [ ] `jp IRR`
+    - [x] `jp IRR`
   - [ ] `di`, `ei` (disable/enable interrupt)
   - [ ] memory operations
     - [x] `ldc r1, Irr2`

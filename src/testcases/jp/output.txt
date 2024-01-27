@@ -1,85 +1,111 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
 000c: read instruction
-  0d
+  31
 000d: read 2nd byte
+  31 20
+    srp 20
+
+000e: read instruction
+  0d
+000f: read 2nd byte
   0d ff
-000e: read 3rd byte
+0010: read 3rd byte
   0d ff fe
     jmp   f, fffe
 
-000f: read instruction
+0011: read instruction
   0c
-0010: read 2nd byte
+0012: read 2nd byte
   0c 03
     ld r0, #03
-    reg[00] = 03
+    reg[20] = 03
 
-0011: read instruction
+0013: read instruction
   06
-0012: read 2nd byte
-  06 00
-0013: read 3rd byte
-  06 00 ff
-    add 00, #ff
+0014: read 2nd byte
+  06 20
+0015: read 3rd byte
+  06 20 ff
+    add 20, #ff
     alu:    03       ff    =>    02
          00000011 11111111 => 00000010
     flags = 1000_0100
-    reg[00] = 02
+    reg[20] = 02
 
-0014: read instruction
+0016: read instruction
   ed
-0015: read 2nd byte
+0017: read 2nd byte
   ed 00
-0016: read 3rd byte
-  ed 00 11
-    jmp  nz, 0011
+0018: read 3rd byte
+  ed 00 13
+    jmp  nz, 0013
 
-0011: read instruction
+0013: read instruction
   06
-0012: read 2nd byte
-  06 00
-0013: read 3rd byte
-  06 00 ff
-    add 00, #ff
+0014: read 2nd byte
+  06 20
+0015: read 3rd byte
+  06 20 ff
+    add 20, #ff
     alu:    02       ff    =>    01
          00000010 11111111 => 00000001
     flags = 1000_0100
-    reg[00] = 01
+    reg[20] = 01
 
-0014: read instruction
+0016: read instruction
   ed
-0015: read 2nd byte
+0017: read 2nd byte
   ed 00
-0016: read 3rd byte
-  ed 00 11
-    jmp  nz, 0011
+0018: read 3rd byte
+  ed 00 13
+    jmp  nz, 0013
 
-0011: read instruction
+0013: read instruction
   06
-0012: read 2nd byte
-  06 00
-0013: read 3rd byte
-  06 00 ff
-    add 00, #ff
+0014: read 2nd byte
+  06 20
+0015: read 3rd byte
+  06 20 ff
+    add 20, #ff
     alu:    01       ff    =>    00
          00000001 11111111 => 00000000
     flags = 1100_0100
-    reg[00] = 00
+    reg[20] = 00
 
-0014: read instruction
+0016: read instruction
   ed
-0015: read 2nd byte
+0017: read 2nd byte
   ed 00
-0016: read 3rd byte
-  ed 00 11
-    jmp  nz, 0011
+0018: read 3rd byte
+  ed 00 13
+    jmp  nz, 0013
 
-0017: read instruction
+0019: read instruction
+  0c
+001a: read 2nd byte
+  0c 00
+    ld r0, #00
+    reg[20] = 00
+
+001b: read instruction
+  1c
+001c: read 2nd byte
+  1c 20
+    ld r1, #20
+    reg[21] = 20
+
+001d: read instruction
+  30
+001e: read 2nd byte
+  30 e0
+    jp @e0
+
+0020: read instruction
   8d
-0018: read 2nd byte
+0021: read 2nd byte
   8d 00
-0019: read 3rd byte
+0022: read 3rd byte
   8d 00 0c
     jmp    , 000c
 
