@@ -25,36 +25,7 @@
     @(negedge clk);
         `assertRegister('h02, 'b1);
 
-// L2:
-// ld r5, #02
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h02);
-
-// L1
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h01);
-
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h00);
-
+// L1:
 // rl r2
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
@@ -64,7 +35,7 @@
     @(negedge clk);
         `assertRegister('h02, 'b10);
 
-// djnz r4, L2
+// djnz r4, L1
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
     @(negedge clk);
@@ -74,36 +45,7 @@
     @(negedge clk);
         `assertRegister('h04, 'h04);
 
-// L2:
-// ld r5, #02
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h02);
-
-// L1
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h01);
-
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h00);
-
+// L1:
 // rl r2
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
@@ -113,7 +55,7 @@
     @(negedge clk);
         `assertRegister('h02, 'b100);
 
-// djnz r4, L2
+// djnz r4, L1
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
     @(negedge clk);
@@ -123,36 +65,7 @@
     @(negedge clk);
         `assertRegister('h04, 'h03);
 
-// L2:
-// ld r5, #02
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h02);
-
 // L1
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h01);
-
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h00);
-
 // rl r2
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
@@ -162,7 +75,7 @@
     @(negedge clk);
         `assertRegister('h02, 'b1000);
 
-// djnz r4, L2
+// djnz r4, L1
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
     @(negedge clk);
@@ -172,36 +85,7 @@
     @(negedge clk);
         `assertRegister('h04, 'h02);
 
-// L2:
-// ld r5, #02
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h02);
-
-// L1
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h01);
-
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h00);
-
+// L1:
 // rl r2
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
@@ -221,36 +105,7 @@
     @(negedge clk);
         `assertRegister('h04, 'h01);
 
-// L2:
-// ld r5, #02
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h02);
-
-// L1
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h01);
-
-// djnz r5, L1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-    @(negedge clk);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h05, 'h00);
-
+// L1:
 // rl r2
     repeat (3) @(negedge clk);
         `assertState(STATE_DECODE);
@@ -273,7 +128,7 @@
 // jp 0812
     repeat (3) @(negedge clk);
         `assertInstr('h8B);
-        `assertSecond('hF0);
+        `assertSecond('hF4);
         `assertState(STATE_DECODE);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
