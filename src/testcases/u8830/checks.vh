@@ -1,21 +1,9 @@
     @(negedge clk);
-// srp #00
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('h00);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'h0);
 
-// ld r3, #0F
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h03, 'h0F);
+    chk_srp(0);
+
+	chk_ld_r_IM(4'h3, 8'h0F,
+	            8'h03);
 
 // nop
     repeat (2) @(negedge clk);
@@ -34,13 +22,9 @@
     @(negedge clk);
         `assertRegister('h03, 'h0F);
 
-// ld r3, #hFF
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h03, 'hFF);
+
+	chk_ld_r_IM(4'h3, 8'hFF,
+	            8'h03);
 
 // jr nz, M_001D
     repeat (3) @(negedge clk);
@@ -67,20 +51,12 @@
     @(negedge clk);
         //`assert(uut.proc.p3m, 'h08); //TODO
 
-// ld r4, #8
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h04, 'h08);
 
-// ld r5, #12
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_r_IM(4'h4, 8'h08,
+	            8'h04);
+	chk_ld_r_IM(4'h5, 8'h12,
+	            8'h05);
+        `assertRegister('h04, 'h08);
         `assertRegister('h05, 'h12);
 
 // ldc r6, Irr4
@@ -179,15 +155,8 @@
         `assertRegister(8'h06, 8'h00);
         `assertFlags('b0100_0000);
 
-// srp #F0
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('hF0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'hF);
+
+	chk_srp(4'hF);
 
 // jp nz, E000
     repeat (5) @(negedge clk);
@@ -201,14 +170,6 @@
         `assertPc(16'h003a);
 
 // jp 0812
-    repeat (5) @(negedge clk);
-        `assertInstr('h8D);
-        `assertSecond('h08);
-        `assertThird('h12);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertPc('h0812);
+	chk_jp(16'h0812);
 
-      #3
+	#3

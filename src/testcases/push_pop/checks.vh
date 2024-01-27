@@ -1,32 +1,11 @@
     @(negedge clk);
-// srp #10
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('h20);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'h2);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
 
-// ld r0, #12
-	repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('h12);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h20, 'h12);
+    chk_srp(2);
 
-// ld r0, #34
-	repeat (3) @(negedge clk);
-        `assertInstr('h1C);
-        `assertSecond('h34);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_r_IM(4'h0, 8'h12,
+	            8'h20);
+	chk_ld_r_IM(4'h1, 8'h34,
+	            8'h21);
         `assertRegister('h20, 'h12);
         `assertRegister('h21, 'h34);
 
@@ -104,14 +83,9 @@
         `assertRegister('h20, 'h34);
         `assertRegister('h21, 'h12);
 
-// ld r2, #20
-	repeat (3) @(negedge clk);
-        `assertInstr('h2C);
-        `assertSecond('h20);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+
+	chk_ld_r_IM(4'h2, 8'h20,
+	            8'h22);
         `assertRegister('h20, 'h34);
         `assertRegister('h21, 'h12);
         `assertRegister('h22, 'h20);
@@ -132,14 +106,9 @@
         `assert(uut.proc.sp, 'h7F);
         `assertRegister('h7F, 'h34);
 
-// ld r2, #24
-	repeat (3) @(negedge clk);
-        `assertInstr('h2C);
-        `assertSecond('h24);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+
+	chk_ld_r_IM(4'h2, 8'h24,
+	            8'h22);
         `assertRegister('h20, 'h34);
         `assertRegister('h21, 'h12);
         `assertRegister('h22, 'h24);
@@ -162,13 +131,6 @@
         `assertRegister('h24, 'h34);
 
 // jmp 0
-    repeat (5) @(negedge clk);
-        `assertInstr('h8D);
-        `assertSecond('h00);
-        `assertThird('h0C);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h000C);
+	chk_jp(16'h000C);
 
     #3

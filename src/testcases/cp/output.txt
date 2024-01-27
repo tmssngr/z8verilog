@@ -62,4 +62,3 @@ VCD info: dumpfile SoC.vcd opened for output.
 
 000c: read instruction
 testSoC: SUCCESS
-  31

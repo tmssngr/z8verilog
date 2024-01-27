@@ -153,4 +153,3 @@ VCD info: dumpfile SoC.vcd opened for output.
 
 0812: read instruction
 testSoC: SUCCESS
-  00

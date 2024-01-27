@@ -1,32 +1,11 @@
     @(negedge clk);
-// srp #20
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('h20);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'h2);
 
-// ld r0, #0
-    repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('h00);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h20, 'h00);
+	chk_srp(2);
 
-// ld r1, #B
-    repeat (3) @(negedge clk);
-        `assertInstr('h1C);
-        `assertSecond('h0B);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_r_IM(4'h0, 8'h00,
+	            8'h20);
+	chk_ld_r_IM(4'h1, 8'h0B,
+	            8'h21);
         `assertRegister('h20, 'h00);
         `assertRegister('h21, 'h0B);
 
@@ -58,24 +37,10 @@
         `assertRegister(8'h22, 'h0F);
 
 // ROM
-// ld r0, #8
-    repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('h08);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h20, 'h08);
-
-// ld r1, #12
-    repeat (3) @(negedge clk);
-        `assertInstr('h1C);
-        `assertSecond('h12);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_r_IM(4'h0, 8'h08,
+	            8'h20);
+	chk_ld_r_IM(4'h1, 8'h12,
+	            8'h21);
         `assertRegister('h20, 'h08);
         `assertRegister('h21, 'h12);
 
@@ -109,24 +74,10 @@
         `assertRegister(8'h22, 'h0F);
 
 // RAM
-// ld r0, #FF
-    repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('hFF);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h20, 'hFF);
-
-// ld r1, #80
-    repeat (3) @(negedge clk);
-        `assertInstr('h1C);
-        `assertSecond('h80);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_r_IM(4'h0, 8'hFF,
+	            8'h20);
+	chk_ld_r_IM(4'h1, 8'h80,
+	            8'h21);
         `assertRegister('h20, 'hFF);
         `assertRegister('h21, 'h80);
 
@@ -160,7 +111,7 @@
         `assertRegister(8'h20, 'hFF);
         `assertRegister(8'h21, 'h80);
 
-// int 22
+// inc 22
     repeat (3) @(negedge clk);
         `assertInstr('h20);
         `assertSecond('h22);
@@ -204,13 +155,6 @@
         `assertRegister(8'h22, 'h01);
 
 // jmp L0
-    repeat (5) @(negedge clk);
-        `assertInstr('h8D);
-        `assertSecond('h00);
-        `assertThird('h0C);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h000C);
+	chk_jp(16'h000C);
 
     #3

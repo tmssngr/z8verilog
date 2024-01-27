@@ -1,13 +1,6 @@
     @(negedge clk);
-// srp #10
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('h20);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'h2);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+
+    chk_srp(2);
 
 // ld P01M, #92
 	repeat (5) @(negedge clk);
@@ -44,15 +37,9 @@
     @(negedge clk);
         `assert(uut.proc.sp[7:0], 'h00);
 
-// ld r0, #12
-	repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('h12);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h20, 'h12);
+
+	chk_ld_r_IM(4'h0, 8'h12,
+	            8'h20);
 
 // push r0
     repeat (3) @(negedge clk);
@@ -98,13 +85,6 @@
         `assertRegister('h20, 'h12);
 
 // jmp 0
-    repeat (5) @(negedge clk);
-        `assertInstr('h8D);
-        `assertSecond('h00);
-        `assertThird('h0C);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h000C);
+	chk_jp(16'h000C);
 
     #3

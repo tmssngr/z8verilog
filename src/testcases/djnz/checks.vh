@@ -1,25 +1,9 @@
     @(negedge clk);
-// srp 30
-    repeat (3) @(negedge clk);
-        `assertInstr('h31);
-        `assertSecond('h30);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.rp, 'h3);
 
-// ld r0, #3
-    repeat (3) @(negedge clk);
-        `assertInstr('h0C);
-        `assertSecond('h03);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h30);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h0010);
-    @(negedge clk);
-        `assertRegister('h30, 'h03);
+	chk_srp(3);
+
+	chk_ld_r_IM(4'h0, 8'h03,
+	            8'h30);
 
 // L1: nop
     repeat (2) @(negedge clk);

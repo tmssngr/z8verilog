@@ -42,13 +42,6 @@
 
 
 // jmp L0
-    repeat (5) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h8D);
-        `assertSecond('h00);
-        `assertThird('h0C);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h000C);
+	chk_jp(16'h000C);
 
     #3
