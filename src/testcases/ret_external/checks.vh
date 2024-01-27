@@ -57,13 +57,13 @@
         `assertState(STATE_CALL_E3);
     @(negedge clk);
         `assertRam(16'hFFFE, 8'h00);
-        `assertState(STATE_CALL_PC1);
+        `assertState(STATE_JP1);
     @(negedge clk);
         `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_CALL_PC2);
+        `assertState(STATE_JP2);
     @(negedge clk);
         `assert(uut.proc.addr[7:0], 8'h2C);
-        `assertState(STATE_CALL_PC3);
+        `assertState(STATE_JP3);
     @(negedge clk);
         `assertPc(16'h002C);
 
@@ -150,13 +150,13 @@
         `assertState(STATE_CALL_E3);
     @(negedge clk);
         `assertRam(16'hFFFE, 8'h00);
-        `assertState(STATE_CALL_PC1);
+        `assertState(STATE_JP1);
     @(negedge clk);
         `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_CALL_PC2);
+        `assertState(STATE_JP2);
     @(negedge clk);
         `assert(uut.proc.addr[7:0], 8'h2C);
-        `assertState(STATE_CALL_PC3);
+        `assertState(STATE_JP3);
     @(negedge clk);
         `assertPc(16'h002C);
 

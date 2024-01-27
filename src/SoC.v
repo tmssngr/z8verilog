@@ -271,7 +271,7 @@ module Processor(
                                 ? nextRelativePc
                                 : (state == STATE_RET_I3
                                   |state == STATE_RET_E6
-                                  |state == STATE_CALL_PC3)
+                                  |state == STATE_JP3)
                                   ? addr
                                   : pc;
     assign memAddr = (state == STATE_PUSH_E3)
@@ -965,7 +965,7 @@ module Processor(
             aluA <= pc[15:8];
             register <= sp[7:0];
             writeRegister <= 1;
-            state <= STATE_CALL_PC1;
+            state <= STATE_JP1;
         end
         STATE_CALL_E1: begin
             addr <= sp;
@@ -978,17 +978,17 @@ module Processor(
         end
         STATE_CALL_E3: begin
         end
-        STATE_CALL_PC1: begin
+        STATE_JP1: begin
             addr[15:8] = isCallIRR
                        ? readRegister8(r8({second[7:1], 1'b0}))
                        : second;
         end
-        STATE_CALL_PC2: begin
+        STATE_JP2: begin
             addr[7:0] = isCallIRR
                        ? readRegister8(r8({second[7:1], 1'b1}))
                        : third;
         end
-        STATE_CALL_PC3: begin
+        STATE_JP3: begin
             state <= STATE_FETCH_INSTR;
         end
 
