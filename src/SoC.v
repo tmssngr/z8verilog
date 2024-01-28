@@ -723,7 +723,7 @@ module Processor(
             end
             4'hD: begin
 `ifdef BENCH
-                $display("    jmp %s, %h", ccName(instrH), directAddress);
+                $display("    jp %s, %h", ccName(instrH), directAddress);
 `endif
             end
             4'hE: begin

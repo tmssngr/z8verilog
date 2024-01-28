@@ -141,7 +141,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   ed e0
 0039: read 3rd byte
   ed e0 00
-    jmp  nz, e000
+    jp  nz, e000
 
 003a: read instruction
   8d
@@ -149,7 +149,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   8d 08
 003c: read 3rd byte
   8d 08 12
-    jmp    , 0812
+    jp    , 0812
 
 0812: read instruction
 testSoC: SUCCESS
