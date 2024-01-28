@@ -8,19 +8,8 @@
 	chk_ld_r_IM(4'h1, 8'h01,
 	            8'h11);
 
-// add r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h02);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h0A);
-        `assertRegister('h11, 'h01);
-        `assertFlags('b0000_0000);
+	chk_alu2_r_r(ALU2_ADD, 0, 1,
+	             .expDst(8'h10), .expResult(8'h0A), .expFlags(8'b0000_0000));
 
 // da r0
     repeat (3) @(negedge clk);
@@ -50,20 +39,8 @@
         `assertFlags('b0000_0000);
 
 
-// sub r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h22);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h0F);
-        `assertRegister('h11, 'h01);
-        // dh
-        `assertFlags('b0000_1100);
+	chk_alu2_r_r(ALU2_SUB, 0, 1,
+	             .expDst(8'h10), .expResult(8'h0F), .expFlags(8'b0000_1100)); // dh
 
 // da r0
     repeat (3) @(negedge clk);
@@ -99,20 +76,8 @@
         `assertRegister('h10, 'h09);
         `assertRegister('h11, 'h09);
 
-// add r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h02);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h12);
-        `assertRegister('h11, 'h09);
-        // h
-        `assertFlags('b0000_0100);
+	chk_alu2_r_r(ALU2_ADD, 0, 1,
+	             .expDst(8'h10), .expResult(8'h12), .expFlags(8'b0000_0100)); // h
 
 // da 10
     repeat (3) @(negedge clk);
@@ -132,20 +97,8 @@
         `assertFlags('b0000_0100);
 
 
-// sub r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h22);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h0F);
-        `assertRegister('h11, 'h09);
-        // hd
-        `assertFlags('b0000_1100);
+	chk_alu2_r_r(ALU2_SUB, 0, 1,
+	             .expDst(8'h10), .expResult(8'h0F), .expFlags(8'b0000_1100)); // dh
 
 // da 10
     repeat (3) @(negedge clk);
@@ -172,20 +125,8 @@
         `assertRegister('h10, 'h15);
         `assertRegister('h11, 'h87);
 
-// add r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h02);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h9C);
-        `assertRegister('h11, 'h87);
-        // s
-        `assertFlags('b0010_0000);
+	chk_alu2_r_r(ALU2_ADD, 0, 1,
+	             .expDst(8'h10), .expResult(8'h9C), .expFlags(8'b0010_0000)); // s
 
 // da 10
     repeat (3) @(negedge clk);
@@ -205,20 +146,8 @@
         `assertFlags('b1000_0000);
 
 
-// sub r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h22);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h7B);
-        `assertRegister('h11, 'h87);
-        // hd
-        `assertFlags('b1000_1100);
+	chk_alu2_r_r(ALU2_SUB, 0, 1,
+	             .expDst(8'h10), .expResult(8'h7B), .expFlags(8'b1000_1100)); // cdh
 
 // da 10
     repeat (3) @(negedge clk);
@@ -257,24 +186,11 @@
         `assertRegister('h10, 'h00);
         `assertRegister('h11, 'h01);
 
-// sub r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h22);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-    @(negedge clk);
-        `assertRegister('h10, 'hFF);
-        `assertRegister('h11, 'h01);
-        // c_sv dh__
-        `assertFlags('b1011_1100);
+	chk_alu2_r_r(ALU2_SUB, 0, 1,
+	             .expDst(8'h10), .expResult(8'hFF), .expFlags(8'b1011_1100)); // c_sv dh__
 
 // da 10
-    repeat (2) @(negedge clk);
+    repeat (3) @(negedge clk);
         `assertInstr('h40);
         `assertSecond('h10);
         `assertState(STATE_DECODE);
@@ -302,20 +218,9 @@
         // dh
         `assertFlags('b1011_1100);
 
-// add r0, r1
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h02);
-        `assertSecond('h01);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h10, 'h9A);
-        `assertRegister('h11, 'h01);
-        // s
-        `assertFlags('b0010_0000);
+
+	chk_alu2_r_r(ALU2_ADD, 0, 1,
+	             .expDst(8'h10), .expResult(8'h9A), .expFlags(8'b0010_0000)); // s
 
 // da 10
     repeat (3) @(negedge clk);

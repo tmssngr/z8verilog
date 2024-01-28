@@ -11,16 +11,11 @@
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
     @(negedge clk);
-
-// tm r3, #0b0000_0100
-    repeat (5) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
         `assertRegister('h03, 'h0F);
+
+
+	chk_alu2_R_IM(ALU2_TM, 8'hE3, 8'b0000_0100,
+	              .expDst(8'h03), .expResult(8'h0F), .expFlags(8'b0000_0000));
 
 
 	chk_ld_r_IM(4'h3, 8'hFF,
@@ -141,16 +136,8 @@
         `assertRegister(8'h06, 8'h00);
 
 // xor r6, r7
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_ALU2_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister(8'h06, 8'h00);
-        `assertFlags('b0100_0000);
-
+	chk_alu2_r_r(ALU2_XOR, 6, 7,
+	             .expDst(8'h06), .expResult(8'h00), .expFlags(8'b0100_0000));
 
 	chk_srp(4'hF);
 

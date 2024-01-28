@@ -533,17 +533,15 @@ module Processor(
                     $display("    ? %h", second);
 `endif
                 end
+                // x2
                 default: begin
 `ifdef BENCH
                     $display("    %s r%h, r%h",
                              alu2OpName(instrH),
                              secondH, secondL);
 `endif
-                    register <= r4(secondH);
-                    aluA <= readRegister4(secondH);
-                    //TODO
-                    aluB <= readRegister4(secondL);
-                    state <= STATE_ALU2_OP;
+                    register <= r4(secondL);
+                    state <= STATE_ALU2_OP1;
                 end
                 endcase
             end
@@ -601,9 +599,8 @@ module Processor(
                              alu2OpName(instrH),
                              secondH, secondL);
 `endif
-                    aluA <= readRegister4(secondH);
                     register <= readRegister4(secondL);
-                    state <= STATE_ALU2_IR;
+                    state <= STATE_ALU2_OP1;
                 end
                 endcase
             end
@@ -633,17 +630,15 @@ module Processor(
                     aluMode <= ALU1_LD;
                     writeRegister <= 1;
                 end
+                // x4
                 default: begin
 `ifdef BENCH
                     $display("    %s %h, %h",
                              alu2OpName(instrH),
                              third, second);
 `endif
-                    register <= r8(third);
-                    aluA <= readRegister8(r8(third));
-                    //TODO
-                    aluB <= readRegister8(r8(second));
-                    state <= STATE_ALU2_OP;
+                    register <= r8(second);
+                    state <= STATE_ALU2_OP1;
                 end
                 endcase
             end
@@ -680,10 +675,7 @@ module Processor(
                              alu2OpName(instrH),
                              second, third);
 `endif
-                    register <= r8(second);
-                    aluA <= readRegister8(r8(second));
-                    aluB <= third;
-                    state <= STATE_ALU2_OP;
+                    state <= STATE_ALU2_OP1;
                 end
                 endcase
             end
@@ -836,12 +828,37 @@ module Processor(
             state <= STATE_FETCH_INSTR;
         end
 
-        STATE_ALU2_IR: begin
-            aluB <= readRegister8(register);
-            register <= r4(secondH);
+        STATE_ALU2_OP1: begin
+            case (instrL)
+            2, // r, r
+            3, // r, Ir
+            4: // R, R
+                aluB <= readRegister8(register);
+            6: // R, IM
+                aluB <= third;
+            endcase
         end
-
-        STATE_ALU2_OP: begin
+        STATE_ALU2_OP2: begin
+            case (instrL)
+            2, // r, r
+            3: // r, Ir
+            begin
+                register <= r4(secondH);
+                aluA <= readRegister4(secondH);
+            end
+            4: // R, R
+            begin
+                register <= r8(third);
+                aluA <= readRegister8(r8(third));
+            end
+            6: // R, IM
+            begin
+                register <= r8(second);
+                aluA <= readRegister8(r8(second));
+            end
+            endcase
+        end
+        STATE_ALU2_OP3: begin
             aluMode <= alu2OpCode(instrH);
             writeRegister <= (instrH[3:2] == 2'b00)     // add, adc, sub, sbc
                             | (instrH[3:1] == 3'b010)   // or, and

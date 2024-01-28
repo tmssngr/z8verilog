@@ -176,3 +176,106 @@ task chk_incw;
             `assertFlags(expFlags);
     end
 endtask
+
+task chk_alu2_r_r;
+    input[5:0] op;
+    input[3:0] dst;
+    input[3:0] src;
+    input[7:0] expDst;
+    input[7:0] expResult;
+    input[7:0] expFlags;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr({op[3:0], 4'h2});
+            `assertSecond({dst, src});
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP1);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP2);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister({expDst}, {expResult});
+            `assertFlags({expFlags});
+    end
+endtask
+task chk_alu2_r_Ir;
+    input[5:0] op;
+    input[3:0] dst;
+    input[3:0] src;
+    input[7:0] expDst;
+    input[7:0] expResult;
+    input[7:0] expFlags;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr({op[3:0], 4'h3});
+            `assertSecond({dst, src});
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP1);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP2);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister({expDst}, {expResult});
+            `assertFlags({expFlags});
+    end
+endtask
+task chk_alu2_R_R;
+    input[5:0] op;
+    input[7:0] dst;
+    input[7:0] src;
+    input[7:0] expDst;
+    input[7:0] expResult;
+    input[7:0] expFlags;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr({op[3:0], 4'h4});
+            `assertSecond(src);
+            `assertThird(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP1);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP2);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister({expDst}, {expResult});
+            `assertFlags({expFlags});
+    end
+endtask
+task chk_alu2_R_IM;
+    input[5:0] op;
+    input[7:0] dst;
+    input[7:0] value;
+    input[7:0] expDst;
+    input[7:0] expResult;
+    input[7:0] expFlags;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr({op[3:0], 4'h6});
+            `assertSecond(dst);
+            `assertThird(value);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP1);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP2);
+        @(negedge clk);
+            `assertState(STATE_ALU2_OP3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister({expDst}, {expResult});
+            `assertFlags({expFlags});
+    end
+endtask
