@@ -36,11 +36,7 @@
 
 // M_001D:
 // ld P01M, #B6
-    repeat (5) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_R_IM(8'hF8, 8'hB6);
         `assert(uut.proc.p01m, 'hB6);
 
 // ld P3M, #8

@@ -9,15 +9,7 @@
         `assertRegister('h20, 'h12);
         `assertRegister('h21, 'h34);
 
-// ld FF, #80
-	repeat (5) @(negedge clk);
-        `assertInstr('hE6);
-        `assertSecond('hFF);
-        `assertThird('h80);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ld_R_IM(8'hFF, 8'h80);
         `assert(uut.proc.sp, 'h80);
 
 // push r0

@@ -3,15 +3,7 @@
     chk_srp(2);
 
 // ld P01M, #92
-	repeat (5) @(negedge clk);
-        `assertInstr('hE6);
-        `assertSecond('hF8);
-        `assertThird('h92);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.p01m, 'h92);
+	chk_ld_R_IM(8'hF8, 8'h92);
 
 // clr SPH
 	repeat (3) @(negedge clk);

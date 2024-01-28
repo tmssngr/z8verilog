@@ -1,14 +1,7 @@
     @(negedge clk);
-// ld FF, #80
-	repeat (5) @(negedge clk);
-        `assertInstr('hE6);
-        `assertSecond('hFF);
-        `assertThird('h80);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h80);
+
+	// SPL
+    chk_ld_R_IM(8'hFF, 8'h80);
 
 // call L1_
 	repeat (5) @(negedge clk);

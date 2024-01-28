@@ -54,7 +54,17 @@ task chk_ld_R_IM;
             `assert(uut.proc.writeFlags, 0);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
-            `assertRegister(dst, value);
+            if (dst == 8'hF8) begin
+                `assert(uut.proc.p01m, value);
+            end
+            else begin
+                if (dst == 8'hFF) begin
+                    `assert(uut.proc.sp[7:0], value);
+                end
+                else begin
+                    `assertRegister(dst, value);
+                end
+            end
     end
 endtask
 
