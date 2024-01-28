@@ -471,13 +471,17 @@ module Processor(
 `ifdef BENCH
                     $display("    decw @%h", second);
 `endif
-                    //TODO
+                    aluMode <= ALU1_DEC;
+                    register <= readRegister8(r8(second));
+                    state <= STATE_ALU1_WORD1;
                 end
                 4'hA: begin
 `ifdef BENCH
                     $display("    incw @%h", second);
 `endif
-                    //TODO
+                    aluMode <= ALU1_INC;
+                    register <= readRegister8(r8(second));
+                    state <= STATE_ALU1_WORD1;
                 end
                 default: begin
 `ifdef BENCH

@@ -23,5 +23,9 @@ label(L0_);
 	asm_decw(8'h10);
 	asm_decw(8'h10);
 
+	asm_ld_R_IM(8'h12, 8'h10);
+	asm_incw_IRR(8'h12);
+	asm_decw_IRR(8'h12);
+
 	asm_jp(JC_ALWAYS, L0_);
 end

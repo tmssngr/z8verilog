@@ -317,6 +317,12 @@ task asm_decw;
         asm2(8'h80, dst);
     end
 endtask
+task asm_decw_IRR;
+    input [7:0] dst;
+    begin
+        asm2(8'h81, dst);
+    end
+endtask
 task asm_rl;
     input [7:0] dst;
     begin
@@ -327,6 +333,12 @@ task asm_incw;
     input [7:0] dst;
     begin
         asm2(8'hA0, dst);
+    end
+endtask
+task asm_incw_IRR;
+    input [7:0] dst;
+    begin
+        asm2(8'hA1, dst);
     end
 endtask
 task asm_clr;
