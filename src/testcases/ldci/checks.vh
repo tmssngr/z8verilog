@@ -217,7 +217,5 @@
     @(negedge clk);
         `assertRegister(8'h20, 8'h00);
 
-// jmp L0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

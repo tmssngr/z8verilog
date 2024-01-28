@@ -154,7 +154,5 @@
         `assertRegister(8'h21, 'h80);
         `assertRegister(8'h22, 'h01);
 
-// jmp L0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

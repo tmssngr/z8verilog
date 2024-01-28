@@ -239,7 +239,5 @@
         // s
         `assertFlags('b0010_0000);
 
-// jmp 0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

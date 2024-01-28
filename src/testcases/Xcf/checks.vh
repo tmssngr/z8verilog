@@ -41,7 +41,4 @@
     @(negedge clk);
 
 
-// jmp L0
 	chk_jp(16'h000C);
-
-    #3

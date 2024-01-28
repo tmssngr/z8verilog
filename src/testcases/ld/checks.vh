@@ -17,7 +17,5 @@
         `assertRegister('h20, 'h09);
         `assertRegister('h21, 'h09);
 
-// jmp L0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

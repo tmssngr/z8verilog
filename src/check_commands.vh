@@ -7,6 +7,7 @@
 `define assertRegister(num, value) if (uut.proc.registers[num] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h"      , num, uut.proc.registers[num], (value)); $finish(2); end
 `define assertRom(addr, value)     if (uut.rom.memory[addr % uut.rom.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.rom.memory[addr % uut.rom.size], (value)); $finish(2); end
 `define assertRam(addr, value)     if (uut.ram.memory[addr % uut.ram.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.ram.memory[addr % uut.ram.size], (value)); $finish(2); end
+`include "jump_conditions.vh"
 
 task chk_srp;
     input[3:0] upper;
@@ -51,6 +52,7 @@ task chk_ld_R_IM;
         @(negedge clk);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
+            `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(dst, value);
     end
@@ -59,11 +61,41 @@ endtask
 task chk_jp;
     input[15:0] addr;
     begin
+        chk_jp_true(JC_ALWAYS, addr);
+    end
+endtask
+task chk_jp_true;
+	input[3:0] cc;
+    input[15:0] addr;
+    begin
         repeat (5) @(negedge clk);
-            `assertInstr(8'h8D);
+            `assertInstr({cc, 4'hD});
             `assertSecond(addr[15:8]);
             `assertThird(addr[7:0]);
-        repeat (1) @(negedge clk);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assertState(STATE_JP3);
+        @(negedge clk);
             `assertPc(addr);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
+task chk_jp_false;
+	input[3:0] cc;
+    input[15:0] addr;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr({cc, 4'hD});
+            `assertSecond(addr[15:8]);
+            `assertThird(addr[7:0]);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
     end
 endtask

@@ -334,7 +334,5 @@
         // cz__ ____
         `assertFlags('b1100_0000);
 
-// jmp L0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

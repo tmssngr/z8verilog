@@ -66,7 +66,4 @@
         `assertRegister('h22, 'h21);
         `assertFlags('b0000_0000);
 
-// jmp L0
 	chk_jp(16'h000C);
-
-    #3

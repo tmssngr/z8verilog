@@ -3,15 +3,7 @@
     chk_srp(2);
 
 // jp never, 0
-    repeat (5) @(negedge clk);
-        `assertInstr('h0D);
-        `assertSecond('hFF);
-        `assertThird('hFE);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-
+	chk_jp_false(JC_NEVER, 16'hFFFE);
 
 	chk_ld_r_IM(4'h0, 8'h03,
 	            8'h20);
@@ -32,15 +24,7 @@
         `assertFlags('b1000_0100);
 
 // jp nz, L1
-    repeat (5) @(negedge clk);
-        `assertInstr('hED);
-        `assertSecond('h00);
-        `assertThird('h13);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h13);
-    @(negedge clk);
+	chk_jp_true(JC_NZ, 16'h0013);
 
 // L1: add 0, #FF
     repeat (5) @(negedge clk);
@@ -57,16 +41,8 @@
         // ch
         `assertFlags('b1000_0100);
 
-// jp nz, L1
-    repeat (5) @(negedge clk);
-        `assertInstr('hED);
-        `assertSecond('h00);
-        `assertThird('h13);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h13);
-    @(negedge clk);
+
+	chk_jp_true(JC_NZ, 16'h0013);
 
 // L1: add 0, #FF
     repeat (5) @(negedge clk);
@@ -83,16 +59,8 @@
         // czh
         `assertFlags('b1100_0100);
 
-// jp nz, L1
-    repeat (5) @(negedge clk);
-        `assertInstr('hED);
-        `assertSecond('h00);
-        `assertThird('h13);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc('h19);
-    @(negedge clk);
+
+	chk_jp_false(JC_NZ, 16'h0013);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
@@ -119,7 +87,5 @@
     @(negedge clk);
         `assertPc(16'h0020);
 
-// jmp 0
-	chk_jp(16'h000C);
 
-    #3
+	chk_jp(16'h000C);

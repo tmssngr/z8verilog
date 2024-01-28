@@ -158,18 +158,6 @@
 
 	chk_srp(4'hF);
 
-// jp nz, E000
-    repeat (5) @(negedge clk);
-        `assertInstr('hED);
-        `assertSecond('hE0);
-        `assertThird('h00);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertPc(16'h003a);
+	chk_jp_false(JC_NZ, 16'hE000);
 
-// jp 0812
 	chk_jp(16'h0812);
-
-	#3

@@ -260,17 +260,15 @@ module Processor(
                          | state == STATE_READ_2
                          | state == STATE_READ_3)
                          ? pc + 16'b1
-                         : (state == STATE_DECODE & isJumpDA & takeBranch)
-                            ? directAddress
-                            : ( (state == STATE_DECODE & isJumpRel & takeBranch)
-                              || (state == STATE_DJNZ2 && flagsOut[FLAG_INDEX_Z] == 1'b0 )
-                              ) 
-                                ? nextRelativePc
-                                : (state == STATE_RET_I3
-                                  |state == STATE_RET_E6
-                                  |state == STATE_JP3)
-                                  ? addr
-                                  : pc;
+                         : ( (state == STATE_DECODE & isJumpRel & takeBranch)
+                           || (state == STATE_DJNZ2 && flagsOut[FLAG_INDEX_Z] == 1'b0 )
+                           ) 
+                             ? nextRelativePc
+                             : (state == STATE_RET_I3
+                               |state == STATE_RET_E6
+                               |state == STATE_JP3)
+                               ? addr
+                               : pc;
     assign memAddr = (state == STATE_PUSH_E3)
                    | (state == STATE_POP_E2)
                    | (state == STATE_POP_E3)
@@ -725,6 +723,11 @@ module Processor(
 `ifdef BENCH
                 $display("    jp %s, %h", ccName(instrH), directAddress);
 `endif
+                // 12+0 cycles if jumping     (3+3+3+1+2)
+                // 10+0 cycles if not jumping (3+3+3+1)
+                state <= takeBranch
+                    ? STATE_JP1
+                    : STATE_FETCH_INSTR;
             end
             4'hE: begin
 `ifdef BENCH
@@ -976,12 +979,12 @@ module Processor(
         STATE_CALL_E3: begin
         end
         STATE_JP1: begin
-            addr[15:8] = isCallDA
+            addr[15:8] = isCallDA | isJumpDA
                        ? second
                        : readRegister8(r8({second[7:1], 1'b0}));
         end
         STATE_JP2: begin
-            addr[7:0] = isCallDA
+            addr[7:0] = isCallDA | isJumpDA
                        ? third
                        : readRegister8(r8({second[7:1], 1'b1}));
         end
