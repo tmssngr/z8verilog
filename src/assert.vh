@@ -1,1 +1,1 @@
-`define assert(signal, value) if (signal !== value) begin  $display("ASSERTION FAILED in %m: signal != value"); $finish(2); end
+`define assert(signal, value) if ((signal) !== (value)) begin  $display("ASSERTION FAILED in %m: %h != %h", (signal), (value)); $finish(2); end

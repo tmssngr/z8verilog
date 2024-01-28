@@ -421,20 +421,16 @@ module Processor(
                     $display("    decw %h", second);
 `endif
                     aluMode <= ALU1_DEC;
-                    writeRegister <= 1;
-                    register <= r8({second[7:1], 1'h1});
-                    aluA <= readRegister8({second[7:1], 1'h1});
-                    state <= STATE_ALU1_WORD;
+                    register <= r8(second);
+                    state <= STATE_ALU1_WORD1;
                 end
                 4'hA: begin
 `ifdef BENCH
                     $display("    incw %h", second);
 `endif
                     aluMode <= ALU1_INC;
-                    writeRegister <= 1;
-                    register <= r8({second[7:1], 1'h1});
-                    aluA <= readRegister8({second[7:1], 1'h1});
-                    state <= STATE_ALU1_WORD;
+                    register <= r8(second);
+                    state <= STATE_ALU1_WORD1;
                 end
                 default: begin
 `ifdef BENCH
@@ -796,7 +792,12 @@ module Processor(
             endcase
         end
 
-        STATE_ALU1_WORD: begin
+        STATE_ALU1_WORD1: begin
+            aluA <= readRegister8({register[7:1], 1'h1});
+            register <= {register[7:1], 1'h1};
+            writeRegister <= 1;
+        end
+        STATE_ALU1_WORD2: begin
             register <= { register[7:1], 1'b0 };
             aluA <= readRegister8({register[7:1], 1'b0});
             aluB <= aluOut;

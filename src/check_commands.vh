@@ -119,17 +119,25 @@ task chk_decw;
             `assertInstr(8'h80);
             `assertSecond(register);
             `assertState(STATE_DECODE);
-            // lower byte:
         @(negedge clk);
             `assert(uut.proc.aluMode, ALU1_DEC);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_ALU1_WORD1);
+        @(negedge clk);
+            // lower byte:
+            `assert(uut.proc.aluMode, ALU1_DEC);
+            `assert(uut.proc.register, register | 1);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
+            `assertState(STATE_ALU1_WORD2);
         @(negedge clk);
             `assertRegister(register | 1, expValue[7:0]);
             // upper byte:
             `assert(uut.proc.aluMode, ALU1_DECW);
+            `assert(uut.proc.register, register & ~1);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 1);
+            `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register & ~1, expValue[15:8]);
             `assertFlags(expFlags);
@@ -144,17 +152,25 @@ task chk_incw;
             `assertInstr(8'hA0);
             `assertSecond(register);
             `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_ALU1_WORD1);
             // lower byte:
         @(negedge clk);
             `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.register, register | 1);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
+            `assertState(STATE_ALU1_WORD2);
         @(negedge clk);
             `assertRegister(register | 1, expValue[7:0]);
             // upper byte:
             `assert(uut.proc.aluMode, ALU1_INCW);
+            `assert(uut.proc.register, register & ~1);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 1);
+            `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register & ~1, expValue[15:8]);
             `assertFlags(expFlags);
