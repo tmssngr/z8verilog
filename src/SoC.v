@@ -155,8 +155,35 @@ module Processor(
         readRegister4 = readRegister8(r4(r));
     endfunction
 
+    function [4:0] alu1OpCode(
+        input[3:0] instrH
+    );
+        alu1OpCode = { 1'b0, instrH };
+    endfunction
+
+    function [4:0] alu2OpCode(
+        input[3:0] instrH
+    );
+        alu2OpCode = { 1'b1, instrH };
+    endfunction
+
+    reg takeBranchTmp;
+    always @(*) begin
+        case (instrH[2:0])
+        0: takeBranchTmp = 0;
+        1: takeBranchTmp =  flags[FLAG_INDEX_S] ^ flags[FLAG_INDEX_V];
+        2: takeBranchTmp = (flags[FLAG_INDEX_S] ^ flags[FLAG_INDEX_V]) | flags[FLAG_INDEX_Z];
+        3: takeBranchTmp =  flags[FLAG_INDEX_C] | flags[FLAG_INDEX_Z];
+        4: takeBranchTmp =  flags[FLAG_INDEX_V];
+        5: takeBranchTmp =  flags[FLAG_INDEX_S];
+        6: takeBranchTmp =  flags[FLAG_INDEX_Z];
+        7: takeBranchTmp =  flags[FLAG_INDEX_C];
+        endcase
+    end
+    wire takeBranch = takeBranchTmp ^ instrH[3];
+
 `ifdef BENCH
-    function [1:4*8] alu1OpName( // maximum of 4 characters
+    function [1:4*8] alu1OpName(
         input [3:0] instrH
     );
     begin
@@ -178,22 +205,8 @@ module Processor(
         endcase;
     end
     endfunction
-`endif
 
-    function [4:0] alu1OpCode(
-        input[3:0] instrH
-    );
-        alu1OpCode = { 1'b0, instrH };
-    endfunction
-
-    function [4:0] alu2OpCode(
-        input[3:0] instrH
-    );
-        alu2OpCode = { 1'b1, instrH };
-    endfunction
-
-`ifdef BENCH
-    function [1:3*8] alu2OpName( // maximum of 3 characters
+    function [1:3*8] alu2OpName(
         input [3:0] instrH
     );
     begin
@@ -212,25 +225,8 @@ module Processor(
         endcase
     end
     endfunction
-`endif
 
-    reg takeBranchTmp;
-    always @(*) begin
-        case (instrH[2:0])
-        0: takeBranchTmp = 0;
-        1: takeBranchTmp =  flags[FLAG_INDEX_S] ^ flags[FLAG_INDEX_V];
-        2: takeBranchTmp = (flags[FLAG_INDEX_S] ^ flags[FLAG_INDEX_V]) | flags[FLAG_INDEX_Z];
-        3: takeBranchTmp =  flags[FLAG_INDEX_C] | flags[FLAG_INDEX_Z];
-        4: takeBranchTmp =  flags[FLAG_INDEX_V];
-        5: takeBranchTmp =  flags[FLAG_INDEX_S];
-        6: takeBranchTmp =  flags[FLAG_INDEX_Z];
-        7: takeBranchTmp =  flags[FLAG_INDEX_C];
-        endcase
-    end
-    wire takeBranch = takeBranchTmp ^ instrH[3];
-
-`ifdef BENCH
-    function [1:3*8] ccName( // maximum of 3 characters
+    function [1:3*8] ccName(
         input [3:0] instrH
     );
     begin
