@@ -39,12 +39,12 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `jp cc, DA`
     - [x] `jp IRR`
   - [ ] `di`, `ei` (disable/enable interrupt)
-  - [ ] memory operations
+  - [x] memory operations
     - [x] `ldc r1, Irr2`
     - [x] `ldc Irr1, r2`
     - [x] `ldci Ir1, Irr2`
     - [x] `ldci Irr1, Ir2`
-    - [ ] let `lde`/`ldei` work the same as `ldc`/`ldci`
+    - [x] let `lde`/`ldei` work the same as `ldc`/`ldci`
   - [x] stack operations
     - [x] internal stack
       - [x] `pop R`

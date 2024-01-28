@@ -501,14 +501,16 @@ module Processor(
                     $display("    lde r%h, Irr%h",
                              secondH, secondL);
 `endif
-                    //TODO
+                    register <= r4(secondH);
+                    state <= STATE_LDC_READ1;
                 end
                 4'h9: begin
 `ifdef BENCH
                     $display("    lde Irr%h, r%h",
                              secondL, secondH);
 `endif
-                    //TODO
+                    register <= r4(secondH);
+                    state <= STATE_LDC_WRITE1;
                 end
                 4'hC: begin
 `ifdef BENCH
@@ -549,17 +551,19 @@ module Processor(
                 casez (instrH)
                 4'h8: begin
 `ifdef BENCH
-                    $display("    ldei r%h, Irr%h",
+                    $display("    ldei Ir%h, Irr%h",
                              secondH, secondL);
 `endif
-                    //TODO
+                    register <= readRegister4(secondH);
+                    state <= STATE_LDC_READ1;
                 end
                 4'h9: begin
 `ifdef BENCH
-                    $display("    ldei Irr%h, r%h",
+                    $display("    ldei Irr%h, Ir%h",
                              secondL, secondH);
 `endif
-                    //TODO
+                    register <= readRegister4(secondH);
+                    state <= STATE_LDC_WRITE1;
                 end
                 4'hC: begin
 `ifdef BENCH
