@@ -11,5 +11,15 @@
 		`assertRegister(8'h20, 8'h09);
 		`assertRegister(8'h21, 8'h09);
 
+	chk_ld_r_IM(4'h1, 8'h22,
+	            8'h21);
+		`assertRegister(8'h20, 8'h09);
+		`assertRegister(8'h21, 8'h22);
+
+	chk_ld_IR_R(8'hE1, 8'hE0,
+	            8'h22, 8'h09);
+		`assertRegister(8'h20, 8'h09);
+		`assertRegister(8'h21, 8'h22);
+		`assertRegister(8'h22, 8'h09);
 
 	chk_jp(16'h000C);

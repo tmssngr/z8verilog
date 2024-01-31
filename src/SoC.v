@@ -661,7 +661,8 @@ module Processor(
 `ifdef BENCH
                     $display("    ld @%h, %h", third, second);
 `endif
-                    // TODO
+                    aluA <= readRegister8(r8(second));
+                    state <= STATE_LD;
                 end
                 // x5
                 default: begin
@@ -823,6 +824,21 @@ module Processor(
             default: begin
             end
             endcase
+        end
+
+        STATE_LD: begin
+            case (instrL)
+            4'h5: begin
+                case (instrH)
+                4'hF: begin
+                    register <= readRegister8(r8(third));
+                    writeRegister <= 1;
+                end
+                endcase
+            end
+            endcase
+            aluMode <= ALU1_LD;
+            state <= STATE_FETCH_INSTR;
         end
 
         STATE_ALU1_WORD1: begin
