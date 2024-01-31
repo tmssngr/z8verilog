@@ -40,6 +40,24 @@ task chk_ld_r_IM;
     end
 endtask
 
+task chk_ld_R_R;
+    input[7:0] dst;
+    input[7:0] src;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr('hE4);
+            `assertSecond(src);
+            `assertThird(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
+
 task chk_ld_R_IM;
     input[7:0] dst;
     input[7:0] value;
