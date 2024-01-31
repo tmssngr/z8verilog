@@ -22,4 +22,10 @@
 		`assertRegister(8'h21, 8'h22);
 		`assertRegister(8'h22, 8'h09);
 
+	chk_ld_R_IR(8'hE1, 8'hE1,
+	            8'h21, 8'h09);
+		`assertRegister(8'h20, 8'h09);
+		`assertRegister(8'h21, 8'h09);
+		`assertRegister(8'h22, 8'h09);
+
 	chk_jp(16'h000C);

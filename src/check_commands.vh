@@ -58,6 +58,30 @@ task chk_ld_R_R;
     end
 endtask
 
+task chk_ld_R_IR;
+    input[7:0] dst;
+    input[7:0] src;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr('hE5);
+            `assertSecond(src);
+            `assertThird(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_LD);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
+
 task chk_ld_IR_R;
     input[7:0] dst;
     input[7:0] src;

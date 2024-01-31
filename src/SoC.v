@@ -655,7 +655,8 @@ module Processor(
 `ifdef BENCH
                     $display("    ld %h, @%h", third, second);
 `endif
-                    // TODO
+                    register <= readRegister8(r8(second));
+                    state <= STATE_LD;
                 end
                 4'hF: begin
 `ifdef BENCH
@@ -830,6 +831,11 @@ module Processor(
             case (instrL)
             4'h5: begin
                 case (instrH)
+                4'hE: begin
+                    aluA <= readRegister8(register);
+                    register <= r8(third);
+                    writeRegister <= 1;
+                end
                 4'hF: begin
                     register <= readRegister8(r8(third));
                     writeRegister <= 1;

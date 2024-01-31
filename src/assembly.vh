@@ -116,6 +116,13 @@ task asm_ld_R_R;
         asm3(8'hE4, src, dst);
     end
 endtask
+task asm_ld_R_IR;
+    input [7:0] dst;
+    input [7:0] src;
+    begin
+        asm3(8'hE5, src, dst);
+    end
+endtask
 task asm_ld_IR_R;
     input [7:0] dst;
     input [7:0] src;
