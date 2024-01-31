@@ -58,4 +58,19 @@
         `assertRegister('h20, 'hFF);
         `assertRegister('h21, 'hFE);
 
+    chk_ld_r_IM(4'h0, 45,
+                8'h20);
+    chk_ld_r_IM(1, 56,
+                8'h21);
+    chk_ld_r_IM(2, 8'h20,
+                8'h22);
+        `assertRegister('h20, 8'h2D);
+        `assertRegister('h21, 8'h38);
+        `assertRegister('h22, 8'h20);
+    chk_alu2_R_IR(ALU2_SUB, 8'hE1, 8'hE2,
+                  .expDst(8'h21), .expResult(8'd11), .expFlags(8'b0000_1100)); // dh
+        `assertRegister('h20, 8'h2D);
+        `assertRegister('h21, 8'h0B);
+        `assertRegister('h22, 8'h20);
+
 	chk_jp(16'h000C);

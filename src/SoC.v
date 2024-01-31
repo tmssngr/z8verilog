@@ -643,6 +643,38 @@ module Processor(
                 end
                 endcase
             end
+            4'h5: begin
+                casez (instrH)
+                4'b1?0?: // 8, 9, c, d
+                begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld %h, @%h", third, second);
+`endif
+                    // TODO
+                end
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ld @%h, %h", third, second);
+`endif
+                    // TODO
+                end
+                // x5
+                default: begin
+`ifdef BENCH
+                    $display("    %s %h, @%h",
+                             alu2OpName(instrH),
+                             third, second);
+`endif
+                    register <= readRegister8(r8(second));
+                    state <= STATE_ALU2_OP1;
+                end
+                endcase
+            end
             4'h6: begin
                 casez (instrH)
                 4'b100?,
@@ -833,7 +865,8 @@ module Processor(
             case (instrL)
             2, // r, r
             3, // r, Ir
-            4: // R, R
+            4, // R, R
+            5: // R, IR
                 aluB <= readRegister8(register);
             6: // R, IM
                 aluB <= third;
@@ -847,7 +880,8 @@ module Processor(
                 register <= r4(secondH);
                 aluA <= readRegister4(secondH);
             end
-            4: // R, R
+            4, // R, R
+            5: // R, IR
             begin
                 register <= r8(third);
                 aluA <= readRegister8(r8(third));
