@@ -16,7 +16,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
   - [ ] dual-register ALU operations
     - [x] `xxx r1, r2`
     - [x] `xxx r1, Ir2`
-    - [ ] `xxx R1, R2`
+    - [x] `xxx R1, R2`
     - [ ] `xxx IR1, R2`
     - [x] `xxx R, #IM`
     - [ ] `xxx IR, #IM`
