@@ -117,113 +117,52 @@ task asm_ld_R_R;
     end
 endtask
 
-task asm_add_r_r;
+task asm_alu2_r_r;
+    input [5:0] op;
     input [3:0] dst;
     input [3:0] src;
     begin
-        asm2(8'h02, {dst, src});
+        asm2({op[4:0], 4'h2}, {dst, src});
     end
 endtask
-task asm_add_R_R;
+task asm_alu2_r_Ir;
+    input [5:0] op;
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2({op[4:0], 4'h3}, {dst, src});
+    end
+endtask
+task asm_alu2_R_R;
+    input [5:0] op;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h04, src, dst);
+        asm3({op[4:0], 4'h4}, src, dst);
     end
 endtask
-task asm_add_R_IM;
+task asm_alu2_R_IR;
+    input [5:0] op;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h06, dst, src);
+        asm3({op[4:0], 4'h5}, src, dst);
     end
 endtask
-
-task asm_adc_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h12, {dst, src});
-    end
-endtask
-
-task asm_sub_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h22, {dst, src});
-    end
-endtask
-
-task asm_sbc_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h32, {dst, src});
-    end
-endtask
-
-task asm_or_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h42, {dst, src});
-    end
-endtask
-
-task asm_and_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h52, {dst, src});
-    end
-endtask
-
-task asm_tcm_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h62, {dst, src});
-    end
-endtask
-
-task asm_tm_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h72, {dst, src});
-    end
-endtask
-
-task asm_tm_R_IM;
+task asm_alu2_R_IM;
+    input [5:0] op;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h76, dst, src);
+        asm3({op[4:0], 4'h6}, dst, src);
     end
 endtask
-
-task asm_cp_r_r;
-    input [3:0] dst;
-    input [3:0] src;
+task asm_alu2_IR_IM;
+    input [5:0] op;
+    input [7:0] dst;
+    input [7:0] src;
     begin
-        asm2(8'hA2, {dst, src});
-    end
-endtask
-
-task asm_cp_r_Ir;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'hA3, {dst, src});
-    end
-endtask
-
-task asm_xor_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'hB2, {dst, src});
+        asm3({op[4:0], 4'h7}, dst, src);
     end
 endtask
 
