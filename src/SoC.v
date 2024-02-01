@@ -926,35 +926,26 @@ module Processor(
         STATE_ALU2_OP1: begin
             case (instrL)
             2, // r, r
-            3, // r, Ir
+            3: // r, Ir
+            begin
+                aluB <= readRegister8(register);
+                register <= r4(secondH);
+            end
             4, // R, R
             5: // R, IR
+            begin
                 aluB <= readRegister8(register);
+                register <= r8(third);
+            end
             6, // R, IM
             7: // IR, IM
+            begin
                 aluB <= third;
+            end
             endcase
         end
         STATE_ALU2_OP2: begin
-            case (instrL)
-            2, // r, r
-            3: // r, Ir
-            begin
-                register <= r4(secondH);
-                aluA <= readRegister4(secondH);
-            end
-            4, // R, R
-            5: // R, IR
-            begin
-                register <= r8(third);
-                aluA <= readRegister8(r8(third));
-            end
-            6, // R, IM
-            7: // IR, IM
-            begin
-                aluA <= readRegister8(register);
-            end
-            endcase
+            aluA <= readRegister8(register);
         end
         STATE_ALU2_OP3: begin
             aluMode <= alu2OpCode(instrH);
