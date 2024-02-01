@@ -24,7 +24,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `ld r, #IM`
     - [x] `ld r1, R2`
     - [x] `ld R1, r2`
-    - [ ] `ld r1, Ir2`
+    - [x] `ld r1, Ir2`
     - [ ] `ld Ir1, r2`
     - [x] `ld R1, R2`
     - [x] `ld R1, IR2`
