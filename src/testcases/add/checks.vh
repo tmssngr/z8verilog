@@ -67,10 +67,10 @@
         `assertRegister('h20, 8'h2D);
         `assertRegister('h21, 8'h38);
         `assertRegister('h22, 8'h20);
-    chk_alu2_R_IR(ALU2_SUB, 8'hE1, 8'hE2,
-                  8'h21, 8'd11, 8'b0000_1100); // dh
+    chk_alu2_R_IR(ALU2_ADD, 8'hE1, 8'hE2,
+                  8'h21, 8'd101, 8'b0000_0100); // h
         `assertRegister('h20, 8'h2D);
-        `assertRegister('h21, 8'h0B);
+        `assertRegister('h21, 8'h65);
         `assertRegister('h22, 8'h20);
 
 	chk_jp(16'h000C);
