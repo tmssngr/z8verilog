@@ -27,5 +27,7 @@ label(L0_);
     asm_ld_r_IM(2, 8'h20);
     asm_alu2_R_IR(ALU2_ADD, 8'hE1, 8'hE2);
 
+    asm_alu2_IR_IM(ALU2_ADD, 8'hE2, 8'hFF);
+
     asm_jp(JC_ALWAYS, L0_);
 end

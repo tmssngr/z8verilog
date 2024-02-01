@@ -710,6 +710,46 @@ module Processor(
                              alu2OpName(instrH),
                              second, third);
 `endif
+                    register <= r8(second);
+                    state <= STATE_ALU2_OP1;
+                end
+                endcase
+            end
+            4'h7: begin
+                casez (instrH)
+                4'b100?,
+                4'b1111: begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                end
+                4'hC: begin
+`ifdef BENCH
+                    $display("    ld r%h, r%h+%h", 
+                             secondH, secondL, third);
+`endif
+                    // TODO
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    ld r%h+%h, r%h", 
+                             secondL, third, secondH);
+`endif
+                    // TODO
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld @%h, #%h", second, third);
+`endif
+                    // TODO
+                end
+                default: begin
+`ifdef BENCH
+                    $display("    %s @%h, #%h",
+                             alu2OpName(instrH),
+                             second, third);
+`endif
+                    register <= readRegister8(r8(second));
                     state <= STATE_ALU2_OP1;
                 end
                 endcase
@@ -890,7 +930,8 @@ module Processor(
             4, // R, R
             5: // R, IR
                 aluB <= readRegister8(register);
-            6: // R, IM
+            6, // R, IM
+            7: // IR, IM
                 aluB <= third;
             endcase
         end
@@ -908,10 +949,10 @@ module Processor(
                 register <= r8(third);
                 aluA <= readRegister8(r8(third));
             end
-            6: // R, IM
+            6, // R, IM
+            7: // IR, IM
             begin
-                register <= r8(second);
-                aluA <= readRegister8(r8(second));
+                aluA <= readRegister8(register);
             end
             endcase
         end

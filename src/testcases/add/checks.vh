@@ -73,4 +73,7 @@
         `assertRegister('h21, 8'h65);
         `assertRegister('h22, 8'h20);
 
+    chk_alu2_IR_IM(ALU2_ADD, 8'hE2, 8'hFF,
+                   8'h20, 8'h2C, 8'b1000_0100); // ch
+
 	chk_jp(16'h000C);

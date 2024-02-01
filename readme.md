@@ -13,13 +13,13 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] direct, e.g. `inc %22`
     - [x] indirect, e.g. `dec @%22`
     - [x] `inc r`
-  - [ ] dual-register ALU operations
+  - [x] dual-register ALU operations
     - [x] `xxx r1, r2`
     - [x] `xxx r1, Ir2`
     - [x] `xxx R1, R2`
     - [x] `xxx R1, IR2`
     - [x] `xxx R, #IM`
-    - [ ] `xxx IR, #IM`
+    - [x] `xxx IR, #IM`
   - load operations
     - [x] `ld r, #IM`
     - [x] `ld r1, R2`
