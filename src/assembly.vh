@@ -95,6 +95,13 @@ task asm_ld_r_R;
         asm2({dst, 4'h8}, src);
     end
 endtask
+task asm_ld_R_r;
+    input [7:0] dst;
+    input [3:0] src;
+    begin
+        asm2({src, 4'h9}, dst);
+    end
+endtask
 task asm_ld_r_IM;
     input [3:0] dst;
     input [7:0] src;

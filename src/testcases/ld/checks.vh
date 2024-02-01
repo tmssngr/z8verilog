@@ -35,5 +35,8 @@
 	           8'h22, 8'h80);
 		`assertRegister(8'h21, 8'h80);
 		`assertRegister(8'h22, 8'h80);
+	chk_ld_R_r(8'h30, 4'h0,
+	           8'h30, 8'h09);
+		`assertRegister(8'h30, 8'h09);
 
 	chk_jp(16'h000C);

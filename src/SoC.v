@@ -765,9 +765,12 @@ module Processor(
             end
             4'h9: begin
 `ifdef BENCH
-                $display("    ld %h, r%h", secondL, instrH);
+                $display("    ld %h, r%h", second, instrH);
 `endif
-                //TODO
+                register <= second; // no r8(second) !
+                aluA <= readRegister4(instrH);
+                aluMode <= ALU1_LD;
+                writeRegister <= 1;
             end
             4'hA: begin
 `ifdef BENCH

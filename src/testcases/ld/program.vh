@@ -13,6 +13,7 @@ label(L0_);
 
     asm_ld_r_IM(1, 8'h80);
     asm_ld_r_R(2, 8'h21);
+    asm_ld_R_r(8'h30, 0);
 
     asm_jp(JC_ALWAYS, L0_);
 end
