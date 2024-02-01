@@ -756,10 +756,10 @@ module Processor(
             end
             4'h8: begin
 `ifdef BENCH
-                $display("    ld r%h, %h", instrH, secondL);
+                $display("    ld r%h, %h", instrH, second);
 `endif
                 register <= r4(instrH);
-                aluB <= readRegister8(r8(second));
+                aluA <= readRegister8(r8(second));
                 aluMode <= ALU1_LD;
                 writeRegister <= 1;
             end

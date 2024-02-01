@@ -23,6 +23,25 @@ task chk_srp;
     end
 endtask
 
+task chk_ld_r_R;
+    input[3:0] dst;
+    input[7:0] src;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr({dst, 4'h8});
+            `assertSecond(src);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
 task chk_ld_r_IM;
     input[3:0] dst;
     input[7:0] value;
@@ -39,7 +58,6 @@ task chk_ld_r_IM;
             `assertRegister(register, value);
     end
 endtask
-
 task chk_ld_R_R;
     input[7:0] dst;
     input[7:0] src;
@@ -57,7 +75,6 @@ task chk_ld_R_R;
             `assertRegister(register, value);
     end
 endtask
-
 task chk_ld_R_IR;
     input[7:0] dst;
     input[7:0] src;
@@ -81,7 +98,6 @@ task chk_ld_R_IR;
             `assertRegister(register, value);
     end
 endtask
-
 task chk_ld_IR_R;
     input[7:0] dst;
     input[7:0] src;
@@ -105,7 +121,6 @@ task chk_ld_IR_R;
             `assertRegister(register, value);
     end
 endtask
-
 task chk_ld_R_IM;
     input[7:0] dst;
     input[7:0] value;

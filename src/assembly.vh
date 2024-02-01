@@ -88,11 +88,11 @@ task asm_ccf;
     end
 endtask
 
-task asm_ld;
+task asm_ld_r_R;
     input [3:0] dst;
-    input [3:0] src;
+    input [7:0] src;
     begin
-        asm2({dst, 4'h8}, {4'hE, src});
+        asm2({dst, 4'h8}, src);
     end
 endtask
 task asm_ld_r_IM;
