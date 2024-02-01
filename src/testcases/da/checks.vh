@@ -9,7 +9,7 @@
 	            8'h11);
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             .expDst(8'h10), .expResult(8'h0A), .expFlags(8'b0000_0000));
+	             8'h10, 8'h0A, 8'b0000_0000);
 
 // da r0
     repeat (3) @(negedge clk);
@@ -40,7 +40,7 @@
 
 
 	chk_alu2_r_r(ALU2_SUB, 0, 1,
-	             .expDst(8'h10), .expResult(8'h0F), .expFlags(8'b0000_1100)); // dh
+	             8'h10, 8'h0F, 8'b0000_1100); // dh
 
 // da r0
     repeat (3) @(negedge clk);
@@ -77,7 +77,7 @@
         `assertRegister('h11, 'h09);
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             .expDst(8'h10), .expResult(8'h12), .expFlags(8'b0000_0100)); // h
+	             8'h10, 8'h12, 8'b0000_0100); // h
 
 // da 10
     repeat (3) @(negedge clk);
@@ -98,7 +98,7 @@
 
 
 	chk_alu2_r_r(ALU2_SUB, 0, 1,
-	             .expDst(8'h10), .expResult(8'h0F), .expFlags(8'b0000_1100)); // dh
+	             8'h10, 8'h0F, 8'b0000_1100); // dh
 
 // da 10
     repeat (3) @(negedge clk);
@@ -126,7 +126,7 @@
         `assertRegister('h11, 'h87);
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             .expDst(8'h10), .expResult(8'h9C), .expFlags(8'b0010_0000)); // s
+	             8'h10, 8'h9C, 8'b0010_0000); // s
 
 // da 10
     repeat (3) @(negedge clk);
@@ -147,7 +147,7 @@
 
 
 	chk_alu2_r_r(ALU2_SUB, 0, 1,
-	             .expDst(8'h10), .expResult(8'h7B), .expFlags(8'b1000_1100)); // cdh
+	             8'h10, 8'h7B, 8'b1000_1100); // cdh
 
 // da 10
     repeat (3) @(negedge clk);
@@ -187,7 +187,7 @@
         `assertRegister('h11, 'h01);
 
 	chk_alu2_r_r(ALU2_SUB, 0, 1,
-	             .expDst(8'h10), .expResult(8'hFF), .expFlags(8'b1011_1100)); // c_sv dh__
+	             8'h10, 8'hFF, 8'b1011_1100); // c_sv dh__
 
 // da 10
     repeat (3) @(negedge clk);
@@ -220,7 +220,7 @@
 
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             .expDst(8'h10), .expResult(8'h9A), .expFlags(8'b0010_0000)); // s
+	             8'h10, 8'h9A, 8'b0010_0000); // s
 
 // da 10
     repeat (3) @(negedge clk);

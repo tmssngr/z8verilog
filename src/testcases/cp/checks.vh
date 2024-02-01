@@ -15,7 +15,7 @@
         `assertRegister('h22, 'h20);
 
 	chk_alu2_r_Ir(ALU2_CP, 0, 2,
-	              .expDst(8'h20), .expResult(8'h09), .expFlags(8'b0100_0000)); //z
+	              8'h20, 8'h09, 8'b0100_0000); //z
         `assertRegister('h20, 'h09);
         `assertRegister('h21, 'h01);
         `assertRegister('h22, 'h20);
@@ -27,7 +27,7 @@
         `assertRegister('h22, 'h21);
 
 	chk_alu2_r_Ir(ALU2_CP, 0, 2,
-	              .expDst(8'h20), .expResult(8'h09), .expFlags(8'b0000_0000));
+	              8'h20, 8'h09, 8'b0000_0000);
         `assertRegister('h20, 'h09);
         `assertRegister('h21, 'h01);
         `assertRegister('h22, 'h21);
