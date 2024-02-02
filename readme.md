@@ -57,7 +57,12 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
       - [x] `iret`
     - [x] external stack
 - [ ] port 2
+  - [ ] input
+  - [x] output
 - [ ] port 3
+  - [ ] P30-P33 generic input
+  - [x] P34-P37 generic output
+  - [ ] special counter input/output
 - [ ] Counters
 - [ ] UART
 - [ ] interrupt handling

@@ -56,7 +56,8 @@ module Processor(
     output wire  [7:0] memDataWrite,
     output wire        memWrite,
     output wire        memStrobe,
-    output wire  [7:0] port2Out
+    output wire  [7:0] port2Out,
+    output wire  [3:0] port3Out
 );
     `include "flags.vh"
 
@@ -88,7 +89,6 @@ module Processor(
     wire [3:0] thirdL = third[3:0];
     wire [15:0] directAddress = {second, third};
 
-    reg [7:0] port2 = 0;
     reg [3:0] rp = 0;
     reg [7:0] registers[0:'h7F];
     reg [7:0] p01m = 8'b01_0_01_1_01;
@@ -98,7 +98,16 @@ module Processor(
     //                  || +-------- Memory timing: 0 normal, 1 extended
     //                  ++---------- P04-P07 Mode: 00 output, 01 input, 1x A12-A15 
     wire stackInternal = p01m[2];
+    reg [7:0] port2;
     assign port2Out = port2;
+    reg [7:0] port3;
+    assign port3Out = port3[7:4];
+    initial begin
+        port2 = 0;
+        port3 = 0;
+        registers[2] = 0;
+        registers[3] = 0;
+    end
 
     reg [7:0] register;
     reg writeRegister = 0;
@@ -140,6 +149,8 @@ module Processor(
         input [7:0] r
     );
         casez (r)
+        2:            readRegister8 = port2;
+        3:            readRegister8 = port3;
         8'b0???_????: readRegister8 = registers[r[6:0]];
         P01M:         readRegister8 = p01m;
         FLAGS:        readRegister8 = flags;
@@ -322,9 +333,12 @@ module Processor(
             SPH:          sp[15:8]            <= aluOut;
             SPL:          sp[7:0]             <= aluOut;
             endcase
-            if (register == 2) begin
-                port2 <= aluOut;
-            end
+
+            // store in registers AND ports, so it is easier to check registers
+            case (register)
+            2: port2 <= aluOut;
+            3: port3 <= aluOut;
+            endcase
         end
         writeRegister <= 0;
 
@@ -1277,7 +1291,8 @@ endmodule
 
 module SoC(
     input  wire       clk,
-    output wire [7:0] port2
+    output wire [7:0] port2,
+    output wire [3:0] port3
 );
     wire [15:0] memAddr;
     wire [7:0]  memDataRead, romRead, ramRead;
@@ -1319,6 +1334,7 @@ module SoC(
         .memDataWrite(memDataWrite),
         .memWrite(memWrite),
         .memStrobe(memStrobe),
-        .port2Out(port2)
+        .port2Out(port2),
+        .port3Out(port3)
     );
 endmodule

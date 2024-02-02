@@ -12,10 +12,12 @@ module top(
     end
 
     wire[7:0] port2;
+    wire[3:0] port3;
 
     SoC soC(
         .clk(counter[20]),
-        .port2(port2)
+        .port2(port2),
+        .port3(port3)
     );
 
     assign leds[0] = ~port2[0];
