@@ -21,5 +21,8 @@ label(L0_);
 
     asm_ld_IR_IM(8'hE0, 8'hFF);
 
+    asm_ld_r_IrX(4'h4, 4'h0, 8'h00);
+    asm_ld_r_IrX(4'h4, 4'h0, 8'hF0);
+
     asm_jp(JC_ALWAYS, L0_);
 end

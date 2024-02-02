@@ -31,7 +31,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `ld IR1, R2`
     - [x] `ld R, #IM`
     - [x] `ld IR, #IM`
-    - [ ] `ld r1, r2(x)`
+    - [x] `ld r1, r2(x)`
     - [ ] `ld r1(x), r2`
   - [x] control flow operations
     - [x] `djnz r, RA`

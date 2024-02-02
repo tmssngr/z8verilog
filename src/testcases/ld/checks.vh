@@ -53,4 +53,13 @@
 	             8'h30);
 		`assertRegister(8'h30, 8'hFF);
 
+	chk_ld_r_IrX(4'h4, 4'h0, 8'h00,
+	             8'h30, 8'h24, 8'hFF);
+		`assertRegister(8'h20, 8'h30);
+		`assertRegister(8'h24, 8'hFF);
+	chk_ld_r_IrX(4'h4, 4'h0, 8'hF0,
+	             8'h30, 8'h24, 8'h30);
+		`assertRegister(8'h20, 8'h30);
+		`assertRegister(8'h24, 8'h30);
+
 	chk_jp(16'h000C);

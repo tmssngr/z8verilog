@@ -229,6 +229,31 @@ task chk_ld_R_IM;
             end
     end
 endtask
+task chk_ld_r_IrX;
+    input[3:0] dst;
+    input[3:0] src;
+    input[7:0] offset;
+    input[7:0] srcReg;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr(8'hC7);
+            `assertSecond({dst, src});
+            `assertThird(offset);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assert(uut.proc.register, srcReg);
+            `assertState(STATE_LD);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
 
 task chk_jp;
     input[15:0] addr;
