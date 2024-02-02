@@ -505,7 +505,7 @@ module Processor(
             // Column 2
             // ================================================================
             4'h2: begin
-                casez (instrH)
+                case (instrH)
                 4'h8: begin
 `ifdef BENCH
                     $display("    lde r%h, Irr%h",
@@ -538,7 +538,8 @@ module Processor(
                     register <= r4(secondH);
                     state <= STATE_LDC_WRITE1;
                 end
-                4'b111?: begin
+                4'hE,
+                4'hF: begin
 `ifdef BENCH
                     $display("    ? %h", second);
 `endif
@@ -559,7 +560,7 @@ module Processor(
             // Column 3
             // ================================================================
             4'h3: begin
-                casez (instrH)
+                case (instrH)
                 4'h8: begin
 `ifdef BENCH
                     $display("    ldei Ir%h, Irr%h",
@@ -623,10 +624,11 @@ module Processor(
             // Column 4
             // ================================================================
             4'h4: begin
-                casez (instrH)
-                4'b100?,
-                4'b1100,
-                4'b1111: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hF: begin
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
@@ -664,8 +666,11 @@ module Processor(
             // Column 5
             // ================================================================
             4'h5: begin
-                casez (instrH)
-                4'b1?0?: // 8, 9, c, d
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hD:
                 begin
 `ifdef BENCH
                     $display("    ? %h", instruction);
@@ -701,10 +706,11 @@ module Processor(
             // Column 6
             // ================================================================
             4'h6: begin
-                casez (instrH)
-                4'b100?,
-                4'b1100,
-                4'b1111: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hF: begin
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
@@ -742,9 +748,10 @@ module Processor(
             // Column 7
             // ================================================================
             4'h7: begin
-                casez (instrH)
-                4'b100?,
-                4'b1111: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hF: begin
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
@@ -865,7 +872,7 @@ module Processor(
             // Column F
             // ================================================================
             4'hF: begin
-                casez (instrH)
+                case (instrH)
                 4'h8: begin
 `ifdef BENCH
                     $display("    di");
@@ -894,9 +901,15 @@ module Processor(
                     // flags, PCH, PCL
                     state <= stackInternal ? STATE_IRET_I : STATE_IRET_E1;
                 end
-                4'b110?: begin
+                4'hC: begin
 `ifdef BENCH
-                    $display("    %scf", instrH[0] ? "s" : "r");
+                    $display("    rcf");
+`endif
+                    flags[FLAG_INDEX_C] <= instrH[0];
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    scf");
 `endif
                     flags[FLAG_INDEX_C] <= instrH[0];
                 end
