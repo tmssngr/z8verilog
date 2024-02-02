@@ -10,29 +10,29 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
   - [x] carry-flag manipulation operations
   - [x] `srp #IM`
   - [x] single-register ALU operations
-    - [x] direct, e.g. `inc %22`
-    - [x] indirect, e.g. `dec @%22`
+    - [x] `xxx R`
+    - [x] `xxx IR`
     - [x] `inc r`
   - [x] dual-register ALU operations
-    - [x] `xxx r1, r2`
-    - [x] `xxx r1, Ir2`
-    - [x] `xxx R1, R2`
-    - [x] `xxx R1, IR2`
+    - [x] `xxx r, r`
+    - [x] `xxx r, Ir`
+    - [x] `xxx R, R`
+    - [x] `xxx R, IR`
     - [x] `xxx R, #IM`
     - [x] `xxx IR, #IM`
   - [x] load operations
     - [x] `ld r, #IM`
-    - [x] `ld r1, R2`
-    - [x] `ld R1, r2`
-    - [x] `ld r1, Ir2`
-    - [x] `ld Ir1, r2`
-    - [x] `ld R1, R2`
-    - [x] `ld R1, IR2`
-    - [x] `ld IR1, R2`
+    - [x] `ld r, R`
+    - [x] `ld R, r`
+    - [x] `ld r, Ir`
+    - [x] `ld Ir, r`
+    - [x] `ld R, R`
+    - [x] `ld R, IR`
+    - [x] `ld IR, R`
     - [x] `ld R, #IM`
     - [x] `ld IR, #IM`
-    - [x] `ld r1, r2(x)`
-    - [x] `ld r1(x), r2`
+    - [x] `ld r, r(x)`
+    - [x] `ld r(x), r`
   - [x] control flow operations
     - [x] `djnz r, RA`
     - [x] `jr cc, RA`
@@ -40,10 +40,10 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `jp IRR`
   - [ ] `di`, `ei` (disable/enable interrupt)
   - [x] memory operations
-    - [x] `ldc r1, Irr2`
-    - [x] `ldc Irr1, r2`
-    - [x] `ldci Ir1, Irr2`
-    - [x] `ldci Irr1, Ir2`
+    - [x] `ldc r, Irr`
+    - [x] `ldc Irr, r`
+    - [x] `ldci Ir, Irr`
+    - [x] `ldci Irr, Ir`
     - [x] let `lde`/`ldei` work the same as `ldc`/`ldci`
   - [x] stack operations
     - [x] internal stack
