@@ -49,5 +49,8 @@
 	chk_ld_Ir_r(4'h0, 4'h1,
 	            8'h30, 8'h80);
 		`assertRegister(8'h30, 8'h80);
+	chk_ld_IR_IM(8'hE0, 8'hFF,
+	             8'h30);
+		`assertRegister(8'h30, 8'hFF);
 
 	chk_jp(16'h000C);

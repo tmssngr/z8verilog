@@ -90,10 +90,19 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[30] = 80
 
 0027: read instruction
-  8d
+  e7
 0028: read 2nd byte
-  8d 00
+  e7 e0
 0029: read 3rd byte
+  e7 e0 ff
+    ld @e0, #ff
+    reg[30] = ff
+
+002a: read instruction
+  8d
+002b: read 2nd byte
+  8d 00
+002c: read 3rd byte
   8d 00 0c
     jp    , 000c
 
