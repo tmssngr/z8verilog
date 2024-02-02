@@ -166,6 +166,14 @@ task asm_ld_r_IrX;
         asm3(8'hC7, {dst, src}, offset);
     end
 endtask
+task asm_ld_IrX_r;
+    input [3:0] dst;
+    input [7:0] offset;
+    input [3:0] src;
+    begin
+        asm3(8'hD7, {src, dst}, offset);
+    end
+endtask
 
 task asm_alu2_r_r;
     input [5:0] op;

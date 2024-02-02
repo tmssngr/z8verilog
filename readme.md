@@ -20,7 +20,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `xxx R1, IR2`
     - [x] `xxx R, #IM`
     - [x] `xxx IR, #IM`
-  - load operations
+  - [x] load operations
     - [x] `ld r, #IM`
     - [x] `ld r1, R2`
     - [x] `ld R1, r2`
@@ -32,7 +32,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `ld R, #IM`
     - [x] `ld IR, #IM`
     - [x] `ld r1, r2(x)`
-    - [ ] `ld r1(x), r2`
+    - [x] `ld r1(x), r2`
   - [x] control flow operations
     - [x] `djnz r, RA`
     - [x] `jr cc, RA`
