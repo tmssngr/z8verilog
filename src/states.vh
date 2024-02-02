@@ -56,3 +56,4 @@ localparam STATE_RET_E3       = STATE_RET_E2 + 1;
 localparam STATE_RET_E4       = STATE_RET_E3 + 1;
 localparam STATE_RET_E5       = STATE_RET_E4 + 1;
 localparam STATE_RET_E6       = STATE_RET_E5 + 1;
+localparam STATE_ILLEGAL      = STATE_RET_E6 + 1;

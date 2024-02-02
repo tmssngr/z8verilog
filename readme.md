@@ -61,3 +61,4 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
 - [ ] Counters
 - [ ] UART
 - [ ] interrupt handling
+- [x] illegal instruction handling (stop at that address)

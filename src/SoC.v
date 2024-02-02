@@ -543,6 +543,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ? %h", second);
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 // x2
                 default: begin
@@ -632,6 +633,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 4'hD: begin
 `ifdef BENCH
@@ -675,6 +677,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 4'hE: begin
 `ifdef BENCH
@@ -714,6 +717,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 4'hD: begin
 `ifdef BENCH
@@ -755,6 +759,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ? %h", instruction);
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 4'hC: begin
 `ifdef BENCH
@@ -928,6 +933,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ?");
 `endif
+                    state <= STATE_ILLEGAL;
                 end
                 endcase
             end
@@ -1256,6 +1262,11 @@ module Processor(
         STATE_RET_E6: begin
             state <= STATE_FETCH_INSTR;
             //TODO: for iret enable interrupts
+        end
+
+        STATE_ILLEGAL: begin
+            // keep it until reset
+            state <= STATE_ILLEGAL;
         end
 
         endcase
