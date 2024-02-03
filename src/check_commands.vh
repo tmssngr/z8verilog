@@ -8,14 +8,7 @@
 `define assertRom(addr, value)     if (uut.rom.memory[addr % uut.rom.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.rom.memory[addr % uut.rom.size], (value)); $finish(2); end
 `define assertRam(addr, value)     if (uut.ram.memory[addr % uut.ram.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.ram.memory[addr % uut.ram.size], (value)); $finish(2); end
 `include "jump_conditions.vh"
-
-localparam FLAG_NONE = 0;
-localparam FLAG_C = 8'h80;
-localparam FLAG_Z = 8'h40;
-localparam FLAG_S = 8'h20;
-localparam FLAG_V = 8'h10;
-localparam FLAG_D = 8'h08;
-localparam FLAG_H = 8'h04;
+`include "flags.vh"
 
 task chk_1byteOp;
     input[7:0] op;
