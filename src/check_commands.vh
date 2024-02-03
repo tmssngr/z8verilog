@@ -387,6 +387,68 @@ task chk_incw;
     end
 endtask
 
+task chk_alu1;
+    input[5:0] op;
+    input[7:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[7:0] flags;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr({op[3:0], 4'h0});
+            `assertSecond(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU1_OP);
+            `assert(uut.proc.register, register);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+            `assertFlags(flags);
+    end
+endtask
+task chk_alu1_IR;
+    input[5:0] op;
+    input[7:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[7:0] flags;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr({op[3:0], 4'h1});
+            `assertSecond(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU1_OP);
+            `assert(uut.proc.register, register);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+            `assertFlags(flags);
+    end
+endtask
+task chk_inc_r;
+    input[3:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[7:0] flags;
+    begin
+        repeat (2) @(negedge clk);
+            `assertInstr({dst, 4'hE});
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_ALU1_OP);
+            `assert(uut.proc.register, register);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+            `assertFlags(flags);
+    end
+endtask
+
 task chk_alu2_r_r;
     input[5:0] op;
     input[3:0] dst;

@@ -22,10 +22,10 @@ label(M_001D);
     asm_ld_r_IM(4, 8);       // if %0812 is writable
     asm_ld_r_IM(5, 'h12);
     asm_ldc_r_Irr(6, 4);
-    asm_com('hE6);
+    asm_alu1(ALU1_COM, 8'hE6);
     asm_ldc_Irr_r(4, 6);
     asm_ldc_r_Irr(7, 4);
-    asm_com('hE6);
+    asm_alu1(ALU1_COM, 8'hE6);
     asm_ldc_Irr_r(4, 6);
     asm_alu2_r_r(ALU2_XOR, 6, 7);
     asm_srp('hF0);

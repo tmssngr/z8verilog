@@ -78,8 +78,8 @@ VCD info: dumpfile SoC.vcd opened for output.
 001d: read instruction
   20
 001e: read 2nd byte
-  20 10
-    inc 10
+  20 e0
+    inc e0
     alu:    ff       00    =>    00
          11111111 00000000 => 00000000
     flags = 0100_0000
@@ -88,8 +88,8 @@ VCD info: dumpfile SoC.vcd opened for output.
 001f: read instruction
   00
 0020: read 2nd byte
-  00 10
-    dec 10
+  00 e0
+    dec e0
     alu:    00       00    =>    ff
          00000000 00000000 => 11111111
     flags = 0010_0000

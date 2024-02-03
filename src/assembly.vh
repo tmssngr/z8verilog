@@ -266,28 +266,18 @@ task asm_srp;
         asm2(8'h31, dst);
     end
 endtask
-task asm_dec;
-    input [7:0] dst;
+task asm_alu1;
+    input[4:0] op;
+    input[7:0] dst;
     begin
-        asm2(8'h00, dst);
+        asm2({op[3:0], 4'h0}, dst);
     end
 endtask
-task asm_decIn;
-    input [7:0] dst;
+task asm_alu1_IR;
+    input[4:0] op;
+    input[7:0] dst;
     begin
-        asm2(8'h01, dst);
-    end
-endtask
-task asm_rlc;
-    input [7:0] dst;
-    begin
-        asm2(8'h10, dst);
-    end
-endtask
-task asm_inc;
-    input [7:0] dst;
-    begin
-        asm2(8'h20, dst);
+        asm2({op[3:0], 4'h1}, dst);
     end
 endtask
 task asm_inc_r;
@@ -296,85 +286,13 @@ task asm_inc_r;
         asm1({dst, 4'hE});
     end
 endtask
-task asm_da;
-    input [7:0] dst;
-    begin
-        asm2(8'h40, dst);
-    end
-endtask
-task asm_com;
-    input [7:0] dst;
-    begin
-        asm2(8'h60, dst);
-    end
-endtask
-task asm_decw;
-    input [7:0] dst;
-    begin
-        asm2(8'h80, dst);
-    end
-endtask
-task asm_decw_IRR;
-    input [7:0] dst;
-    begin
-        asm2(8'h81, dst);
-    end
-endtask
-task asm_rl;
-    input [7:0] dst;
-    begin
-        asm2(8'h90, dst);
-    end
-endtask
-task asm_incw;
-    input [7:0] dst;
-    begin
-        asm2(8'hA0, dst);
-    end
-endtask
-task asm_incw_IRR;
-    input [7:0] dst;
-    begin
-        asm2(8'hA1, dst);
-    end
-endtask
-task asm_clr;
-    input [7:0] dst;
-    begin
-        asm2(8'hB0, dst);
-    end
-endtask
-task asm_rrc;
-    input [7:0] dst;
-    begin
-        asm2(8'hC0, dst);
-    end
-endtask
-task asm_sra;
-    input [7:0] dst;
-    begin
-        asm2(8'hD0, dst);
-    end
-endtask
-task asm_rr;
-    input [7:0] dst;
-    begin
-        asm2(8'hE0, dst);
-    end
-endtask
-task asm_swap;
-    input [7:0] dst;
-    begin
-        asm2(8'hF0, dst);
-    end
-endtask
 task asm_push;
     input [7:0] src;
     begin
         asm2(8'h70, src);
     end
 endtask
-task asm_pushIn;
+task asm_push_IR;
     input [7:0] src;
     begin
         asm2(8'h71, src);
@@ -386,7 +304,7 @@ task asm_pop;
         asm2(8'h50, dst);
     end
 endtask
-task asm_popIn;
+task asm_pop_IR;
     input [7:0] dst;
     begin
         asm2(8'h51, dst);

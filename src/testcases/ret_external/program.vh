@@ -6,8 +6,8 @@ initial begin
 
 label(L0_);
 	asm_ld_R_IM(P01M, 'h92); // external stack
-	asm_clr(SPH);
-	asm_clr(SPL);
+	asm_alu1(ALU1_CLR, SPH);
+	asm_alu1(ALU1_CLR, SPL);
 
 	asm_call(L1_);
 

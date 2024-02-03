@@ -6,26 +6,26 @@ initial begin
 label(L0_);
 	asm_ld_R_IM(8'h10, 1);
 	asm_ld_R_IM(8'h11, 2);
-	asm_incw(8'h10);
-	asm_decw(8'h10);
+	asm_alu1(ALU1_INCW, 8'h10);
+	asm_alu1(ALU1_DECW, 8'h10);
 
 	asm_ld_R_IM(8'h11, 8'h7F);
-	asm_incw(8'h10);
-	asm_decw(8'h10);
+	asm_alu1(ALU1_INCW, 8'h10);
+	asm_alu1(ALU1_DECW, 8'h10);
 
 	asm_ld_R_IM(8'h11, 8'hFF);
-	asm_incw(8'h10);
-	asm_decw(8'h10);
+	asm_alu1(ALU1_INCW, 8'h10);
+	asm_alu1(ALU1_DECW, 8'h10);
 
 	asm_ld_R_IM(8'h10, 8'hFF);
-	asm_incw(8'h10);
-	asm_incw(8'h10);
-	asm_decw(8'h10);
-	asm_decw(8'h10);
+	asm_alu1(ALU1_INCW, 8'h10);
+	asm_alu1(ALU1_INCW, 8'h10);
+	asm_alu1(ALU1_DECW, 8'h10);
+	asm_alu1(ALU1_DECW, 8'h10);
 
 	asm_ld_R_IM(8'h12, 8'h10);
-	asm_incw_IRR(8'h12);
-	asm_decw_IRR(8'h12);
+	asm_alu1_IR(ALU1_INCW, 8'h12);
+	asm_alu1_IR(ALU1_DECW, 8'h12);
 
 	asm_jp(JC_ALWAYS, L0_);
 end

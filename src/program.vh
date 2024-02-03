@@ -12,7 +12,7 @@ label(L0_);
     asm_ld_r_IM(2, 8'b1);
 
 label(L1_);
-    asm_rl('hE2);
+    asm_alu1(ALU1_RL, 8'hE2);
     asm_djnz(4, L1_);
 
     asm_jr(JC_ALWAYS, L0_);
