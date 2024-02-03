@@ -5,6 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
+ 5 cycles
 
 000e: read instruction
   0c
@@ -12,6 +13,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   0c 00
     ld r0, #00
     reg[20] = 00
+ 5 cycles
 
 0010: read instruction
   1c
@@ -19,6 +21,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   1c 0b
     ld r1, #0b
     reg[21] = 0b
+ 5 cycles
 
 0012: read instruction
   c2
@@ -26,6 +29,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   c2 20
     ldc r2, Irr0
     reg[22] = 0f
+ 9 cycles
 
 0014: read instruction
   0c
@@ -33,6 +37,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   0c 08
     ld r0, #08
     reg[20] = 08
+ 5 cycles
 
 0016: read instruction
   1c
@@ -40,12 +45,14 @@ VCD info: dumpfile SoC.vcd opened for output.
   1c 12
     ld r1, #12
     reg[21] = 12
+ 5 cycles
 
 0018: read instruction
   d2
 0019: read 2nd byte
   d2 20
     ldc Irr0, r2
+ 9 cycles
 
 001a: read instruction
   0c
@@ -53,6 +60,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   0c ff
     ld r0, #ff
     reg[20] = ff
+ 5 cycles
 
 001c: read instruction
   1c
@@ -60,6 +68,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   1c 80
     ld r1, #80
     reg[21] = 80
+ 5 cycles
 
 001e: read instruction
   c2
@@ -67,6 +76,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   c2 20
     ldc r2, Irr0
     reg[22] = 00
+ 9 cycles
 
 0020: read instruction
   20
@@ -77,12 +87,14 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 00000000 => 00000001
     flags = 0000_0000
     reg[22] = 01
+ 6 cycles
 
 0022: read instruction
   d2
 0023: read 2nd byte
   d2 20
     ldc Irr0, r2
+ 9 cycles
 
 0024: read instruction
   8d
@@ -91,6 +103,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0026: read 3rd byte
   8d 00 0c
     jp    , 000c
+10 cycles
 
 000c: read instruction
 testSoC: SUCCESS

@@ -5,6 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
+ 5 cycles
 
 000e: read instruction
   0d
@@ -13,6 +14,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0010: read 3rd byte
   0d ff fe
     jp   f, fffe
+ 7 cycles
 
 0011: read instruction
   0c
@@ -20,6 +22,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   0c 03
     ld r0, #03
     reg[20] = 03
+ 5 cycles
 
 0013: read instruction
   06
@@ -32,6 +35,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000011 11111111 => 00000010
     flags = 1000_0100
     reg[20] = 02
+10 cycles
 
 0016: read instruction
   ed
@@ -40,6 +44,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0018: read 3rd byte
   ed 00 13
     jp  nz, 0013
+10 cycles
 
 0013: read instruction
   06
@@ -52,6 +57,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000010 11111111 => 00000001
     flags = 1000_0100
     reg[20] = 01
+10 cycles
 
 0016: read instruction
   ed
@@ -60,6 +66,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0018: read 3rd byte
   ed 00 13
     jp  nz, 0013
+10 cycles
 
 0013: read instruction
   06
@@ -72,6 +79,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 11111111 => 00000000
     flags = 1100_0100
     reg[20] = 00
+10 cycles
 
 0016: read instruction
   ed
@@ -80,6 +88,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0018: read 3rd byte
   ed 00 13
     jp  nz, 0013
+ 7 cycles
 
 0019: read instruction
   0c
@@ -87,6 +96,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   0c 00
     ld r0, #00
     reg[20] = 00
+ 5 cycles
 
 001b: read instruction
   1c
@@ -94,12 +104,14 @@ VCD info: dumpfile SoC.vcd opened for output.
   1c 20
     ld r1, #20
     reg[21] = 20
+ 5 cycles
 
 001d: read instruction
   30
 001e: read 2nd byte
   30 e0
     jp @e0
+ 8 cycles
 
 0020: read instruction
   8d
@@ -108,6 +120,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 0022: read 3rd byte
   8d 00 0c
     jp    , 000c
+10 cycles
 
 000c: read instruction
 testSoC: SUCCESS

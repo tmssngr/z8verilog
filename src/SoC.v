@@ -309,6 +309,9 @@ module Processor(
                      | (state == STATE_RET_E4)
                      | (state == STATE_READ_MEM1)
                      | memWrite;
+`ifdef BENCH
+    reg[4:0] cycleCounter = 0;
+`endif
 
     always @(posedge clk) begin
         if (writeFlags) begin
@@ -341,6 +344,16 @@ module Processor(
             endcase
         end
         writeRegister <= 0;
+
+`ifdef BENCH
+        if (state == STATE_FETCH_INSTR) begin
+            if (cycleCounter != 0)
+                $display("%d cycles", cycleCounter);
+            cycleCounter <= 1;
+        end
+        else 
+            cycleCounter <= cycleCounter + 1;
+`endif
 
         state <= state + 6'b1;
 
