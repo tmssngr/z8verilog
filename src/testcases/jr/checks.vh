@@ -18,7 +18,7 @@
 
 // L1: add 70, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              8'h70, 8'h02, 8'b1000_0100); // ch
+	              8'h70, 8'h02, FLAG_C | FLAG_H);
 
 // jr nz, L1
     repeat (3) @(negedge clk);
@@ -32,7 +32,7 @@
 
 // L1: add 0, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              8'h70, 8'h01, 8'b1000_0100); // ch
+	              8'h70, 8'h01, FLAG_C | FLAG_H);
 
 // jr nz, L1
     repeat (3) @(negedge clk);
@@ -46,7 +46,7 @@
 
 // L1: add 0, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              8'h70, 8'h00, 8'b1100_0100); // czh
+	              8'h70, 8'h00, FLAG_C | FLAG_Z | FLAG_H);
 
 // jr nz, L1
     repeat (3) @(negedge clk);

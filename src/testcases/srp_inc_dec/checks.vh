@@ -6,10 +6,10 @@
 	            8'h10);
 
 	chk_inc_r(4'h0,
-	          8'h10, 8'h0A, 8'b0000_0000);
+	          8'h10, 8'h0A, FLAG_NONE);
 
 	chk_alu1(ALU1_DEC, 8'h10,
-	         8'h10, 8'h09, 8'b0000_0000);
+	         8'h10, 8'h09, FLAG_NONE);
 
 
 	chk_ld_r_IM(4'h0, 8'h7F,
@@ -17,10 +17,10 @@
         `assertRegister('h10, 'h7f);
 
 	chk_alu1(ALU1_INC, 8'h10,
-	         8'h10, 8'h80, 8'b0011_0000); // sv
+	         8'h10, 8'h80, FLAG_S | FLAG_V);
 
 	chk_alu1(ALU1_DEC, 8'h10,
-	         8'h10, 8'h7F, 8'b0001_0000); // v
+	         8'h10, 8'h7F, FLAG_V);
 
 
 	chk_ld_r_IM(4'h0, 8'hFE,
@@ -28,15 +28,15 @@
         `assertRegister('h10, 'hFE);
 
 	chk_alu1(ALU1_INC, 8'h10,
-	         8'h10, 8'hFF, 8'b0010_0000); // s
+	         8'h10, 8'hFF, FLAG_S);
 	chk_alu1(ALU1_INC, 8'hE0,
-	         8'h10, 8'h00, 8'b0100_0000); // z
+	         8'h10, 8'h00, FLAG_Z);
 
 	chk_alu1(ALU1_DEC, 8'hE0,
-	         8'h10, 8'hFF, 8'b0010_0000); // s
+	         8'h10, 8'hFF, FLAG_S);
 
 	chk_alu1(ALU1_DEC, 8'h10,
-	         8'h10, 8'hFE, 8'b0010_0000); // s
+	         8'h10, 8'hFE, FLAG_S);
 
 
 	chk_ld_r_IM(4'h1, 8'h10,
@@ -45,7 +45,7 @@
         `assertRegister('h11, 'h10);
 
 	chk_alu1_IR(ALU1_DEC, 8'hE1,
-	            8'h10, 8'hFD, 8'b0010_0000); // s
+	            8'h10, 8'hFD, FLAG_S);
         `assertRegister('h10, 'hFD);
         `assertRegister('h11, 'h10);
 

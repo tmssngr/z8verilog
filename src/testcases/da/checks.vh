@@ -9,7 +9,7 @@
 	            8'h11);
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             8'h10, 8'h0A, 8'b0000_0000);
+	             8'h10, 8'h0A, FLAG_NONE);
 
 // da r0
     repeat (3) @(negedge clk);
@@ -23,7 +23,7 @@
     @(negedge clk);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.aluA, 'h0A);
-        `assertFlags('b0000_0000);
+        `assertFlags(FLAG_NONE);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_DA);
     @(negedge clk);
@@ -36,11 +36,11 @@
     @(negedge clk);
         `assertRegister('h10, 'h10);
         `assertRegister('h11, 'h01);
-        `assertFlags('b0000_0000);
+        `assertFlags(FLAG_NONE);
 
 
 	chk_alu2_r_r(ALU2_SUB, 0, 1,
-	             8'h10, 8'h0F, 8'b0000_1100); // dh
+	             8'h10, 8'h0F, FLAG_D | FLAG_H);
 
 // da r0
     repeat (3) @(negedge clk);
@@ -54,7 +54,7 @@
     @(negedge clk);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.aluA, 'h0F);
-        `assertFlags('b0000_1100);
+        `assertFlags(FLAG_D | FLAG_H);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_DA);
     @(negedge clk);
@@ -67,8 +67,7 @@
     @(negedge clk);
         `assertRegister('h10, 'h09);
         `assertRegister('h11, 'h01);
-        // dh
-        `assertFlags('b0000_1100);
+        `assertFlags(FLAG_D | FLAG_H);
 
 
 	chk_ld_r_IM(4'h1, 8'h09,
@@ -77,7 +76,7 @@
         `assertRegister('h11, 'h09);
 
 	chk_alu2_r_r(ALU2_ADD, 0, 1,
-	             8'h10, 8'h12, 8'b0000_0100); // h
+	             8'h10, 8'h12, FLAG_H);
 
 // da 10
     repeat (3) @(negedge clk);

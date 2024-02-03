@@ -10,20 +10,20 @@
 
 // L1: add 0, #FF
 	chk_alu2_R_IM(ALU2_ADD, 8'h20, 8'hFF,
-	              8'h20, 8'h02, 8'b1000_0100); // ch
+	              8'h20, 8'h02, FLAG_C | FLAG_H);
 
 // jp nz, L1
 	chk_jp_true(JC_NZ, 16'h0013);
 
 // L1: add 0, #FF
 	chk_alu2_R_IM(ALU2_ADD, 8'h20, 8'hFF,
-	              8'h20, 8'h01, 8'b1000_0100); // ch
+	              8'h20, 8'h01, FLAG_C | FLAG_H);
 
 	chk_jp_true(JC_NZ, 16'h0013);
 
 // L1: add 0, #FF
 	chk_alu2_R_IM(ALU2_ADD, 8'h20, 8'hFF,
-	              8'h20, 8'h00, 8'b1100_0100); // czh
+	              8'h20, 8'h00, FLAG_C | FLAG_Z | FLAG_H);
 
 	chk_jp_false(JC_NZ, 16'h0013);
 

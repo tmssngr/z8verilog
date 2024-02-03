@@ -6,7 +6,7 @@
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // c
-        `assertFlags('b1000_0000);
+        `assertFlags(FLAG_C);
     @(negedge clk);
 
 // rcf
@@ -16,7 +16,7 @@
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // -c
-        `assertFlags('b0000_0000);
+        `assertFlags(FLAG_NONE);
     @(negedge clk);
 
 // ccf
@@ -26,7 +26,7 @@
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c
-        `assertFlags('b1000_0000);
+        `assertFlags(FLAG_C);
     @(negedge clk);
 
 
@@ -37,7 +37,7 @@
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c
-        `assertFlags('b0000_0000);
+        `assertFlags(FLAG_NONE);
     @(negedge clk);
 
 

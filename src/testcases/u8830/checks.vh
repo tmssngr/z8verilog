@@ -15,7 +15,7 @@
 
 
 	chk_alu2_R_IM(ALU2_TM, 8'hE3, 8'b0000_0100,
-	              8'h03, 8'h0F, 8'b0000_0000);
+	              8'h03, 8'h0F, FLAG_NONE);
 
 
 	chk_ld_r_IM(4'h3, 8'hFF,
@@ -137,7 +137,7 @@
 
 // xor r6, r7
 	chk_alu2_r_r(ALU2_XOR, 6, 7,
-	             8'h06, 8'h00, 8'b0100_0000);
+	             8'h06, 8'h00, FLAG_Z);
 
 	chk_srp(4'hF);
 

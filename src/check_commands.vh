@@ -1,13 +1,21 @@
-`define assertPc(value)            if (uut.proc.pc             !== value) begin $display("ASSERTION FAILED in %m: pc(%h) != value"         , uut.proc.pc                 ); $finish(2); end
-`define assertState(value)         if (uut.proc.state          !== value) begin $display("ASSERTION FAILED in %m: state(%h) != value"      , uut.proc.state              ); $finish(2); end
-`define assertInstr(value)         if (uut.proc.instruction    !== value) begin $display("ASSERTION FAILED in %m: instruction(%h) != value", uut.proc.instruction        ); $finish(2); end
-`define assertSecond(value)        if (uut.proc.second         !== value) begin $display("ASSERTION FAILED in %m: second(%h) != %h"        , uut.proc.second, value      ); $finish(2); end
-`define assertThird(value)         if (uut.proc.third          !== value) begin $display("ASSERTION FAILED in %m: third(%h) != value"      , uut.proc.third              ); $finish(2); end
-`define assertFlags(value)         if (uut.proc.flags          !== value) begin $display("ASSERTION FAILED in %m: flags(%b) != %b"         , uut.proc.flags, (value)     ); $finish(2); end
+`define assertPc(value)            if (uut.proc.pc             !== (value)) begin $display("ASSERTION FAILED in %m: pc(%h) != value"         , uut.proc.pc                 ); $finish(2); end
+`define assertState(value)         if (uut.proc.state          !== (value)) begin $display("ASSERTION FAILED in %m: state(%h) != value"      , uut.proc.state              ); $finish(2); end
+`define assertInstr(value)         if (uut.proc.instruction    !== (value)) begin $display("ASSERTION FAILED in %m: instruction(%h) != value", uut.proc.instruction        ); $finish(2); end
+`define assertSecond(value)        if (uut.proc.second         !== (value)) begin $display("ASSERTION FAILED in %m: second(%h) != %h"        , uut.proc.second, value      ); $finish(2); end
+`define assertThird(value)         if (uut.proc.third          !== (value)) begin $display("ASSERTION FAILED in %m: third(%h) != value"      , uut.proc.third              ); $finish(2); end
+`define assertFlags(value)         if (uut.proc.flags          !== (value)) begin $display("ASSERTION FAILED in %m: flags(%b) != %b"         , uut.proc.flags, (value)     ); $finish(2); end
 `define assertRegister(num, value) if (uut.proc.registers[num] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h"      , num, uut.proc.registers[num], (value)); $finish(2); end
 `define assertRom(addr, value)     if (uut.rom.memory[addr % uut.rom.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.rom.memory[addr % uut.rom.size], (value)); $finish(2); end
 `define assertRam(addr, value)     if (uut.ram.memory[addr % uut.ram.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.ram.memory[addr % uut.ram.size], (value)); $finish(2); end
 `include "jump_conditions.vh"
+
+localparam FLAG_NONE = 0;
+localparam FLAG_C = 8'h80;
+localparam FLAG_Z = 8'h40;
+localparam FLAG_S = 8'h20;
+localparam FLAG_V = 8'h10;
+localparam FLAG_D = 8'h08;
+localparam FLAG_H = 8'h04;
 
 task chk_srp;
     input[3:0] upper;
