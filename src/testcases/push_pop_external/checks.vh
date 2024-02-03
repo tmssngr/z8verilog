@@ -2,8 +2,7 @@
 
     chk_srp(2);
 
-// ld P01M, #92
-	chk_ld_R_IM(8'hF8, 8'h92);
+	chk_ld_R_IM(P01M, 8'h92);
 
 // clr SPH
 	repeat (3) @(negedge clk);
