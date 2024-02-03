@@ -60,7 +60,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   50 e1
     pop e1
     reg[21] = 12
- 8 cycles
+ 9 cycles
 
 001b: read instruction
   8d

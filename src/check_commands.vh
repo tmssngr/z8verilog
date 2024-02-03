@@ -713,3 +713,65 @@ task chk_nop;
         @(negedge clk);
     end
 endtask
+
+task chk_pop;
+    input[7:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[15:0] sp;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr(8'h50);
+            `assertSecond(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_POP_1);
+        @(negedge clk);
+            `assertState(STATE_POP_2);
+        @(negedge clk);
+            `assertState(STATE_POP_3);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assertState(STATE_POP_4);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
+task chk_pop_IR;
+    input[7:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[15:0] sp;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr(8'h51);
+            `assertSecond(dst);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_POP_1);
+        @(negedge clk);
+            `assert(uut.proc.addr, sp - 1);
+            `assertState(STATE_POP_2);
+        @(negedge clk);
+            `assertState(STATE_POP_3);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assertState(STATE_POP_4);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask

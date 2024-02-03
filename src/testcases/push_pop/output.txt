@@ -55,7 +55,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   50 e0
     pop e0
     reg[20] = 34
- 6 cycles
+ 9 cycles
 
 001b: read instruction
   50
@@ -63,7 +63,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   50 e1
     pop e1
     reg[21] = 12
- 6 cycles
+ 9 cycles
 
 001d: read instruction
   2c
@@ -95,7 +95,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   51 22
     pop @22
     reg[24] = 34
- 6 cycles
+ 9 cycles
 
 0025: read instruction
   8d

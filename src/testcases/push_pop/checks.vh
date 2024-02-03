@@ -45,35 +45,11 @@
         `assertRegister('h7E, 'h34);
         `assertRegister('h7F, 'h12);
 
-// pop r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h50);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h20);
-        `assertState(STATE_POP_I);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7F);
-        `assertRegister('h20, 'h34);
-        `assertRegister('h21, 'h34);
+	chk_pop(8'hE0,
+	        8'h20, 8'h34, 16'h007F);
 
-// pop r1
-    repeat (3) @(negedge clk);
-        `assertInstr('h50);
-        `assertSecond('hE1);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h21);
-        `assertState(STATE_POP_I);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h80);
-        `assertRegister('h20, 'h34);
-        `assertRegister('h21, 'h12);
+	chk_pop(8'hE1,
+	        8'h21, 8'h12, 16'h0080);
 
 
 	chk_ld_r_IM(4'h2, 8'h20,
@@ -105,21 +81,8 @@
         `assertRegister('h21, 'h12);
         `assertRegister('h22, 'h24);
 
-// pop @22
-    repeat (3) @(negedge clk);
-        `assertInstr('h51);
-        `assertSecond('h22);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h24);
-        `assertState(STATE_POP_I);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h80);
-        `assertRegister('h20, 'h34);
-        `assertRegister('h21, 'h12);
-        `assertRegister('h22, 'h24);
+	chk_pop_IR(8'h22,
+	           8'h24, 8'h34, 16'h0080);
         `assertRegister('h24, 'h34);
 
 

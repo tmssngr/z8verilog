@@ -51,29 +51,11 @@
     @(negedge clk);
         `assertRam(16'hFFFF, 'h12);
 
-// pop r1
-    repeat (3) @(negedge clk);
-        `assertInstr('h50);
-        `assertSecond('hE1);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h21);
-        `assertState(STATE_POP_E1);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFF);
-        `assertState(STATE_POP_E2);
-    @(negedge clk);
-        `assertState(STATE_POP_E3);
-    @(negedge clk);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 8'h12);
-        `assert(uut.proc.sp, 16'h0000);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister('h21, 'h12);
 
+	chk_pop(8'hE1,
+	        8'h21, 8'h12, 16'h0000);
         `assertRegister('h20, 'h12);
+        `assertRegister('h21, 'h12);
 
 
 	chk_jp(16'h000C);

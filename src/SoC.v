@@ -282,8 +282,8 @@ module Processor(
                                ? addr
                                : pc;
     assign memAddr = (state == STATE_PUSH_E3)
-                   | (state == STATE_POP_E2)
-                   | (state == STATE_POP_E3)
+                   | (state == STATE_POP_2)
+                   | (state == STATE_POP_3)
                    | (state == STATE_CALL_E2)
                    | (state == STATE_CALL_E3)
                    | (state == STATE_IRET_E2)
@@ -303,7 +303,7 @@ module Processor(
     assign memStrobe = (state == STATE_FETCH_INSTR)
                      | (state == STATE_WAIT_2 & ~isInstrSize1)
                      | (state == STATE_WAIT_3)
-                     | (state == STATE_POP_E2)
+                     | (state == STATE_POP_2 & ~stackInternal)
                      | (state == STATE_IRET_E2)
                      | (state == STATE_RET_E2)
                      | (state == STATE_RET_E4)
@@ -437,7 +437,7 @@ module Processor(
                     // dst <- @SP
                     // SP <- SP + 1
                     register <= r8(second);
-                    state <= stackInternal ? STATE_POP_I : STATE_POP_E1;
+                    state <= STATE_POP_1;
                 end
                 4'h7: begin
 `ifdef BENCH
@@ -491,7 +491,7 @@ module Processor(
 `endif
                     // 10+5 cycles
                     register <= readRegister8(second);
-                    state <= stackInternal ? STATE_POP_I : STATE_POP_E1;
+                    state <= STATE_POP_1;
                 end
                 4'h7: begin
 `ifdef BENCH
@@ -1111,22 +1111,18 @@ module Processor(
             state <= STATE_FETCH_INSTR;
         end
 
-        STATE_POP_I: begin
-            aluMode <= ALU1_LD;
-            aluA <= readRegister8(sp[7:0]);
-            sp <= sp + 16'b1;
-            writeRegister <= 1;
-            state <= STATE_FETCH_INSTR;
-        end
-
-        STATE_POP_E1: begin
+        STATE_POP_1: begin
             addr <= sp;
         end
-        STATE_POP_E2: begin
+        STATE_POP_2: begin
         end
-        STATE_POP_E3: begin
+        STATE_POP_3: begin
+            aluA <= stackInternal
+                ? readRegister8(addr[7:0])
+                : memDataRead;
+        end
+        STATE_POP_4: begin
             aluMode <= ALU1_LD;
-            aluA <= memDataRead;
             sp <= sp + 16'b1;
             writeRegister <= 1;
             state <= STATE_FETCH_INSTR;
