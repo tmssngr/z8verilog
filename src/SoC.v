@@ -348,7 +348,6 @@ module Processor(
         STATE_FETCH_INSTR: begin
 `ifdef BENCH
             $display("\n%h: read instruction", pc);
-`endif
             aluA <= 0;
             aluB <= 0;
             aluMode <= 0;
@@ -356,6 +355,7 @@ module Processor(
             instruction <= 0;
             second <= 0;
             third <= 0;
+`endif
         end
 
         STATE_READ_INSTR: begin
