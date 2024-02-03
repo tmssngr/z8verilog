@@ -44,9 +44,7 @@
 	chk_srp(2);
 
 // ret
-    repeat (2) @(negedge clk);
-        `assertInstr('hAF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hAF);
     @(negedge clk);
         `assert(uut.proc.sp, 'h7E);
         `assertState(STATE_RET_I1);
@@ -111,9 +109,7 @@
 	chk_srp(2);
 
 // ret
-    repeat (2) @(negedge clk);
-        `assertInstr('hAF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hAF);
     @(negedge clk);
         `assert(uut.proc.sp, 'h7E);
         `assertState(STATE_RET_I1);
@@ -193,9 +189,7 @@
         `assertRegister('h7F, 'h0C);
 
 // iret
-    repeat (2) @(negedge clk);
-        `assertInstr('hBF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hBF);
     @(negedge clk);
         `assertState(STATE_IRET_I);
     @(negedge clk);

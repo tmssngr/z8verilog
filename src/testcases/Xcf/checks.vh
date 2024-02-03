@@ -1,8 +1,6 @@
     @(negedge clk);
 // scf
-    repeat (2) @(negedge clk);
-        `assertInstr('hDF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hDF);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // c
@@ -10,9 +8,7 @@
     @(negedge clk);
 
 // rcf
-    repeat (2) @(negedge clk);
-        `assertInstr('hCF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hCF);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // -c
@@ -20,9 +16,7 @@
     @(negedge clk);
 
 // ccf
-    repeat (2) @(negedge clk);
-        `assertInstr('hEF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hEF);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c
@@ -31,9 +25,7 @@
 
 
 // ccf
-    repeat (2) @(negedge clk);
-        `assertInstr('hEF);
-        `assertState(STATE_DECODE);
+	chk_1byteOp(8'hEF);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c

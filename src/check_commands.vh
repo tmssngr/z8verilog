@@ -17,6 +17,15 @@ localparam FLAG_V = 8'h10;
 localparam FLAG_D = 8'h08;
 localparam FLAG_H = 8'h04;
 
+task chk_1byteOp;
+    input[7:0] op;
+    begin
+        repeat (2) @(negedge clk);
+            `assertInstr(op);
+            `assertState(STATE_DECODE);
+    end
+endtask
+
 task chk_srp;
     input[3:0] upper;
     begin
@@ -532,9 +541,7 @@ task chk_inc_r;
     input[7:0] value;
     input[7:0] flags;
     begin
-        repeat (2) @(negedge clk);
-            `assertInstr({dst, 4'hE});
-            `assertState(STATE_DECODE);
+        chk_1byteOp({dst, 4'hE});
         @(negedge clk);
             `assertState(STATE_ALU1_OP);
             `assert(uut.proc.register, register);
@@ -707,9 +714,7 @@ endtask
 
 task chk_nop;
     begin
-        repeat (2) @(negedge clk);
-            `assertInstr('hFF);
-            `assertState(STATE_DECODE);
+        chk_1byteOp(8'hFF);
         @(negedge clk);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
