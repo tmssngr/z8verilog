@@ -13,7 +13,7 @@ label(L0_);
 	asm_ld_r_IM(0, 3);
 
 label(L1_);
-	asm_add_R_IM(8'h20, 8'hFF);
+	asm_alu2_R_IM(ALU2_ADD, 8'h20, 8'hFF);
 	asm_jp(JC_NZ, L1_);
 
 	asm_ld_r_IM(0, L2_ >> 8);

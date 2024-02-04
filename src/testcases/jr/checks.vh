@@ -18,7 +18,7 @@
 
 // L1: add 70, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              .expDst(8'h70), .expResult(8'h02), .expFlags(8'b1000_0100)); // ch
+	              8'h70, 8'h02, 8'b1000_0100); // ch
 
 // jr nz, L1
     repeat (3) @(negedge clk);
@@ -32,7 +32,7 @@
 
 // L1: add 0, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              .expDst(8'h70), .expResult(8'h01), .expFlags(8'b1000_0100)); // ch
+	              8'h70, 8'h01, 8'b1000_0100); // ch
 
 // jr nz, L1
     repeat (3) @(negedge clk);
@@ -46,7 +46,7 @@
 
 // L1: add 0, #ff
 	chk_alu2_R_IM(ALU2_ADD, 8'h70, 8'hFF,
-	              .expDst(8'h70), .expResult(8'h00), .expFlags(8'b1100_0100)); // czh
+	              8'h70, 8'h00, 8'b1100_0100); // czh
 
 // jr nz, L1
     repeat (3) @(negedge clk);

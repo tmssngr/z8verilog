@@ -88,11 +88,18 @@ task asm_ccf;
     end
 endtask
 
-task asm_ld;
+task asm_ld_r_R;
     input [3:0] dst;
+    input [7:0] src;
+    begin
+        asm2({dst, 4'h8}, src);
+    end
+endtask
+task asm_ld_R_r;
+    input [7:0] dst;
     input [3:0] src;
     begin
-        asm2({dst, 4'h8}, {4'hE, src});
+        asm2({src, 4'h9}, dst);
     end
 endtask
 task asm_ld_r_IM;
@@ -102,11 +109,18 @@ task asm_ld_r_IM;
         asm2({dst, 4'hC}, src);
     end
 endtask
-task asm_ld_R_IM;
-    input [7:0] dst;
-    input [7:0] src;
+task asm_ld_r_Ir;
+    input [3:0] dst;
+    input [3:0] src;
     begin
-        asm3(8'hE6, dst, src);
+        asm2(8'hE3, {dst, src});
+    end
+endtask
+task asm_ld_Ir_r;
+    input [3:0] dst;
+    input [3:0] src;
+    begin
+        asm2(8'hF3, {dst, src});
     end
 endtask
 task asm_ld_R_R;
@@ -116,114 +130,97 @@ task asm_ld_R_R;
         asm3(8'hE4, src, dst);
     end
 endtask
-
-task asm_add_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h02, {dst, src});
-    end
-endtask
-task asm_add_R_R;
+task asm_ld_R_IR;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h04, src, dst);
+        asm3(8'hE5, src, dst);
     end
 endtask
-task asm_add_R_IM;
+task asm_ld_R_IM;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h06, dst, src);
+        asm3(8'hE6, dst, src);
     end
 endtask
-
-task asm_adc_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h12, {dst, src});
-    end
-endtask
-
-task asm_sub_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h22, {dst, src});
-    end
-endtask
-
-task asm_sbc_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h32, {dst, src});
-    end
-endtask
-
-task asm_or_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h42, {dst, src});
-    end
-endtask
-
-task asm_and_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h52, {dst, src});
-    end
-endtask
-
-task asm_tcm_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h62, {dst, src});
-    end
-endtask
-
-task asm_tm_r_r;
-    input [3:0] dst;
-    input [3:0] src;
-    begin
-        asm2(8'h72, {dst, src});
-    end
-endtask
-
-task asm_tm_R_IM;
+task asm_ld_IR_IM;
     input [7:0] dst;
     input [7:0] src;
     begin
-        asm3(8'h76, dst, src);
+        asm3(8'hE7, dst, src);
+    end
+endtask
+task asm_ld_IR_R;
+    input [7:0] dst;
+    input [7:0] src;
+    begin
+        asm3(8'hF5, src, dst);
+    end
+endtask
+task asm_ld_r_IrX;
+    input [3:0] dst;
+    input [3:0] src;
+    input [7:0] offset;
+    begin
+        asm3(8'hC7, {dst, src}, offset);
+    end
+endtask
+task asm_ld_IrX_r;
+    input [3:0] dst;
+    input [7:0] offset;
+    input [3:0] src;
+    begin
+        asm3(8'hD7, {src, dst}, offset);
     end
 endtask
 
-task asm_cp_r_r;
+task asm_alu2_r_r;
+    input [5:0] op;
     input [3:0] dst;
     input [3:0] src;
     begin
-        asm2(8'hA2, {dst, src});
+        asm2({op[4:0], 4'h2}, {dst, src});
     end
 endtask
-
-task asm_cp_r_Ir;
+task asm_alu2_r_Ir;
+    input [5:0] op;
     input [3:0] dst;
     input [3:0] src;
     begin
-        asm2(8'hA3, {dst, src});
+        asm2({op[4:0], 4'h3}, {dst, src});
     end
 endtask
-
-task asm_xor_r_r;
-    input [3:0] dst;
-    input [3:0] src;
+task asm_alu2_R_R;
+    input [5:0] op;
+    input [7:0] dst;
+    input [7:0] src;
     begin
-        asm2(8'hB2, {dst, src});
+        asm3({op[4:0], 4'h4}, src, dst);
+    end
+endtask
+task asm_alu2_R_IR;
+    input [5:0] op;
+    input [7:0] dst;
+    input [7:0] src;
+    begin
+        asm3({op[4:0], 4'h5}, src, dst);
+    end
+endtask
+task asm_alu2_R_IM;
+    input [5:0] op;
+    input [7:0] dst;
+    input [7:0] src;
+    begin
+        asm3({op[4:0], 4'h6}, dst, src);
+    end
+endtask
+task asm_alu2_IR_IM;
+    input [5:0] op;
+    input [7:0] dst;
+    input [7:0] src;
+    begin
+        asm3({op[4:0], 4'h7}, dst, src);
     end
 endtask
 
