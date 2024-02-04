@@ -33,22 +33,8 @@
 	            8'h21);
 
 // jp @r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h30);
-        `assertSecond('he0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_JP1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_JP2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'h0020);
-        `assertState(STATE_JP3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertPc(16'h0020);
+	chk_jp_IRR(8'hE0,
+	           16'h0020);
 
 
 	chk_jp(16'h000C);

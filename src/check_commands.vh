@@ -331,6 +331,28 @@ task chk_jp_false;
         @(negedge clk);
     end
 endtask
+task chk_jp_IRR;
+	input[7:0] src;
+    input[15:0] addr;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr(8'h30);
+            `assertSecond(src);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_JP3);
+        @(negedge clk);
+            `assertPc(addr);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
 task chk_jr;
     input[7:0] ra;
     input[15:0] addr;
