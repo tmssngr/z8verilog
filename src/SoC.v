@@ -313,6 +313,12 @@ module Processor(
     reg[4:0] cycleCounter = 0;
 `endif
 
+    task nextCommand;
+        begin
+            state <= STATE_FETCH_INSTR;
+        end
+    endtask
+
     always @(posedge clk) begin
         if (writeFlags) begin
 `ifdef BENCH
@@ -415,8 +421,6 @@ module Processor(
                 $display("  %h %h %h", instruction, second, third);
             end
 `endif
-            state <= STATE_FETCH_INSTR;
-
             case (instrL)
             // ================================================================
             // Column 0
@@ -484,6 +488,7 @@ module Processor(
                     $display("    srp %h", second);
 `endif
                     rp <= second[7:4];
+                    nextCommand();
                 end
                 4'h5: begin
 `ifdef BENCH
@@ -678,6 +683,7 @@ module Processor(
                     aluA <= readRegister8(r8(second));
                     aluMode <= ALU1_LD;
                     writeRegister <= 1;
+                    nextCommand();
                 end
                 // x4
                 default: begin
@@ -763,6 +769,7 @@ module Processor(
                     aluA <= third;
                     aluMode <= ALU1_LD;
                     writeRegister <= 1;
+                    nextCommand();
                 end
                 default: begin
 `ifdef BENCH
@@ -833,6 +840,7 @@ module Processor(
                 aluA <= readRegister8(r8(second));
                 aluMode <= ALU1_LD;
                 writeRegister <= 1;
+                nextCommand();
             end
             // ================================================================
             // Column 9
@@ -845,6 +853,7 @@ module Processor(
                 aluA <= readRegister4(instrH);
                 aluMode <= ALU1_LD;
                 writeRegister <= 1;
+                nextCommand();
             end
             // ================================================================
             // Column A
@@ -863,6 +872,7 @@ module Processor(
 `ifdef BENCH
                 $display("    jr %s, %h", ccName(instrH), second);
 `endif
+                nextCommand();
             end
             // ================================================================
             // Column C
@@ -875,6 +885,7 @@ module Processor(
                 aluA <= second;
                 aluMode <= ALU1_LD;
                 writeRegister <= 1;
+                nextCommand();
             end
             // ================================================================
             // Column D
@@ -885,9 +896,10 @@ module Processor(
 `endif
                 // 12+0 cycles if jumping     (3+3+3+1+2)
                 // 10+0 cycles if not jumping (3+3+3+1)
-                state <= takeBranch
-                    ? STATE_JP1
-                    : STATE_FETCH_INSTR;
+                if (takeBranch)
+                    state <= STATE_JP1;
+                else
+                    nextCommand();
             end
             // ================================================================
             // Column E
@@ -910,12 +922,14 @@ module Processor(
                     $display("    di");
 `endif
                     //TODO
+                    nextCommand();
                 end
                 4'h9: begin
 `ifdef BENCH
                     $display("    ei");
 `endif
                     //TODO
+                    nextCommand();
                 end
                 4'hA: begin
 `ifdef BENCH
@@ -938,23 +952,27 @@ module Processor(
                     $display("    rcf");
 `endif
                     flags[FLAG_INDEX_C] <= instrH[0];
+                    nextCommand();
                 end
                 4'hD: begin
 `ifdef BENCH
                     $display("    scf");
 `endif
                     flags[FLAG_INDEX_C] <= instrH[0];
+                    nextCommand();
                 end
                 4'hE: begin
 `ifdef BENCH
                     $display("    ccf");
 `endif
                     flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
+                    nextCommand();
                 end
                 4'hF: begin
 `ifdef BENCH
                     $display("    nop");
 `endif
+                    nextCommand();
                 end
                 default: begin
 `ifdef BENCH
@@ -1017,7 +1035,7 @@ module Processor(
             end
             endcase
             aluMode <= ALU1_LD;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_ALU1_WORD1: begin
@@ -1032,7 +1050,7 @@ module Processor(
             aluMode <= aluMode | 'h8; // inc/dec -> incw/decw
             writeRegister <= 1;
             writeFlags <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_ALU1_OP: begin
@@ -1044,7 +1062,7 @@ module Processor(
                 state <= STATE_ALU1_DA;
             end
             else begin
-                state <= STATE_FETCH_INSTR;
+                nextCommand();
             end
         end
 
@@ -1053,7 +1071,7 @@ module Processor(
             aluMode <= ALU1_DA_H;
             writeRegister <= 1;
             writeFlags <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_ALU2_OP1: begin
@@ -1086,7 +1104,7 @@ module Processor(
                             | (instrH[3:1] == 3'b010)   // or, and
                             | (instrH      == 4'b1011); // xor
             writeFlags <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_PUSH_I1: begin
@@ -1097,7 +1115,7 @@ module Processor(
             aluA <= readRegister8(register);
             register <= sp[7:0];
             writeRegister <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_PUSH_E1: begin
@@ -1108,7 +1126,7 @@ module Processor(
             addr <= sp;
         end
         STATE_PUSH_E3: begin
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_POP_1: begin
@@ -1125,7 +1143,7 @@ module Processor(
             aluMode <= ALU1_LD;
             sp <= sp + 16'b1;
             writeRegister <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_DJNZ1: begin
@@ -1136,7 +1154,7 @@ module Processor(
 
         STATE_DJNZ2: begin
             // needs a special state to handle the pc
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_LDC_READ1: begin
@@ -1166,9 +1184,10 @@ module Processor(
             aluMode <= ALU1_LD;
             writeRegister <= 1;
             // ldci?
-            state <= instrL == 4'h3
-                ? STATE_INC_R_RR1
-                : STATE_FETCH_INSTR;
+            if (instrL == 4'h3)
+                state <= STATE_INC_R_RR1;
+            else
+                nextCommand();
         end
 
         STATE_INC_R_RR1: begin
@@ -1189,13 +1208,14 @@ module Processor(
             register[0] <= 1'b0;
             aluMode <= ALU1_INCW;
             writeRegister <= 1;
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_WRITE_MEM: begin
-            state <= instrL == 4'h3
-                ? STATE_INC_R_RR1
-                : STATE_FETCH_INSTR;
+            if (instrL == 4'h3)
+                state <= STATE_INC_R_RR1;
+            else
+                nextCommand();
         end
 
         STATE_CALL_I1: begin
@@ -1233,7 +1253,7 @@ module Processor(
                        : readRegister8(r8({second[7:1], 1'b1}));
         end
         STATE_JP3: begin
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
         end
 
         STATE_IRET_I: begin
@@ -1252,7 +1272,7 @@ module Processor(
             sp <= sp + 16'b1;
         end
         STATE_RET_I3: begin
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
             //TODO: for iret enable interrupts
         end
         STATE_IRET_E1: begin
@@ -1283,7 +1303,7 @@ module Processor(
             addr[7:0] <= memDataRead;
         end
         STATE_RET_E6: begin
-            state <= STATE_FETCH_INSTR;
+            nextCommand();
             //TODO: for iret enable interrupts
         end
 
