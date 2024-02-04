@@ -4,12 +4,7 @@
     chk_ld_R_IM(8'hFF, 8'h80);
 
 // call L1_
-	repeat (5) @(negedge clk);
-        `assertInstr('hD6);
-        `assertSecond('h00);
-        `assertThird('h28);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_3byteOp(8'hD6, 8'h00, 8'h28);
         `assert(uut.proc.sp, 'h7F);
         `assertState(STATE_CALL_I1);
     @(negedge clk);
@@ -45,7 +40,6 @@
 
 // ret
 	chk_1byteOp(8'hAF);
-    @(negedge clk);
         `assert(uut.proc.sp, 'h7E);
         `assertState(STATE_RET_I1);
     @(negedge clk);
@@ -70,11 +64,7 @@
         `assertRegister('h21, 'h28);
 
 // call IRR0
-	repeat (3) @(negedge clk);
-        `assertInstr('hD4);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hD4, 8'hE0);
         `assert(uut.proc.sp, 'h7F);
         `assertState(STATE_CALL_I1);
     @(negedge clk);
@@ -110,7 +100,6 @@
 
 // ret
 	chk_1byteOp(8'hAF);
-    @(negedge clk);
         `assert(uut.proc.sp, 'h7E);
         `assertState(STATE_RET_I1);
     @(negedge clk);
@@ -138,11 +127,7 @@
         `assertRegister('h22, 'hA5);
 
 // push r1
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE1);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE1);
         `assert(uut.proc.register, 'h21);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
@@ -154,11 +139,7 @@
         `assertRegister('h7F, 'h0C);
 
 // push r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE0);
         `assert(uut.proc.register, 'h20);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
@@ -171,11 +152,7 @@
         `assertRegister('h7F, 'h0C);
 
 // push r2
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE2);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE2);
         `assert(uut.proc.register, 'h22);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
@@ -190,7 +167,6 @@
 
 // iret
 	chk_1byteOp(8'hBF);
-    @(negedge clk);
         `assertState(STATE_IRET_I);
     @(negedge clk);
         `assert(uut.proc.aluMode, ALU1_LD);

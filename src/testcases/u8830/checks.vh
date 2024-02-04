@@ -25,9 +25,7 @@
         `assert(uut.proc.p01m, 'hB6);
 
 // ld P3M, #8
-    repeat (5) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_3byteOp(8'hE6, 8'hF7, 8'h08);
         `assertState(STATE_FETCH_INSTR);
     @(negedge clk);
         //`assert(uut.proc.p3m, 'h08); //TODO
@@ -41,9 +39,7 @@
         `assertRegister('h05, 'h12);
 
 // ldc r6, Irr4
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hC2, 8'h64);
         `assertState(STATE_LDC_READ1);
     @(negedge clk);
         `assertState(STATE_LDC_READ2);
@@ -61,9 +57,7 @@
 	         8'h06, 8'hFF, FLAG_S);
 
 // ldc Irr4, r6
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hD2, 8'h64);
         `assertState(STATE_LDC_WRITE1);
     @(negedge clk);
         `assertState(STATE_LDC_WRITE2);
@@ -78,9 +72,7 @@
         `assertRegister(8'h06, 8'hFF);
 
 // ldc r7, Irr4
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hC2, 8'h74);
         `assertState(STATE_LDC_READ1);
     @(negedge clk);
         `assertState(STATE_LDC_READ2);
@@ -99,9 +91,7 @@
 	         8'h06, 8'h00, FLAG_Z);
 
 // ldc Irr4, r6
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hD2, 8'h64);
         `assertState(STATE_LDC_WRITE1);
     @(negedge clk);
         `assertState(STATE_LDC_WRITE2);

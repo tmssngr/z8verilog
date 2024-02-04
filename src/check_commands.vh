@@ -11,22 +11,43 @@
 `include "flags.vh"
 
 task chk_1byteOp;
-    input[7:0] op;
+    input[7:0] instruction;
     begin
         repeat (2) @(negedge clk);
-            `assertInstr(op);
+            `assertInstr(instruction);
             `assertState(STATE_DECODE);
+        @(negedge clk);
+    end
+endtask
+task chk_2byteOp;
+    input[7:0] instruction;
+    input[7:0] second;
+    begin
+        repeat (3) @(negedge clk);
+            `assertInstr(instruction);
+            `assertSecond(second);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
+    end
+endtask
+task chk_3byteOp;
+    input[7:0] instruction;
+    input[7:0] second;
+    input[7:0] third;
+    begin
+        repeat (5) @(negedge clk);
+            `assertInstr(instruction);
+            `assertSecond(second);
+            `assertThird(third);
+            `assertState(STATE_DECODE);
+        @(negedge clk);
     end
 endtask
 
 task chk_srp;
     input[3:0] upper;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'h31);
-            `assertSecond({upper, 4'h0});
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'h31, {upper, 4'h0});
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assert(uut.proc.rp, upper);
@@ -39,11 +60,7 @@ task chk_ld_r_R;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({dst, 4'h8});
-            `assertSecond(src);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({dst, 4'h8}, src);
             `assert(uut.proc.register, register);
             `assert(uut.proc.aluA, value);
             `assert(uut.proc.writeRegister, 1);
@@ -58,11 +75,7 @@ task chk_ld_R_r;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({src, 4'h9});
-            `assertSecond(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({src, 4'h9}, dst);
             `assert(uut.proc.register, register);
             `assert(uut.proc.aluA, value);
             `assert(uut.proc.writeRegister, 1);
@@ -76,11 +89,7 @@ task chk_ld_r_IM;
     input[7:0] value;
     input[7:0] register;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({dst, 4'hC});
-            `assertSecond(value);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({dst, 4'hC}, value);
             `assert(uut.proc.register, register);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
@@ -93,11 +102,7 @@ task chk_ld_r_Ir;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'hE3);
-            `assertSecond({dst, src});
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'hE3, {dst, src});
             `assertState(STATE_LD);
         @(negedge clk);
             `assert(uut.proc.aluA, value);
@@ -113,11 +118,7 @@ task chk_ld_Ir_r;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'hF3);
-            `assertSecond({dst, src});
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'hF3, {dst, src});
             `assert(uut.proc.register, register);
             `assertState(STATE_LD);
         @(negedge clk);
@@ -133,12 +134,7 @@ task chk_ld_R_R;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr('hE4);
-            `assertSecond(src);
-            `assertThird(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp('hE4, src, dst);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register, value);
@@ -150,12 +146,7 @@ task chk_ld_R_IR;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr('hE5);
-            `assertSecond(src);
-            `assertThird(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp('hE5, src, dst);
             `assertState(STATE_LD);
         @(negedge clk);
             `assert(uut.proc.aluA, value);
@@ -172,12 +163,7 @@ task chk_ld_IR_IM;
     input[7:0] value;
     input[7:0] register;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr('hE7);
-            `assertSecond(dst);
-            `assertThird(value);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp('hE7, dst, value);
             `assertState(STATE_LD);
         @(negedge clk);
             `assert(uut.proc.aluA, value);
@@ -195,12 +181,7 @@ task chk_ld_IR_R;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr('hF5);
-            `assertSecond(src);
-            `assertThird(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp('hF5, src, dst);
             `assert(uut.proc.aluA, value);
             `assertState(STATE_LD);
         @(negedge clk);
@@ -216,12 +197,7 @@ task chk_ld_R_IM;
     input[7:0] dst;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr(8'hE6);
-            `assertSecond(dst);
-            `assertThird(value);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp(8'hE6, dst, value);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
             `assertState(STATE_FETCH_INSTR);
@@ -247,12 +223,7 @@ task chk_ld_r_IrX;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr(8'hC7);
-            `assertSecond({dst, src});
-            `assertThird(offset);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp(8'hC7, {dst, src}, offset);
             `assert(uut.proc.register, srcReg);
             `assertState(STATE_LD);
         @(negedge clk);
@@ -271,12 +242,7 @@ task chk_ld_IrX_r;
     input[7:0] register;
     input[7:0] value;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr(8'hD7);
-            `assertSecond({src, dst});
-            `assertThird(offset);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp(8'hD7, {src, dst}, offset);
             `assertState(STATE_LD);
         @(negedge clk);
             `assert(uut.proc.register, register);
@@ -298,13 +264,8 @@ task chk_jp_true;
 	input[3:0] cc;
     input[15:0] addr;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({cc, 4'hD});
-            `assertSecond(addr[15:8]);
-            `assertThird(addr[7:0]);
+        chk_3byteOp({cc, 4'hD}, addr[15:8], addr[7:0]);
             `assert(uut.proc.takeBranch, 1'b1);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
             `assertState(STATE_JP1);
         @(negedge clk);
             `assertState(STATE_JP2);
@@ -320,13 +281,8 @@ task chk_jp_false;
 	input[3:0] cc;
     input[15:0] addr;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({cc, 4'hD});
-            `assertSecond(addr[15:8]);
-            `assertThird(addr[7:0]);
+        chk_3byteOp({cc, 4'hD}, addr[15:8], addr[7:0]);
             `assert(uut.proc.takeBranch, 1'b0);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
     end
@@ -335,11 +291,7 @@ task chk_jp_IRR;
 	input[7:0] src;
     input[15:0] addr;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'h30);
-            `assertSecond(src);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'h30, src);
             `assertState(STATE_JP1);
         @(negedge clk);
             `assert(uut.proc.addr[15:8], addr[15:8]);
@@ -366,12 +318,8 @@ task chk_jr_true;
     input[7:0] ra;
     input[15:0] addr;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({cc, 4'hB});
-            `assertSecond(ra);
+        chk_2byteOp({cc, 4'hB}, ra);
             `assert(uut.proc.takeBranch, 1'b1);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
             `assertPc(addr);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
@@ -382,12 +330,8 @@ task chk_jr_false;
     input[7:0] ra;
     input[15:0] addr;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({cc, 4'hB});
-            `assertSecond(ra);
+        chk_2byteOp({cc, 4'hB}, ra);
             `assert(uut.proc.takeBranch, 1'b0);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
             `assertPc(addr);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
@@ -400,11 +344,7 @@ task chk_djnz_true;
     input[7:0] value;
     input[7:0] addr;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({dst, 4'hA});
-            `assertSecond(ra);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({dst, 4'hA}, ra);
             `assertState(STATE_DJNZ1);
             `assert(uut.proc.register, register);
         @(negedge clk);
@@ -423,11 +363,7 @@ task chk_djnz_false;
     input[7:0] register;
     input[7:0] addr;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({dst, 4'hA});
-            `assertSecond(ra);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({dst, 4'hA}, ra);
             `assertState(STATE_DJNZ1);
             `assert(uut.proc.register, register);
         @(negedge clk);
@@ -446,11 +382,7 @@ task chk_decw;
     input[15:0] expValue;
     input[7:0] expFlags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'h80);
-            `assertSecond(register);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'h80, register);
             `assert(uut.proc.aluMode, ALU1_DEC);
             `assert(uut.proc.register, register);
             `assertState(STATE_ALU1_WORD1);
@@ -479,11 +411,7 @@ task chk_incw;
     input[15:0] expValue;
     input[7:0] expFlags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'hA0);
-            `assertSecond(register);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'hA0, register);
             `assert(uut.proc.aluMode, ALU1_INC);
             `assert(uut.proc.register, register);
             `assertState(STATE_ALU1_WORD1);
@@ -515,11 +443,7 @@ task chk_alu1;
     input[7:0] value;
     input[7:0] flags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({op[3:0], 4'h0});
-            `assertSecond(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({op[3:0], 4'h0}, dst);
             `assertState(STATE_ALU1_OP);
             `assert(uut.proc.register, register);
         @(negedge clk);
@@ -536,11 +460,7 @@ task chk_alu1_IR;
     input[7:0] value;
     input[7:0] flags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({op[3:0], 4'h1});
-            `assertSecond(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({op[3:0], 4'h1}, dst);
             `assertState(STATE_ALU1_OP);
             `assert(uut.proc.register, register);
         @(negedge clk);
@@ -557,7 +477,6 @@ task chk_inc_r;
     input[7:0] flags;
     begin
         chk_1byteOp({dst, 4'hE});
-        @(negedge clk);
             `assertState(STATE_ALU1_OP);
             `assert(uut.proc.register, register);
         @(negedge clk);
@@ -576,11 +495,7 @@ task chk_alu2_r_r;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({op[3:0], 4'h2});
-            `assertSecond({dst, src});
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({op[3:0], 4'h2}, {dst, src});
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
             `assertState(STATE_ALU2_OP2);
@@ -601,11 +516,7 @@ task chk_alu2_r_Ir;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr({op[3:0], 4'h3});
-            `assertSecond({dst, src});
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp({op[3:0], 4'h3}, {dst, src});
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
             `assertState(STATE_ALU2_OP2);
@@ -626,12 +537,7 @@ task chk_alu2_R_R;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({op[3:0], 4'h4});
-            `assertSecond(src);
-            `assertThird(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp({op[3:0], 4'h4}, src, dst);
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
             `assertState(STATE_ALU2_OP2);
@@ -652,12 +558,7 @@ task chk_alu2_R_IR;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({op[3:0], 4'h5});
-            `assertSecond(src);
-            `assertThird(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp({op[3:0], 4'h5}, src, dst);
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
             `assertState(STATE_ALU2_OP2);
@@ -678,12 +579,7 @@ task chk_alu2_R_IM;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({op[3:0], 4'h6});
-            `assertSecond(dst);
-            `assertThird(value);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp({op[3:0], 4'h6}, dst, value);
             `assert(uut.proc.register, expDst);
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
@@ -706,12 +602,7 @@ task chk_alu2_IR_IM;
     input[7:0] expResult;
     input[7:0] expFlags;
     begin
-        repeat (5) @(negedge clk);
-            `assertInstr({op[3:0], 4'h7});
-            `assertSecond(dst);
-            `assertThird(value);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_3byteOp({op[3:0], 4'h7}, dst, value);
             `assert(uut.proc.register, expDst);
             `assertState(STATE_ALU2_OP1);
         @(negedge clk);
@@ -730,7 +621,6 @@ endtask
 task chk_nop;
     begin
         chk_1byteOp(8'hFF);
-        @(negedge clk);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
     end
@@ -742,11 +632,7 @@ task chk_pop;
     input[7:0] value;
     input[15:0] sp;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'h50);
-            `assertSecond(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'h50, dst);
             `assert(uut.proc.register, register);
             `assertState(STATE_POP_1);
         @(negedge clk);
@@ -772,11 +658,7 @@ task chk_pop_IR;
     input[7:0] value;
     input[15:0] sp;
     begin
-        repeat (3) @(negedge clk);
-            `assertInstr(8'h51);
-            `assertSecond(dst);
-            `assertState(STATE_DECODE);
-        @(negedge clk);
+        chk_2byteOp(8'h51, dst);
             `assert(uut.proc.register, register);
             `assertState(STATE_POP_1);
         @(negedge clk);

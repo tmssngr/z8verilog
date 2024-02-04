@@ -1,7 +1,6 @@
     @(negedge clk);
 // scf
 	chk_1byteOp(8'hDF);
-    @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // c
         `assertFlags(FLAG_C);
@@ -9,7 +8,6 @@
 
 // rcf
 	chk_1byteOp(8'hCF);
-    @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // -c
         `assertFlags(FLAG_NONE);
@@ -17,7 +15,6 @@
 
 // ccf
 	chk_1byteOp(8'hEF);
-    @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c
         `assertFlags(FLAG_C);
@@ -26,7 +23,6 @@
 
 // ccf
 	chk_1byteOp(8'hEF);
-    @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
         // !c
         `assertFlags(FLAG_NONE);

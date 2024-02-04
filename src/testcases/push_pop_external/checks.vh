@@ -5,11 +5,7 @@
 	chk_ld_R_IM(P01M, 8'h92);
 
 // clr SPH
-	repeat (3) @(negedge clk);
-        `assertInstr('hB0);
-        `assertSecond('hFE);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hB0, 8'hFE);
         `assertState(STATE_ALU1_OP);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
@@ -17,11 +13,7 @@
         `assert(uut.proc.sp[15:8], 'h00);
 
 // clr SPL
-	repeat (3) @(negedge clk);
-        `assertInstr('hB0);
-        `assertSecond('hFF);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'hB0, 8'hFF);
         `assertState(STATE_ALU1_OP);
     @(negedge clk);
         `assertState(STATE_FETCH_INSTR);
@@ -33,11 +25,7 @@
 	            8'h20);
 
 // push r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE0);
         `assert(uut.proc.register, 'h20);
         `assertState(STATE_PUSH_E1);
     @(negedge clk);

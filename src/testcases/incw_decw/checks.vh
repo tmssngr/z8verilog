@@ -60,12 +60,8 @@
         `assertFlags(FLAG_S);
 
 // incw @12
-    repeat (3) @(negedge clk);
-        `assertInstr(8'hA1);
-        `assertSecond(8'h12);
-        `assertState(STATE_DECODE);
+	chk_2byteOp(8'hA1, 8'h12);
         // lower byte:
-    @(negedge clk);
         `assert(uut.proc.aluMode, ALU1_INC);
         `assert(uut.proc.register, 8'h10);
         `assertState(STATE_ALU1_WORD1);
@@ -89,12 +85,8 @@
         `assertFlags(FLAG_Z);
 
 // decw @12
-    repeat (3) @(negedge clk);
-        `assertInstr(8'h81);
-        `assertSecond(8'h12);
-        `assertState(STATE_DECODE);
+	chk_2byteOp(8'h81, 8'h12);
         // lower byte:
-    @(negedge clk);
         `assert(uut.proc.aluMode, ALU1_DEC);
         `assert(uut.proc.register, 8'h10);
         `assertState(STATE_ALU1_WORD1);

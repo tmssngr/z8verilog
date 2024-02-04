@@ -12,11 +12,7 @@
 	             8'h10, 8'h0A, FLAG_NONE);
 
 // da r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h40);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'hE0);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_OP);
@@ -43,11 +39,7 @@
 	             8'h10, 8'h0F, FLAG_D | FLAG_H);
 
 // da r0
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h40);
-        `assertSecond('hE0);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'hE0);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_OP);
@@ -79,11 +71,7 @@
 	             8'h10, 8'h12, FLAG_H);
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h40);
-        `assertSecond('h10);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assertState(STATE_ALU1_OP);
         `assert(uut.proc.register, 'h10);
     @(negedge clk);
@@ -100,11 +88,7 @@
 	             8'h10, 8'h0F, 8'b0000_1100); // dh
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h40);
-        `assertSecond('h10);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assertState(STATE_ALU1_OP);
         `assert(uut.proc.register, 'h10);
     @(negedge clk);
@@ -128,11 +112,7 @@
 	             8'h10, 8'h9C, 8'b0010_0000); // s
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h40);
-        `assertSecond('h10);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assertState(STATE_ALU1_OP);
         `assert(uut.proc.register, 'h10);
     @(negedge clk);
@@ -149,11 +129,7 @@
 	             8'h10, 8'h7B, 8'b1000_1100); // cdh
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertInstr('h40);
-        `assertSecond('h10);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_OP);
@@ -189,11 +165,7 @@
 	             8'h10, 8'hFF, 8'b1011_1100); // c_sv dh__
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertInstr('h40);
-        `assertSecond('h10);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assert(uut.proc.aluMode, ALU1_DA);
         `assert(uut.proc.register, 'h10);
         `assertState(STATE_ALU1_OP);
@@ -222,11 +194,7 @@
 	             8'h10, 8'h9A, 8'b0010_0000); // s
 
 // da 10
-    repeat (3) @(negedge clk);
-        `assertState(STATE_DECODE);
-        `assertInstr('h40);
-        `assertSecond('h10);
-    @(negedge clk);
+	chk_2byteOp(8'h40, 8'h10);
         `assertState(STATE_ALU1_OP);
         `assert(uut.proc.register, 'h10);
     @(negedge clk);

@@ -13,11 +13,7 @@
         `assert(uut.proc.sp, 'h80);
 
 // push r0
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE0);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE0);
         `assert(uut.proc.register, 'h20);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
@@ -29,11 +25,7 @@
         `assertRegister('h7F, 'h12);
 
 // push r1
-    repeat (3) @(negedge clk);
-        `assertInstr('h70);
-        `assertSecond('hE1);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h70, 8'hE1);
         `assert(uut.proc.register, 'h21);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
@@ -59,11 +51,7 @@
         `assertRegister('h22, 'h20);
 
 // push @22
-    repeat (3) @(negedge clk);
-        `assertInstr('h71);
-        `assertSecond('h22);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
+	chk_2byteOp(8'h71, 8'h22);
         `assert(uut.proc.register, 'h20);
         `assertState(STATE_PUSH_I1);
     @(negedge clk);
