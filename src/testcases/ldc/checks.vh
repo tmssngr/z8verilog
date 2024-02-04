@@ -112,17 +112,8 @@
         `assertRegister(8'h21, 'h80);
 
 // inc 22
-    repeat (3) @(negedge clk);
-        `assertInstr('h20);
-        `assertSecond('h22);
-        `assertState(STATE_DECODE);
-    @(negedge clk);
-        `assertState(STATE_ALU1_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister(8'h22, 'h01);
-
+	chk_alu1(ALU1_INC, 8'h22,
+	         8'h22, 8'h01, FLAG_NONE);
         `assertRegister(8'h20, 'hFF);
         `assertRegister(8'h21, 'h80);
 
