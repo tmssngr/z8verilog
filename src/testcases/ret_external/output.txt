@@ -39,7 +39,7 @@ exact  6 cycles
 0015: read 3rd byte
   d6 00 2c
     call 002c
-13 cycles, expected 20
+14 cycles, expected 20
 
 002c: read instruction
   31
@@ -75,7 +75,7 @@ exact  6 cycles
 001b: read 2nd byte
   d4 e0
     call @e0
-11 cycles, expected 20
+12 cycles, expected 20
 
 002c: read instruction
   31

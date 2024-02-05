@@ -19,7 +19,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     call 0028
     reg[7f] = 12
     reg[7e] = 00
-12 cycles, expected 20
+14 cycles, expected 20
 
 0028: read instruction
   31
@@ -57,7 +57,7 @@ exact  6 cycles
     call @e0
     reg[7f] = 18
     reg[7e] = 00
-10 cycles, expected 20
+12 cycles, expected 20
 
 0028: read instruction
   31

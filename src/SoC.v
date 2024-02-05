@@ -686,8 +686,7 @@ module Processor(
                     $display("    call @%h", second);
                     expectedCycles <= 20;
 `endif
-                    sp <= sp - 16'b1;
-                    state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
+                    state <= STATE_CALL1;
                 end
                 4'hE: begin
 `ifdef BENCH
@@ -774,8 +773,7 @@ module Processor(
                     expectedCycles <= 20;
 `endif
                     // push PCL, PCH
-                    sp <= sp - 16'b1;
-                    state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
+                    state <= STATE_CALL1;
                 end
                 4'hE: begin
 `ifdef BENCH
@@ -1279,31 +1277,25 @@ module Processor(
                 nextCommand();
         end
 
-        STATE_CALL_I1: begin
-            sp <= sp - 16'b1;
-            aluMode <= ALU1_LD;
-            aluA <= pc[7:0];
-            register <= sp[7:0];
-            writeRegister <= 1;
-        end
-        STATE_CALL_I2: begin
-            aluA <= pc[15:8];
-            register <= sp[7:0];
-            writeRegister <= 1;
-            state <= STATE_JP1;
-        end
-        STATE_CALL_E1: begin
-            addr <= sp;
+        STATE_CALL1: begin
             sp <= sp - 16'b1;
             aluA <= pc[7:0];
-            writeMem <= 1;
         end
-        STATE_CALL_E2: begin
-            addr <= sp;
+        STATE_CALL3: begin
+            sp <= sp - 16'b1;
             aluA <= pc[15:8];
-            writeMem <= 1;
         end
-        STATE_CALL_E3: begin
+        STATE_CALL2,
+        STATE_CALL4: begin
+            if (stackInternal) begin
+                aluMode <= ALU1_LD;
+                register <= sp[7:0];
+                writeRegister <= 1;
+            end
+            else begin
+                addr <= sp;
+                writeMem <= 1;
+            end
         end
         STATE_JP1: begin
             addr[15:8] = isCallDA | isJumpDA
