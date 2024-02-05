@@ -6,6 +6,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 20
     srp 20
  5 cycles
+expected  6 cycles
 
 000e: read instruction
   0c
@@ -14,6 +15,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r0, #09
     reg[20] = 09
  5 cycles
+expected  6 cycles
 
 0010: read instruction
   1c
@@ -22,6 +24,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r1, #01
     reg[21] = 01
  5 cycles
+expected  6 cycles
 
 0012: read instruction
   2c
@@ -30,6 +33,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r2, #20
     reg[22] = 20
  5 cycles
+expected  6 cycles
 
 0014: read instruction
   a3
@@ -40,6 +44,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00001001 00001001 => 00000000
     flags = 0100_0000
  8 cycles
+expected  6 cycles - TOO SLOW
 
 0016: read instruction
   2c
@@ -48,6 +53,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r2, #21
     reg[22] = 21
  5 cycles
+expected  6 cycles
 
 0018: read instruction
   a3
@@ -58,6 +64,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00001001 00000001 => 00001000
     flags = 0000_0000
  8 cycles
+expected  6 cycles - TOO SLOW
 
 001a: read instruction
   8d
@@ -67,6 +74,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   8d 00 0c
     jp    , 000c
 10 cycles
+expected 12 cycles
 
 000c: read instruction
 testSoC: SUCCESS

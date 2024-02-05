@@ -6,6 +6,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 20
     srp 20
  5 cycles
+expected  6 cycles
 
 000e: read instruction
   e6
@@ -16,6 +17,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld f8, #92
     reg[f8] = 92
  7 cycles
+expected 10 cycles
 
 0011: read instruction
   b0
@@ -46,6 +48,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r0, #12
     reg[20] = 12
  5 cycles
+expected  6 cycles
 
 0017: read instruction
   70
@@ -53,6 +56,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   70 e0
     push e0
  8 cycles
+expected 12 cycles
 
 0019: read instruction
   50
@@ -61,6 +65,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     pop e1
     reg[21] = 12
  9 cycles
+expected 10 cycles
 
 001b: read instruction
   8d
@@ -70,6 +75,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   8d 00 0c
     jp    , 000c
 10 cycles
+expected 12 cycles
 
 000c: read instruction
 testSoC: SUCCESS

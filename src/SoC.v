@@ -311,6 +311,7 @@ module Processor(
                      | memWrite;
 `ifdef BENCH
     reg[4:0] cycleCounter = 0;
+    reg[4:0] expectedCycles = 0;
 `endif
 
     task nextCommand;
@@ -353,12 +354,23 @@ module Processor(
 
 `ifdef BENCH
         if (state == STATE_FETCH_INSTR) begin
-            if (cycleCounter != 0)
+            if (cycleCounter != 0) begin
                 $display("%d cycles", cycleCounter);
+                if (expectedCycles == 0) begin
+                    $display("expected cycles not defined");
+                    $finish(2);
+                end
+                else if (cycleCounter < expectedCycles) 
+                    $display("expected %d cycles", expectedCycles);
+                else if (cycleCounter > expectedCycles) 
+                    $display("expected %d cycles - TOO SLOW", expectedCycles);
+                expectedCycles <= 0;
+            end
             cycleCounter <= 1;
         end
-        else 
+        else begin
             cycleCounter <= cycleCounter + 1;
+        end
 `endif
 
         state <= state + 6'b1;
@@ -430,14 +442,15 @@ module Processor(
                 4'h3: begin
 `ifdef BENCH
                     $display("    jp @%h", second);
+                    expectedCycles <= 8;
 `endif
                     state <= STATE_JP1;
                 end
                 4'h5: begin
 `ifdef BENCH
                     $display("    pop %h", second);
+                    expectedCycles <= 10;
 `endif
-                    // 10+5 cycles
                     // dst <- @SP
                     // SP <- SP + 1
                     register <= r8(second);
@@ -446,14 +459,15 @@ module Processor(
                 4'h7: begin
 `ifdef BENCH
                     $display("    push %h", second);
+                    expectedCycles <= stackInternal ? 10 : 12;
 `endif
-                    // 10/12+1 cycles
                     register <= r8(second);
                     state <= stackInternal ? STATE_PUSH_I1 : STATE_PUSH_E1;
                 end
                 4'h8: begin
 `ifdef BENCH
                     $display("    decw %h", second);
+                    expectedCycles <= 10;
 `endif
                     aluMode <= ALU1_DEC;
                     register <= r8(second);
@@ -462,6 +476,7 @@ module Processor(
                 4'hA: begin
 `ifdef BENCH
                     $display("    incw %h", second);
+                    expectedCycles <= 10;
 `endif
                     aluMode <= ALU1_INC;
                     register <= r8(second);
@@ -471,6 +486,7 @@ module Processor(
 `ifdef BENCH
                     $display("   %s %h", 
                              alu1OpName(instrH), second);
+                    expectedCycles <= instrH == 4 ? 8 : 6;
 `endif
                     aluMode <= alu1OpCode(instrH);
                     register <= r8(second);
@@ -486,6 +502,7 @@ module Processor(
                 4'h3: begin
 `ifdef BENCH
                     $display("    srp %h", second);
+                    expectedCycles <= 6;
 `endif
                     rp <= second[7:4];
                     nextCommand();
@@ -493,22 +510,23 @@ module Processor(
                 4'h5: begin
 `ifdef BENCH
                     $display("    pop @%h", second);
+                    expectedCycles <= 10;
 `endif
-                    // 10+5 cycles
                     register <= readRegister8(second);
                     state <= STATE_POP_1;
                 end
                 4'h7: begin
 `ifdef BENCH
                     $display("    push @%h", second);
+                    expectedCycles <= stackInternal ? 12 : 14;
 `endif
-                    // 12/14+1 cycles
                     register <= readRegister8(second);
                     state <= stackInternal ? STATE_PUSH_I1 : STATE_PUSH_E1;
                 end
                 4'h8: begin
 `ifdef BENCH
                     $display("    decw @%h", second);
+                    expectedCycles <= 10;
 `endif
                     aluMode <= ALU1_DEC;
                     register <= readRegister8(r8(second));
@@ -517,6 +535,7 @@ module Processor(
                 4'hA: begin
 `ifdef BENCH
                     $display("    incw @%h", second);
+                    expectedCycles <= 10;
 `endif
                     aluMode <= ALU1_INC;
                     register <= readRegister8(r8(second));
@@ -526,6 +545,7 @@ module Processor(
 `ifdef BENCH
                     $display("   %s @%h", 
                              alu1OpName(instrH), second);
+                    expectedCycles <= instrH == 4 ? 8 : 6;
 `endif
                     aluMode <= alu1OpCode(instrH);
                     register <= readRegister8(r8(second));
@@ -542,6 +562,7 @@ module Processor(
 `ifdef BENCH
                     $display("    lde r%h, Irr%h",
                              secondH, secondL);
+                    expectedCycles <= 12;
 `endif
                     register <= r4(secondH);
                     state <= STATE_LDC_READ1;
@@ -550,6 +571,7 @@ module Processor(
 `ifdef BENCH
                     $display("    lde Irr%h, r%h",
                              secondL, secondH);
+                    expectedCycles <= 12;
 `endif
                     register <= r4(secondH);
                     state <= STATE_LDC_WRITE1;
@@ -558,6 +580,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldc r%h, Irr%h",
                              secondH, secondL);
+                    expectedCycles <= 12;
 `endif
                     register <= r4(secondH);
                     state <= STATE_LDC_READ1;
@@ -566,6 +589,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldc Irr%h, r%h",
                              secondL, secondH);
+                    expectedCycles <= 12;
 `endif
                     register <= r4(secondH);
                     state <= STATE_LDC_WRITE1;
@@ -583,6 +607,7 @@ module Processor(
                     $display("    %s r%h, r%h",
                              alu2OpName(instrH),
                              secondH, secondL);
+                    expectedCycles <= 6;
 `endif
                     register <= r4(secondL);
                     state <= STATE_ALU2_OP1;
@@ -598,6 +623,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldei Ir%h, Irr%h",
                              secondH, secondL);
+                    expectedCycles <= 18;
 `endif
                     register <= readRegister4(secondH);
                     state <= STATE_LDC_READ1;
@@ -606,6 +632,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldei Irr%h, Ir%h",
                              secondL, secondH);
+                    expectedCycles <= 18;
 `endif
                     register <= readRegister4(secondH);
                     state <= STATE_LDC_WRITE1;
@@ -614,6 +641,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldci Ir%h, Irr%h",
                              secondH, secondL);
+                    expectedCycles <= 18;
 `endif
                     register <= readRegister4(secondH);
                     state <= STATE_LDC_READ1;
@@ -622,6 +650,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ldci Irr%h, Ir%h",
                              secondL, secondH);
+                    expectedCycles <= 18;
 `endif
                     register <= readRegister4(secondH);
                     state <= STATE_LDC_WRITE1;
@@ -630,6 +659,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ld r%h, @r%h",
                              secondH, secondL);
+                    expectedCycles <= 6;
 `endif
                     register <= readRegister4(secondL);
                     state <= STATE_LD;
@@ -638,6 +668,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ld @r%h, r%h",
                              secondH, secondL);
+                    expectedCycles <= 6;
 `endif
                     register <= readRegister4(secondH);
                     state <= STATE_LD;
@@ -647,6 +678,7 @@ module Processor(
                     $display("    %s r%h, Ir%h",
                              alu2OpName(instrH),
                              secondH, secondL);
+                    expectedCycles <= 6;
 `endif
                     register <= readRegister4(secondL);
                     state <= STATE_ALU2_OP1;
@@ -670,14 +702,15 @@ module Processor(
                 4'hD: begin
 `ifdef BENCH
                     $display("    call @%h", second);
+                    expectedCycles <= 20;
 `endif
-                    // 20 cycles
                     sp <= sp - 16'b1;
                     state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
                 end
                 4'hE: begin
 `ifdef BENCH
                     $display("    ld %h, %h", third, second);
+                    expectedCycles <= 10;
 `endif
                     register <= r8(third);
                     aluA <= readRegister8(r8(second));
@@ -691,6 +724,7 @@ module Processor(
                     $display("    %s %h, %h",
                              alu2OpName(instrH),
                              third, second);
+                    expectedCycles <= 10;
 `endif
                     register <= r8(second);
                     state <= STATE_ALU2_OP1;
@@ -715,6 +749,7 @@ module Processor(
                 4'hE: begin
 `ifdef BENCH
                     $display("    ld %h, @%h", third, second);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister8(r8(second));
                     state <= STATE_LD;
@@ -722,6 +757,7 @@ module Processor(
                 4'hF: begin
 `ifdef BENCH
                     $display("    ld @%h, %h", third, second);
+                    expectedCycles <= 10;
 `endif
                     aluA <= readRegister8(r8(second));
                     state <= STATE_LD;
@@ -732,6 +768,7 @@ module Processor(
                     $display("    %s %h, @%h",
                              alu2OpName(instrH),
                              third, second);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister8(r8(second));
                     state <= STATE_ALU2_OP1;
@@ -755,8 +792,8 @@ module Processor(
                 4'hD: begin
 `ifdef BENCH
                     $display("    call %h", directAddress);
+                    expectedCycles <= 20;
 `endif
-                    // 20 cycles
                     // push PCL, PCH
                     sp <= sp - 16'b1;
                     state <= stackInternal ? STATE_CALL_I1 : STATE_CALL_E1;
@@ -764,6 +801,7 @@ module Processor(
                 4'hE: begin
 `ifdef BENCH
                     $display("    ld %h, #%h", second, third);
+                    expectedCycles <= 10;
 `endif
                     register <= r8(second);
                     aluA <= third;
@@ -776,6 +814,7 @@ module Processor(
                     $display("    %s %h, #%h",
                              alu2OpName(instrH),
                              second, third);
+                    expectedCycles <= 10;
 `endif
                     register <= r8(second);
                     state <= STATE_ALU2_OP1;
@@ -799,6 +838,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ld r%h, @r%h+%h", 
                              secondH, secondL, third);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister4(secondL);
                     state <= STATE_LD;
@@ -807,6 +847,7 @@ module Processor(
 `ifdef BENCH
                     $display("    ld @r%h+%h, r%h", 
                              secondL, third, secondH);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister4(secondL);
                     state <= STATE_LD;
@@ -814,6 +855,7 @@ module Processor(
                 4'hE: begin
 `ifdef BENCH
                     $display("    ld @%h, #%h", second, third);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister8(r8(second));
                     state <= STATE_LD;
@@ -823,6 +865,7 @@ module Processor(
                     $display("    %s @%h, #%h",
                              alu2OpName(instrH),
                              second, third);
+                    expectedCycles <= 10;
 `endif
                     register <= readRegister8(r8(second));
                     state <= STATE_ALU2_OP1;
@@ -835,6 +878,7 @@ module Processor(
             4'h8: begin
 `ifdef BENCH
                 $display("    ld r%h, %h", instrH, second);
+                expectedCycles <= 6;
 `endif
                 register <= r4(instrH);
                 aluA <= readRegister8(r8(second));
@@ -848,6 +892,7 @@ module Processor(
             4'h9: begin
 `ifdef BENCH
                 $display("    ld %h, r%h", second, instrH);
+                expectedCycles <= 6;
 `endif
                 register <= second; // no r8(second) !
                 aluA <= readRegister4(instrH);
@@ -871,6 +916,7 @@ module Processor(
             4'hB: begin
 `ifdef BENCH
                 $display("    jr %s, %h", ccName(instrH), second);
+                expectedCycles <= takeBranch ? 12 : 10;
 `endif
                 nextCommand();
             end
@@ -880,6 +926,7 @@ module Processor(
             4'hC: begin
 `ifdef BENCH
                 $display("    ld r%h, #%h", instrH, second);
+                expectedCycles <= 6;
 `endif
                 register <= r4(instrH);
                 aluA <= second;
@@ -893,9 +940,8 @@ module Processor(
             4'hD: begin
 `ifdef BENCH
                 $display("    jp %s, %h", ccName(instrH), directAddress);
+                expectedCycles <= takeBranch ? 12 : 10;
 `endif
-                // 12+0 cycles if jumping     (3+3+3+1+2)
-                // 10+0 cycles if not jumping (3+3+3+1)
                 if (takeBranch)
                     state <= STATE_JP1;
                 else
@@ -907,6 +953,7 @@ module Processor(
             4'hE: begin
 `ifdef BENCH
                 $display("    inc r%h", instrH);
+                expectedCycles <= 6;
 `endif
                 register <= r4(instrH);
                 aluMode <= ALU1_INC;
@@ -920,6 +967,7 @@ module Processor(
                 4'h8: begin
 `ifdef BENCH
                     $display("    di");
+                    expectedCycles <= 6;
 `endif
                     //TODO
                     nextCommand();
@@ -927,6 +975,7 @@ module Processor(
                 4'h9: begin
 `ifdef BENCH
                     $display("    ei");
+                    expectedCycles <= 6;
 `endif
                     //TODO
                     nextCommand();
@@ -934,22 +983,23 @@ module Processor(
                 4'hA: begin
 `ifdef BENCH
                     $display("    ret");
+                    expectedCycles <= 14;
 `endif
-                    // 14 cycles
                     // PCH, PCL
                     state <= stackInternal ? STATE_RET_I1 : STATE_RET_E1;
                 end
                 4'hB: begin
 `ifdef BENCH
                     $display("    iret");
+                    expectedCycles <= 16;
 `endif
-                    // 16 cycles
                     // flags, PCH, PCL
                     state <= stackInternal ? STATE_IRET_I : STATE_IRET_E1;
                 end
                 4'hC: begin
 `ifdef BENCH
                     $display("    rcf");
+                    expectedCycles <= 6;
 `endif
                     flags[FLAG_INDEX_C] <= instrH[0];
                     nextCommand();
@@ -957,6 +1007,7 @@ module Processor(
                 4'hD: begin
 `ifdef BENCH
                     $display("    scf");
+                    expectedCycles <= 6;
 `endif
                     flags[FLAG_INDEX_C] <= instrH[0];
                     nextCommand();
@@ -964,6 +1015,7 @@ module Processor(
                 4'hE: begin
 `ifdef BENCH
                     $display("    ccf");
+                    expectedCycles <= 6;
 `endif
                     flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
                     nextCommand();
@@ -971,6 +1023,7 @@ module Processor(
                 4'hF: begin
 `ifdef BENCH
                     $display("    nop");
+                    expectedCycles <= 6;
 `endif
                     nextCommand();
                 end
@@ -1153,6 +1206,9 @@ module Processor(
         end
 
         STATE_DJNZ2: begin
+`ifdef BENCH
+            expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
+`endif
             // needs a special state to handle the pc
             nextCommand();
         end

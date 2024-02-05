@@ -6,6 +6,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 00
     srp 00
  5 cycles
+expected  6 cycles
 
 000e: read instruction
   4c
@@ -14,6 +15,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r4, #05
     reg[04] = 05
  5 cycles
+expected  6 cycles
 
 0010: read instruction
   2c
@@ -22,6 +24,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     ld r2, #01
     reg[02] = 01
  5 cycles
+expected  6 cycles
 
 0012: read instruction
   90
@@ -41,6 +44,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     djnz r4, fc
     reg[04] = 04
  7 cycles
+expected 12 cycles
 
 0012: read instruction
   90
@@ -60,6 +64,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     djnz r4, fc
     reg[04] = 03
  7 cycles
+expected 12 cycles
 
 0012: read instruction
   90
@@ -79,6 +84,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     djnz r4, fc
     reg[04] = 02
  7 cycles
+expected 12 cycles
 
 0012: read instruction
   90
@@ -98,6 +104,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     djnz r4, fc
     reg[04] = 01
  7 cycles
+expected 12 cycles
 
 0012: read instruction
   90
@@ -117,6 +124,7 @@ VCD info: dumpfile SoC.vcd opened for output.
     djnz r4, fc
     reg[04] = 00
  7 cycles
+expected 10 cycles
 
 0016: read instruction
   8b
@@ -124,6 +132,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   8b f4
     jr    , f4
  5 cycles
+expected 12 cycles
 
 000c: read instruction
 testSoC: SUCCESS
