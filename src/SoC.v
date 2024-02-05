@@ -278,8 +278,7 @@ module Processor(
                            || (state == STATE_DJNZ2 && flagsOut[FLAG_INDEX_Z] == 1'b0 )
                            ) 
                              ? nextRelativePc
-                             : (state == STATE_RET_I3
-                               |state == STATE_RET_E6
+                             : (state == STATE_RET6
                                |state == STATE_JP3)
                                ? addr
                                : pc;
@@ -957,7 +956,7 @@ module Processor(
                     expectedCycles <= 14;
 `endif
                     // PCH, PCL
-                    state <= stackInternal ? STATE_RET_I1 : STATE_RET_E1;
+                    state <= STATE_RET1;
                 end
                 4'hB: begin
 `ifdef BENCH
@@ -965,7 +964,7 @@ module Processor(
                     expectedCycles <= 16;
 `endif
                     // flags, PCH, PCL
-                    state <= stackInternal ? STATE_IRET_I : STATE_IRET_E1;
+                    state <= STATE_IRET1;
                 end
                 4'hC: begin
 `ifdef BENCH
@@ -1311,58 +1310,45 @@ module Processor(
             nextCommand();
         end
 
-        STATE_IRET_I: begin
-            aluMode <= ALU1_LD;
-            aluA <= readRegister8(sp[7:0]);
+        STATE_IRET1: begin
+            addr <= sp;
             sp <= sp + 16'b1;
+            readMem <= ~stackInternal;
+        end
+        STATE_IRET2: begin
+            aluMode <= ALU1_LD;
+            aluA <= stackInternal
+                ? readRegister8(addr[7:0])
+                : memDataRead;
             register <= FLAGS;
             writeRegister <= 1;
         end
-        STATE_RET_I1: begin
-            addr[15:8] <= readRegister8(sp[7:0]);
-            sp <= sp + 16'b1;
-        end
-        STATE_RET_I2: begin
-            addr[7:0] <= readRegister8(sp[7:0]);
-            sp <= sp + 16'b1;
-        end
-        STATE_RET_I3: begin
-            nextCommand();
-            //TODO: for iret enable interrupts
-        end
-        STATE_IRET_E1: begin
+        STATE_RET1: begin
             addr <= sp;
+            readMem <= ~stackInternal;
+        end
+        STATE_RET2: begin
             sp <= sp + 16'b1;
-            readMem <= 1;
+            readMem <= ~stackInternal;
         end
-        STATE_IRET_E2: begin
-            aluMode <= ALU1_LD;
-            aluA <= memDataRead;
-            register <= FLAGS;
-            writeRegister <= 1;
-        end
-        STATE_RET_E1: begin
+        STATE_RET3: begin
+            aluA <= stackInternal
+                ? readRegister8(addr[7:0])
+                : memDataRead;// temp
             addr <= sp;
+            readMem <= ~stackInternal;
+        end
+        STATE_RET4: begin
             sp <= sp + 16'b1;
-            readMem <= 1;
+            readMem <= ~stackInternal;
         end
-        STATE_RET_E2: begin
-            readMem <= 1;
-        end
-        STATE_RET_E3: begin
-            aluA <= memDataRead;// temp
-            addr <= sp;
-            sp <= sp + 16'b1;
-            readMem <= 1;
-        end
-        STATE_RET_E4: begin
-            readMem <= 1;
-        end
-        STATE_RET_E5: begin
+        STATE_RET5: begin
             addr[15:8] <= aluA;
-            addr[7:0] <= memDataRead;
+            addr[7:0] <= stackInternal
+                ? readRegister8(addr[7:0])
+                : memDataRead;
         end
-        STATE_RET_E6: begin
+        STATE_RET6: begin
             nextCommand();
             //TODO: for iret enable interrupts
         end

@@ -32,7 +32,7 @@ exact  6 cycles
 002a: read instruction
   af
     ret
- 7 cycles, expected 14
+10 cycles, expected 14
 
 0012: read instruction
   0c
@@ -70,7 +70,7 @@ exact  6 cycles
 002a: read instruction
   af
     ret
- 7 cycles, expected 14
+10 cycles, expected 14
 
 0018: read instruction
   0c
@@ -124,7 +124,7 @@ exact  6 cycles
   bf
     iret
     reg[fc] = a5
- 8 cycles, expected 16
+12 cycles, expected 16
 
 000c: read instruction
 testSoC: SUCCESS
