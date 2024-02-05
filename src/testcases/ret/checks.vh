@@ -10,22 +10,7 @@
 
 	chk_srp(2);
 
-// ret
-	chk_1byteOp(8'hAF);
-        `assert(uut.proc.sp, 'h7E);
-        `assertState(STATE_RET_I1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 'h00);
-        `assert(uut.proc.sp, 'h7F);
-        `assertState(STATE_RET_I2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 'h0012);
-        `assert(uut.proc.sp, 'h80);
-        `assertState(STATE_RET_I3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc(16'h0012);
-    @(negedge clk);
+	chk_ret_intern(16'h0012, 8'h80);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
@@ -41,22 +26,7 @@
 
 	chk_srp(2);
 
-// ret
-	chk_1byteOp(8'hAF);
-        `assert(uut.proc.sp, 'h7E);
-        `assertState(STATE_RET_I1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 'h00);
-        `assert(uut.proc.sp, 'h7F);
-        `assertState(STATE_RET_I2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 'h0018);
-        `assert(uut.proc.sp, 'h80);
-        `assertState(STATE_RET_I3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc(16'h0018);
-    @(negedge clk);
+	chk_ret_intern(16'h0018, 8'h80);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
@@ -108,27 +78,6 @@
         `assertRegister('h7E, 'h00);
         `assertRegister('h7F, 'h0C);
 
-// iret
-	chk_1byteOp(8'hBF);
-        `assertState(STATE_IRET_I);
-    @(negedge clk);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 'hA5);
-        `assert(uut.proc.sp, 'h7E);
-        `assert(uut.proc.register, 'hFC);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_RET_I1);
-    @(negedge clk);
-        `assertFlags(8'b1010_0101);
-        `assert(uut.proc.addr[15:8], 'h00);
-        `assert(uut.proc.sp, 'h7F);
-        `assertState(STATE_RET_I2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 'h000C);
-        `assert(uut.proc.sp, 'h80);
-        `assertState(STATE_RET_I3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc(16'h000C);
+    chk_iret_intern(16'h000C, 8'h80, 8'b1010_0101);
 
     #3

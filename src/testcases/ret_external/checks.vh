@@ -25,30 +25,7 @@
 
 	chk_srp(2);
 
-// ret
-	chk_1byteOp(8'hAF);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assertState(STATE_RET_E1);
-    @(negedge clk);
-        `assertState(STATE_RET_E2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFE);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertState(STATE_RET_E3);
-    @(negedge clk);
-        `assertState(STATE_RET_E4);
-    @(negedge clk);
-        `assert(uut.proc.aluA, 'h00);
-        `assert(uut.proc.addr, 'hFFFF);
-        `assert(uut.proc.sp, 16'h0000);
-        `assertState(STATE_RET_E5);
-    @(negedge clk);
-        `assert(uut.proc.addr, 'h0016);
-        `assertState(STATE_RET_E6);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc(16'h0016);
-    @(negedge clk);
+	chk_ret_extern(16'h0016, 16'h0000);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
@@ -64,30 +41,7 @@
 
 	chk_srp(2);
 
-// ret
-	chk_1byteOp(8'hAF);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assertState(STATE_RET_E1);
-    @(negedge clk);
-        `assertState(STATE_RET_E2);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFE);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertState(STATE_RET_E3);
-    @(negedge clk);
-        `assertState(STATE_RET_E4);
-    @(negedge clk);
-        `assert(uut.proc.aluA, 'h00);
-        `assert(uut.proc.addr, 'hFFFF);
-        `assert(uut.proc.sp, 16'h0000);
-        `assertState(STATE_RET_E5);
-    @(negedge clk);
-        `assert(uut.proc.addr, 'h001C);
-        `assertState(STATE_RET_E6);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-        `assertPc(16'h001C);
-    @(negedge clk);
+	chk_ret_extern(16'h001C, 16'h0000);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
@@ -142,38 +96,7 @@
         `assert(uut.proc.sp, 16'hFFFD);
         `assertRam('hFFFD, 'hA5);
 
-// iret
-	chk_1byteOp(8'hBF);
-        `assertState(STATE_IRET_E1);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFD);
-        `assertState(STATE_IRET_E2);
-    @(negedge clk);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 'hA5);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assert(uut.proc.register, 'hFC);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_RET_E1);
-    @(negedge clk);
-        `assertFlags(8'b1010_0101);
-        `assert(uut.proc.addr, 16'hFFFE);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertState(STATE_RET_E2);
-    @(negedge clk);
-        `assertState(STATE_RET_E3);
-    @(negedge clk);
-        `assert(uut.proc.aluA, 8'h00);
-        `assert(uut.proc.addr, 16'hFFFF);
-        `assert(uut.proc.sp, 16'h0000);
-        `assertState(STATE_RET_E4);
-    @(negedge clk);
-        `assertState(STATE_RET_E5);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'h000C);
-        `assertState(STATE_RET_E6);
-    @(negedge clk);
-        `assertPc(16'h000C);
-        `assertState(STATE_FETCH_INSTR);
+
+    chk_iret_extern(16'h000C, 16'h0000, 8'b1010_0101);
 
     #3

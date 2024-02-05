@@ -829,3 +829,121 @@ task chk_call_IRR_extern;
         @(negedge clk);
     end
 endtask
+
+task chk_ret_intern;
+    input [15:0] pc;
+    input  [7:0] sp;
+    begin
+        chk_1byteOp(8'hAF);
+            `assert(uut.proc.sp, sp - 2);
+            `assertState(STATE_RET_I1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], pc[15:8]);
+            `assert(uut.proc.sp, sp - 1);
+            `assertState(STATE_RET_I2);
+        @(negedge clk);
+            `assert(uut.proc.addr, pc);
+            `assert(uut.proc.sp, sp);
+            `assertState(STATE_RET_I3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+            `assertPc(pc);
+        @(negedge clk);
+    end
+endtask
+task chk_ret_extern;
+    input [15:0] pc;
+    input [15:0] sp;
+    begin
+        chk_1byteOp(8'hAF);
+            `assert(uut.proc.sp, sp - 16'h2);
+            `assertState(STATE_RET_E1);
+        @(negedge clk);
+            `assertState(STATE_RET_E2);
+        @(negedge clk);
+            `assert(uut.proc.addr, sp - 16'h2);
+            `assert(uut.proc.sp, sp - 16'h1);
+            `assertState(STATE_RET_E3);
+        @(negedge clk);
+            `assertState(STATE_RET_E4);
+        @(negedge clk);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assert(uut.proc.addr, sp - 16'h1);
+            `assert(uut.proc.sp, sp);
+            `assertState(STATE_RET_E5);
+        @(negedge clk);
+            `assert(uut.proc.addr, pc);
+            `assertState(STATE_RET_E6);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+            `assertPc(pc);
+        @(negedge clk);
+    end
+endtask
+task chk_iret_intern;
+    input [15:0] pc;
+    input  [7:0] sp;
+    input  [7:0] flags;
+    begin
+        chk_1byteOp(8'hBF);
+            `assertState(STATE_IRET_I);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, flags);
+            `assert(uut.proc.sp, sp - 2);
+            `assert(uut.proc.register, 'hFC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_RET_I1);
+        @(negedge clk);
+            `assertFlags(flags);
+            `assert(uut.proc.addr[15:8], pc[15:8]);
+            `assert(uut.proc.sp, sp - 1);
+            `assertState(STATE_RET_I2);
+        @(negedge clk);
+            `assert(uut.proc.addr, pc);
+            `assert(uut.proc.sp, sp);
+            `assertState(STATE_RET_I3);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+            `assertPc(pc);
+    end
+endtask
+task chk_iret_extern;
+    input [15:0] pc;
+    input [15:0] sp;
+    input  [7:0] flags;
+    begin
+        chk_1byteOp(8'hBF);
+            `assertState(STATE_IRET_E1);
+        @(negedge clk);
+            `assert(uut.proc.addr, sp - 16'h3);
+            `assertState(STATE_IRET_E2);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, flags);
+            `assert(uut.proc.sp, sp - 16'h2);
+            `assert(uut.proc.register, 'hFC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_RET_E1);
+        @(negedge clk);
+            `assertFlags(flags);
+            `assert(uut.proc.addr, sp - 16'h2);
+            `assert(uut.proc.sp, sp - 16'h1);
+            `assertState(STATE_RET_E2);
+        @(negedge clk);
+            `assertState(STATE_RET_E3);
+        @(negedge clk);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assert(uut.proc.addr, sp - 16'h1);
+            `assert(uut.proc.sp, sp);
+            `assertState(STATE_RET_E4);
+        @(negedge clk);
+            `assertState(STATE_RET_E5);
+        @(negedge clk);
+            `assert(uut.proc.addr, pc);
+            `assertState(STATE_RET_E6);
+        @(negedge clk);
+            `assertPc(pc);
+            `assertState(STATE_FETCH_INSTR);
+    end
+endtask
