@@ -502,7 +502,7 @@ module Processor(
                     $display("    pop @%h", second);
                     expectedCycles <= 10;
 `endif
-                    register <= readRegister8(second);
+                    register <= readRegister8(r8(second));
                     state <= STATE_POP_1;
                 end
                 4'h7: begin
@@ -510,7 +510,7 @@ module Processor(
                     $display("    push @%h", second);
                     expectedCycles <= stackInternal ? 12 : 14;
 `endif
-                    register <= readRegister8(second);
+                    register <= readRegister8(r8(second));
                     state <= stackInternal ? STATE_PUSH_I1 : STATE_PUSH_E1;
                 end
                 4'h8: begin
