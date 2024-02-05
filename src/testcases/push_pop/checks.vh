@@ -12,28 +12,10 @@
 	chk_ld_R_IM(8'hFF, 8'h80);
         `assert(uut.proc.sp, 'h80);
 
-// push r0
-	chk_2byteOp(8'h70, 8'hE0);
-        `assert(uut.proc.register, 'h20);
-        `assertState(STATE_PUSH_I1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_I2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7F);
-        `assertRegister('h7F, 'h12);
-
-// push r1
-	chk_2byteOp(8'h70, 8'hE1);
-        `assert(uut.proc.register, 'h21);
-        `assertState(STATE_PUSH_I1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_I2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7E);
+    chk_push_intern(8'hE0,
+                    8'h20, 8'h12, 8'h7F);
+    chk_push_intern(8'hE1,
+                    8'h21, 8'h34, 8'h7E);
         `assertRegister('h7E, 'h34);
         `assertRegister('h7F, 'h12);
 

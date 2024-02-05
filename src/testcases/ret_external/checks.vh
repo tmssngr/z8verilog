@@ -54,48 +54,12 @@
         `assertRegister('h21, 'h0C);
         `assertRegister('h22, 'hA5);
 
-// push r1
-	chk_2byteOp(8'h70, 8'hE1);
-        `assert(uut.proc.register, 'h21);
-        `assertState(STATE_PUSH_E1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E2);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertRam('hFFFF, 'h0C);
-
-// push r0
-	chk_2byteOp(8'h70, 8'hE0);
-        `assert(uut.proc.register, 'h20);
-        `assertState(STATE_PUSH_E1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E2);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assertRam('hFFFE, 'h00);
-
-// push r2
-	chk_2byteOp(8'h70, 8'hE2);
-        `assert(uut.proc.register, 'h22);
-        `assertState(STATE_PUSH_E1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E2);
-    @(negedge clk);
-        `assertState(STATE_PUSH_E3);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 16'hFFFD);
-        `assertRam('hFFFD, 'hA5);
-
+    chk_push_extern(8'hE1,
+                    8'h21, 8'h0C, 16'hFFFF);
+    chk_push_extern(8'hE0,
+                    8'h20, 8'h00, 16'hFFFE);
+    chk_push_extern(8'hE2,
+                    8'h22, 8'hA5, 16'hFFFD);
 
     chk_iret_extern(16'h000C, 16'h0000, 8'b1010_0101);
 
