@@ -916,11 +916,7 @@ module Processor(
                 $display("    ld r%h, #%h", instrH, second);
                 expectedCycles <= 6;
 `endif
-                register <= r4(instrH);
-                aluA <= second;
-                aluMode <= ALU1_LD;
-                writeRegister <= 1;
-                nextCommand();
+                state <= STATE_LD;
             end
             // ================================================================
             // Column D
@@ -1073,6 +1069,11 @@ module Processor(
                     writeRegister <= 1;
                 end
                 endcase
+            end
+            4'hC: begin
+                register <= r4(instrH);
+                aluA <= second;
+                writeRegister <= 1;
             end
             endcase
             aluMode <= ALU1_LD;

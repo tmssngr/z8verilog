@@ -14,8 +14,7 @@ expected  6 cycles
   3c 0f
     ld r3, #0f
     reg[03] = 0f
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0010: read instruction
   ff
@@ -41,8 +40,7 @@ expected  6 cycles
   3c ff
     ld r3, #ff
     reg[03] = ff
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0016: read instruction
   eb
@@ -80,8 +78,7 @@ expected 10 cycles
   4c 08
     ld r4, #08
     reg[04] = 08
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0025: read instruction
   5c
@@ -89,8 +86,7 @@ expected  6 cycles
   5c 12
     ld r5, #12
     reg[05] = 12
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0027: read instruction
   c2

@@ -22,8 +22,7 @@ expected 10 cycles
   0c 03
     ld r0, #03
     reg[70] = 03
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0012: read instruction
   06

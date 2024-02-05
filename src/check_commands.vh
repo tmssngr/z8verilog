@@ -90,6 +90,8 @@ task chk_ld_r_IM;
     input[7:0] register;
     begin
         chk_2byteOp({dst, 4'hC}, value);
+            `assertState(STATE_LD);
+        @(negedge clk);
             `assert(uut.proc.register, register);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);

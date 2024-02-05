@@ -14,8 +14,7 @@ expected  6 cycles
   0c 09
     ld r0, #09
     reg[20] = 09
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0010: read instruction
   1c
@@ -23,8 +22,7 @@ expected  6 cycles
   1c 01
     ld r1, #01
     reg[21] = 01
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0012: read instruction
   2c
@@ -32,8 +30,7 @@ expected  6 cycles
   2c 20
     ld r2, #20
     reg[22] = 20
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0014: read instruction
   a3
@@ -52,8 +49,7 @@ expected  6 cycles - TOO SLOW
   2c 21
     ld r2, #21
     reg[22] = 21
- 5 cycles
-expected  6 cycles
+ 6 cycles
 
 0018: read instruction
   a3
