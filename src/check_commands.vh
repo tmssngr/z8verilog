@@ -200,6 +200,8 @@ task chk_ld_R_IM;
     input[7:0] value;
     begin
         chk_3byteOp(8'hE6, dst, value);
+            `assertState(STATE_LD);
+        @(negedge clk);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
             `assertState(STATE_FETCH_INSTR);

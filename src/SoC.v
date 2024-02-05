@@ -792,10 +792,7 @@ module Processor(
                     expectedCycles <= 10;
 `endif
                     register <= r8(second);
-                    aluA <= third;
-                    aluMode <= ALU1_LD;
-                    writeRegister <= 1;
-                    nextCommand();
+                    state <= STATE_LD;
                 end
                 default: begin
 `ifdef BENCH
@@ -1045,6 +1042,13 @@ module Processor(
                 end
                 4'hF: begin
                     register <= readRegister8(r8(third));
+                end
+                endcase
+            end
+            4'h6: begin
+                case (instrH)
+                4'hE: begin
+                    aluA <= third;
                 end
                 endcase
             end

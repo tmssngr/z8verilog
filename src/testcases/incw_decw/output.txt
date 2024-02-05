@@ -8,7 +8,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 10 01
     ld 10, #01
     reg[10] = 01
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 000f: read instruction
@@ -19,7 +19,7 @@ expected 10 cycles
   e6 11 02
     ld 11, #02
     reg[11] = 02
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0012: read instruction
@@ -56,7 +56,7 @@ expected 10 cycles
   e6 11 7f
     ld 11, #7f
     reg[11] = 7f
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0019: read instruction
@@ -93,7 +93,7 @@ expected 10 cycles
   e6 11 ff
     ld 11, #ff
     reg[11] = ff
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0020: read instruction
@@ -130,7 +130,7 @@ expected 10 cycles
   e6 10 ff
     ld 10, #ff
     reg[10] = ff
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0027: read instruction
@@ -193,7 +193,7 @@ expected 10 cycles
   e6 12 10
     ld 12, #10
     reg[12] = 10
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0032: read instruction

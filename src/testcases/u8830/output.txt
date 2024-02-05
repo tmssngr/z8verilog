@@ -58,7 +58,7 @@ expected 12 cycles
   e6 f8 b6
     ld f8, #b6
     reg[f8] = b6
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0020: read instruction
@@ -69,7 +69,7 @@ expected 10 cycles
   e6 f7 08
     ld f7, #08
     reg[f7] = 08
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0023: read instruction

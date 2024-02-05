@@ -16,7 +16,7 @@ expected  6 cycles
   e6 f8 92
     ld f8, #92
     reg[f8] = 92
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0011: read instruction

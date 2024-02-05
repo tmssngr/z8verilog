@@ -8,7 +8,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 ff 80
     ld ff, #80
     reg[ff] = 80
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 000f: read instruction

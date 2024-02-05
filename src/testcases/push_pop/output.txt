@@ -32,7 +32,7 @@ expected  6 cycles
   e6 ff 80
     ld ff, #80
     reg[ff] = 80
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0015: read instruction
