@@ -1,5 +1,3 @@
-localparam P3M  = 8'hF7;
-
 localparam M_001D = 16'h001D;
 localparam M_003D = 16'h003D;
 

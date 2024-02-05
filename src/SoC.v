@@ -97,6 +97,7 @@ module Processor(
     //                  || | ++----- P1 Mode: 00 Output, 01 Input, 10 AD0-AD7, 11 tristate
     //                  || +-------- Memory timing: 0 normal, 1 extended
     //                  ++---------- P04-P07 Mode: 00 output, 01 input, 1x A12-A15 
+    reg [7:0] p3m = 0;
     wire stackInternal = p01m[2];
     reg [7:0] port2;
     assign port2Out = port2;
@@ -153,6 +154,7 @@ module Processor(
         3:            readRegister8 = port3;
         8'b0???_????: readRegister8 = registers[r[6:0]];
         P01M:         readRegister8 = p01m;
+        P3M:          readRegister8 = p3m;
         FLAGS:        readRegister8 = flags;
         RP:           readRegister8 = { rp, 4'h0 };
         SPH:          readRegister8 = sp[15:8];
@@ -338,6 +340,7 @@ module Processor(
             casez (register)
             8'b0???_????: registers[register] <= aluOut;
             P01M:         p01m                <= aluOut;
+            P3M:          p3m                 <= aluOut;
             FLAGS:        flags               <= aluOut;
             RP:           rp                  <= aluOut[7:4];
             SPH:          sp[15:8]            <= aluOut;

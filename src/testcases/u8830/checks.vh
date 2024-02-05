@@ -25,10 +25,8 @@
         `assert(uut.proc.p01m, 'hB6);
 
 // ld P3M, #8
-	chk_3byteOp(8'hE6, 8'hF7, 8'h08);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        //`assert(uut.proc.p3m, 'h08); //TODO
+	chk_ld_R_IM(8'hF7, 8'h08);
+        `assert(uut.proc.p3m, 'h08);
 
 
 	chk_ld_r_IM(4'h4, 8'h08,

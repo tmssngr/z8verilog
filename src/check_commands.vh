@@ -202,11 +202,14 @@ task chk_ld_R_IM;
             `assert(uut.proc.writeFlags, 0);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
-            if (dst == 8'hF8) begin
+            if (dst == P01M) begin
                 `assert(uut.proc.p01m, value);
             end
+            else if (dst == P3M) begin
+                `assert(uut.proc.p3m, value);
+            end
             else begin
-                if (dst == 8'hFF) begin
+                if (dst == SPL) begin
                     `assert(uut.proc.sp[7:0], value);
                 end
                 else begin
