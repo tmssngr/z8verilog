@@ -1031,11 +1031,9 @@ module Processor(
                 4'hE: begin
                     aluA <= readRegister8(register);
                     register <= r4(secondH);
-                    writeRegister <= 1;
                 end
                 4'hF: begin
                     aluA <= readRegister4(secondL);
-                    writeRegister <= 1;
                 end
                 endcase
             end
@@ -1044,11 +1042,9 @@ module Processor(
                 4'hE: begin
                     aluA <= readRegister8(register);
                     register <= r8(third);
-                    writeRegister <= 1;
                 end
                 4'hF: begin
                     register <= readRegister8(r8(third));
-                    writeRegister <= 1;
                 end
                 endcase
             end
@@ -1057,26 +1053,23 @@ module Processor(
                 4'hC: begin
                     aluA <= readRegister8(register + third);
                     register <= r4(secondH);
-                    writeRegister <= 1;
                 end
                 4'hD: begin
                     aluA <= readRegister4(secondH);
                     register <= register + third;
-                    writeRegister <= 1;
                 end
                 4'hE: begin
                     aluA <= third;
-                    writeRegister <= 1;
                 end
                 endcase
             end
             4'hC: begin
                 register <= r4(instrH);
                 aluA <= second;
-                writeRegister <= 1;
             end
             endcase
             aluMode <= ALU1_LD;
+            writeRegister <= 1;
             nextCommand();
         end
 
