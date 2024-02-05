@@ -700,11 +700,8 @@ module Processor(
                     $display("    ld %h, %h", third, second);
                     expectedCycles <= 10;
 `endif
-                    register <= r8(third);
-                    aluA <= readRegister8(r8(second));
-                    aluMode <= ALU1_LD;
-                    writeRegister <= 1;
-                    nextCommand();
+                    register <= r8(second);
+                    state <= STATE_LD;
                 end
                 // x4
                 default: begin
@@ -1031,6 +1028,14 @@ module Processor(
                 end
                 4'hF: begin
                     aluA <= readRegister4(secondL);
+                end
+                endcase
+            end
+            4'h4: begin
+                case (instrH)
+                4'hE: begin
+                    aluA <= readRegister8(register);
+                    register <= r8(third);
                 end
                 endcase
             end

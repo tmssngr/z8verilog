@@ -137,6 +137,10 @@ task chk_ld_R_R;
     input[7:0] value;
     begin
         chk_3byteOp('hE4, src, dst);
+            `assertState(STATE_LD);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.register, register);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register, value);

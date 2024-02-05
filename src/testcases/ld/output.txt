@@ -24,7 +24,7 @@ expected  6 cycles
   e4 e0 e1
     ld e1, e0
     reg[21] = 09
- 7 cycles
+ 8 cycles
 expected 10 cycles
 
 0013: read instruction
