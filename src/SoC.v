@@ -283,28 +283,16 @@ module Processor(
                                |state == STATE_JP3)
                                ? addr
                                : pc;
+    reg readMem = 0;
     reg writeMem = 0;
-    assign memAddr = (state == STATE_POP_2)
-                   | (state == STATE_POP_3)
-                   | writeMem
-                   | (state == STATE_IRET_E2)
-                   | (state == STATE_RET_E2)
-                   | (state == STATE_RET_E3)
-                   | (state == STATE_RET_E4)
-                   | (state == STATE_RET_E5)
-                   | (state == STATE_READ_MEM1)
-                   | (state == STATE_READ_MEM2)
+    assign memAddr = readMem | writeMem
                      ? addr : pc;
     assign memDataWrite = aluA;
     assign memWrite = writeMem;
     assign memStrobe = (state == STATE_FETCH_INSTR)
                      | (state == STATE_WAIT_2 & ~isInstrSize1)
                      | (state == STATE_WAIT_3)
-                     | (state == STATE_POP_2 & ~stackInternal)
-                     | (state == STATE_IRET_E2)
-                     | (state == STATE_RET_E2)
-                     | (state == STATE_RET_E4)
-                     | (state == STATE_READ_MEM1)
+                     | readMem
                      | writeMem;
 `ifdef BENCH
     reg[4:0] cycleCounter = 0;
@@ -349,6 +337,7 @@ module Processor(
             endcase
         end
         writeRegister <= 0;
+        readMem <= 0;
         writeMem <= 0;
 
 `ifdef BENCH
@@ -1184,8 +1173,10 @@ module Processor(
 
         STATE_POP_1: begin
             addr <= sp;
+            readMem <= 1;
         end
         STATE_POP_2: begin
+            readMem <= 1;
         end
         STATE_POP_3: begin
             aluA <= stackInternal
@@ -1220,6 +1211,7 @@ module Processor(
         STATE_LDC_READ2: begin
             addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
             state <= STATE_READ_MEM1;
+            readMem <= 1;
         end
 
         STATE_LDC_WRITE1: begin
@@ -1235,6 +1227,7 @@ module Processor(
         end
 
         STATE_READ_MEM1: begin
+            readMem <= 1;
         end
         STATE_READ_MEM2: begin
             aluA <= memDataRead;
@@ -1337,6 +1330,7 @@ module Processor(
         STATE_IRET_E1: begin
             addr <= sp;
             sp <= sp + 16'b1;
+            readMem <= 1;
         end
         STATE_IRET_E2: begin
             aluMode <= ALU1_LD;
@@ -1347,15 +1341,19 @@ module Processor(
         STATE_RET_E1: begin
             addr <= sp;
             sp <= sp + 16'b1;
+            readMem <= 1;
         end
         STATE_RET_E2: begin
+            readMem <= 1;
         end
         STATE_RET_E3: begin
             aluA <= memDataRead;// temp
             addr <= sp;
             sp <= sp + 16'b1;
+            readMem <= 1;
         end
         STATE_RET_E4: begin
+            readMem <= 1;
         end
         STATE_RET_E5: begin
             addr[15:8] <= aluA;
