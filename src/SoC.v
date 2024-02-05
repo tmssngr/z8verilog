@@ -283,11 +283,10 @@ module Processor(
                                |state == STATE_JP3)
                                ? addr
                                : pc;
-    assign memAddr = (state == STATE_PUSH_E3)
-                   | (state == STATE_POP_2)
+    reg writeMem = 0;
+    assign memAddr = (state == STATE_POP_2)
                    | (state == STATE_POP_3)
-                   | (state == STATE_CALL_E2)
-                   | (state == STATE_CALL_E3)
+                   | writeMem
                    | (state == STATE_IRET_E2)
                    | (state == STATE_RET_E2)
                    | (state == STATE_RET_E3)
@@ -295,13 +294,9 @@ module Processor(
                    | (state == STATE_RET_E5)
                    | (state == STATE_READ_MEM1)
                    | (state == STATE_READ_MEM2)
-                   | (state == STATE_WRITE_MEM)
                      ? addr : pc;
     assign memDataWrite = aluA;
-    assign memWrite = (state == STATE_PUSH_E3)
-                    | (state == STATE_CALL_E2)
-                    | (state == STATE_CALL_E3)
-                    | (state == STATE_WRITE_MEM);
+    assign memWrite = writeMem;
     assign memStrobe = (state == STATE_FETCH_INSTR)
                      | (state == STATE_WAIT_2 & ~isInstrSize1)
                      | (state == STATE_WAIT_3)
@@ -310,7 +305,7 @@ module Processor(
                      | (state == STATE_RET_E2)
                      | (state == STATE_RET_E4)
                      | (state == STATE_READ_MEM1)
-                     | memWrite;
+                     | writeMem;
 `ifdef BENCH
     reg[4:0] cycleCounter = 0;
     reg[4:0] expectedCycles = 0;
@@ -354,6 +349,7 @@ module Processor(
             endcase
         end
         writeRegister <= 0;
+        writeMem <= 0;
 
 `ifdef BENCH
         if (state == STATE_FETCH_INSTR) begin
@@ -1180,6 +1176,7 @@ module Processor(
         STATE_PUSH_E2: begin
             aluA <= readRegister8(register);
             addr <= sp;
+            writeMem <= 1;
         end
         STATE_PUSH_E3: begin
             nextCommand();
@@ -1234,6 +1231,7 @@ module Processor(
         STATE_LDC_WRITE3: begin
             aluA <= readRegister8(register);
             state <= STATE_WRITE_MEM;
+            writeMem <= 1;
         end
 
         STATE_READ_MEM1: begin
@@ -1294,10 +1292,12 @@ module Processor(
             addr <= sp;
             sp <= sp - 16'b1;
             aluA <= pc[7:0];
+            writeMem <= 1;
         end
         STATE_CALL_E2: begin
             addr <= sp;
             aluA <= pc[15:8];
+            writeMem <= 1;
         end
         STATE_CALL_E3: begin
         end
