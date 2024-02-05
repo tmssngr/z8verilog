@@ -4,36 +4,8 @@
     chk_ld_R_IM(8'hFF, 8'h80);
 
 // call L1_
-	chk_3byteOp(8'hD6, 8'h00, 8'h28);
-        `assert(uut.proc.sp, 'h7F);
-        `assertState(STATE_CALL_I1);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7E);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 8'h12);
-        `assert(uut.proc.register, 'h7F);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_CALL_I2);
-    @(negedge clk);
-        `assertRegister(8'h7F, 8'h12);
-
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 8'h00);
-        `assert(uut.proc.register, 'h7E);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_JP1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_JP2);
-    @(negedge clk);
-        `assert(uut.proc.addr[7:0], 8'h28);
-        `assertState(STATE_JP3);
-    @(negedge clk);
-        `assertRegister(8'h7E, 8'h00);
-        `assertPc(16'h0028);
-
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_call_intern(16'h0028,
+	                16'h0012, 8'h7E);
 
 
 	chk_srp(2);
@@ -64,37 +36,8 @@
         `assertRegister('h21, 'h28);
 
 // call IRR0
-	chk_2byteOp(8'hD4, 8'hE0);
-        `assert(uut.proc.sp, 'h7F);
-        `assertState(STATE_CALL_I1);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7E);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 8'h18);
-        `assert(uut.proc.register, 'h7F);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_CALL_I2);
-    @(negedge clk);
-        `assertRegister(8'h7F, 8'h18);
-
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.aluA, 8'h00);
-        `assert(uut.proc.register, 'h7E);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_JP1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_JP2);
-    @(negedge clk);
-        `assert(uut.proc.addr[7:0], 8'h28);
-        `assertState(STATE_JP3);
-    @(negedge clk);
-        `assertRegister(8'h7E, 8'h00);
-        `assertPc(16'h0028);
-
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-
+	chk_call_IRR_intern(8'hE0,
+	                    16'h0028, 16'h0018, 8'h7E);
 
 	chk_srp(2);
 

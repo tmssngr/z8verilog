@@ -20,35 +20,8 @@
         `assert(uut.proc.sp[7:0], 'h00);
 
 // call L1_
-	chk_3byteOp(8'hD6, 8'h00, 8'h2C);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertState(STATE_CALL_E1);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFF);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assert(uut.proc.aluA, 8'h16);
-        `assertState(STATE_CALL_E2);
-    @(negedge clk);
-        `assertRam(16'hFFFF, 8'h16);
-
-        `assert(uut.proc.addr, 16'hFFFE);
-        `assert(uut.proc.aluA, 8'h00);
-        `assertState(STATE_CALL_E3);
-    @(negedge clk);
-        `assertRam(16'hFFFE, 8'h00);
-        `assertState(STATE_JP1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_JP2);
-    @(negedge clk);
-        `assert(uut.proc.addr[7:0], 8'h2C);
-        `assertState(STATE_JP3);
-    @(negedge clk);
-        `assertPc(16'h002C);
-
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-
+	chk_call_extern(16'h002C,
+	                16'h0016, 16'hFFFE);
 
 	chk_srp(2);
 
@@ -86,35 +59,8 @@
         `assertRegister('h21, 'h2C);
 
 // call @r0
-	chk_2byteOp(8'hD4, 8'hE0);
-        `assert(uut.proc.sp, 16'hFFFF);
-        `assertState(STATE_CALL_E1);
-    @(negedge clk);
-        `assert(uut.proc.addr, 16'hFFFF);
-        `assert(uut.proc.sp, 16'hFFFE);
-        `assert(uut.proc.aluA, 8'h1C);
-        `assertState(STATE_CALL_E2);
-    @(negedge clk);
-        `assertRam(16'hFFFF, 8'h1C);
-
-        `assert(uut.proc.addr, 16'hFFFE);
-        `assert(uut.proc.aluA, 8'h00);
-        `assertState(STATE_CALL_E3);
-    @(negedge clk);
-        `assertRam(16'hFFFE, 8'h00);
-        `assertState(STATE_JP1);
-    @(negedge clk);
-        `assert(uut.proc.addr[15:8], 8'h00);
-        `assertState(STATE_JP2);
-    @(negedge clk);
-        `assert(uut.proc.addr[7:0], 8'h2C);
-        `assertState(STATE_JP3);
-    @(negedge clk);
-        `assertPc(16'h002C);
-
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-
+	chk_call_IRR_extern(8'hE0,
+	                    16'h002C, 16'h001C, 16'hFFFE);
 
 	chk_srp(2);
 

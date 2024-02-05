@@ -5,8 +5,8 @@
 `define assertThird(value)         if (uut.proc.third          !== (value)) begin $display("ASSERTION FAILED in %m: third(%h) != value"      , uut.proc.third              ); $finish(2); end
 `define assertFlags(value)         if (uut.proc.flags          !== (value)) begin $display("ASSERTION FAILED in %m: flags(%b) != %b"         , uut.proc.flags, (value)     ); $finish(2); end
 `define assertRegister(num, value) if (uut.proc.registers[num] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h"      , num, uut.proc.registers[num], (value)); $finish(2); end
-`define assertRom(addr, value)     if (uut.rom.memory[addr % uut.rom.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.rom.memory[addr % uut.rom.size], (value)); $finish(2); end
-`define assertRam(addr, value)     if (uut.ram.memory[addr % uut.ram.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.ram.memory[addr % uut.ram.size], (value)); $finish(2); end
+`define assertRom(addr, value)     if (uut.rom.memory[(addr) % uut.rom.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.rom.memory[(addr) % uut.rom.size], (value)); $finish(2); end
+`define assertRam(addr, value)     if (uut.ram.memory[(addr) % uut.ram.size] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h", addr, uut.ram.memory[(addr) % uut.ram.size], (value)); $finish(2); end
 `include "jump_conditions.vh"
 `include "flags.vh"
 
@@ -680,5 +680,152 @@ task chk_pop_IR;
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register, value);
+    end
+endtask
+
+task chk_call_intern;
+    input[15:0] addr;
+    input[15:0] pc;
+    input[7:0]  sp;
+    begin
+        chk_3byteOp(8'hD6, addr[15:8], addr[7:0]);
+            `assert(uut.proc.sp, sp + 1);
+            `assertState(STATE_CALL_I1);
+        @(negedge clk);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, pc[7:0]);
+            `assert(uut.proc.register, sp+1);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_CALL_I2);
+        @(negedge clk);
+            `assertRegister(sp+1, pc[7:0]);
+
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assert(uut.proc.register, sp);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assert(uut.proc.addr[7:0], addr[7:0]);
+            `assertState(STATE_JP3);
+        @(negedge clk);
+            `assertRegister(sp, pc[15:8]);
+            `assertPc(addr);
+
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
+task chk_call_extern;
+    input[15:0] addr;
+    input[15:0] pc;
+    input[15:0] sp;
+    begin
+        chk_3byteOp(8'hD6, addr[15:8], addr[7:0]);
+            `assert(uut.proc.sp, sp + 1);
+            `assertState(STATE_CALL_E1);
+        @(negedge clk);
+            `assert(uut.proc.addr, sp+1);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.aluA, pc[7:0]);
+            `assertState(STATE_CALL_E2);
+        @(negedge clk);
+            `assertRam(sp+1, pc[7:0]);
+
+            `assert(uut.proc.addr, sp);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assertState(STATE_CALL_E3);
+        @(negedge clk);
+            `assertRam(sp, pc[15:8]);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assert(uut.proc.addr[7:0], addr[7:0]);
+            `assertState(STATE_JP3);
+        @(negedge clk);
+            `assertPc(addr);
+
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
+task chk_call_IRR_intern;
+    input [7:0] src;
+    input[15:0] addr;
+    input[15:0] pc;
+    input [7:0] sp;
+    begin
+        chk_2byteOp(8'hD4, src);
+            `assert(uut.proc.sp, sp + 1);
+            `assertState(STATE_CALL_I1);
+        @(negedge clk);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, pc[7:0]);
+            `assert(uut.proc.register, sp + 1);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_CALL_I2);
+        @(negedge clk);
+            `assertRegister(sp + 1, pc[7:0]);
+
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assert(uut.proc.register, sp);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assert(uut.proc.addr[7:0], addr[7:0]);
+            `assertState(STATE_JP3);
+        @(negedge clk);
+            `assertRegister(sp, pc[15:8]);
+            `assertPc(addr);
+
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
+task chk_call_IRR_extern;
+    input [7:0] src;
+    input[15:0] addr;
+    input[15:0] pc;
+    input[15:0] sp;
+    begin
+        chk_2byteOp(8'hD4, src);
+            `assert(uut.proc.sp, sp + 1);
+            `assertState(STATE_CALL_E1);
+        @(negedge clk);
+            `assert(uut.proc.addr, sp + 1);
+            `assert(uut.proc.sp, sp);
+            `assert(uut.proc.aluA, pc[7:0]);
+            `assertState(STATE_CALL_E2);
+        @(negedge clk);
+            `assertRam(sp + 1, pc[7:0]);
+
+            `assert(uut.proc.addr, sp);
+            `assert(uut.proc.aluA, pc[15:8]);
+            `assertState(STATE_CALL_E3);
+        @(negedge clk);
+            `assertRam(sp, pc[15:8]);
+            `assertState(STATE_JP1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_JP2);
+        @(negedge clk);
+            `assert(uut.proc.addr[7:0], addr[7:0]);
+            `assertState(STATE_JP3);
+        @(negedge clk);
+            `assertPc(addr);
+
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
     end
 endtask
