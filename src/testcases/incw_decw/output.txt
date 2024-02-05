@@ -8,8 +8,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 10 01
     ld 10, #01
     reg[10] = 01
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 000f: read instruction
   e6
@@ -19,8 +18,7 @@ expected 10 cycles
   e6 11 02
     ld 11, #02
     reg[11] = 02
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0012: read instruction
   a0
@@ -32,8 +30,7 @@ expected 10 cycles
          00000001 00000011 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0014: read instruction
   80
@@ -45,8 +42,7 @@ expected 10 cycles
          00000001 00000010 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0016: read instruction
   e6
@@ -56,8 +52,7 @@ expected 10 cycles
   e6 11 7f
     ld 11, #7f
     reg[11] = 7f
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0019: read instruction
   a0
@@ -69,8 +64,7 @@ expected 10 cycles
          00000001 10000000 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 001b: read instruction
   80
@@ -82,8 +76,7 @@ expected 10 cycles
          00000001 01111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 001d: read instruction
   e6
@@ -93,8 +86,7 @@ expected 10 cycles
   e6 11 ff
     ld 11, #ff
     reg[11] = ff
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0020: read instruction
   a0
@@ -106,8 +98,7 @@ expected 10 cycles
          00000001 00000000 => 00000010
     flags = 0000_0000
     reg[10] = 02
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0022: read instruction
   80
@@ -119,8 +110,7 @@ expected 10 cycles
          00000010 11111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0024: read instruction
   e6
@@ -130,8 +120,7 @@ expected 10 cycles
   e6 10 ff
     ld 10, #ff
     reg[10] = ff
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0027: read instruction
   a0
@@ -143,8 +132,7 @@ expected 10 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0029: read instruction
   a0
@@ -156,8 +144,7 @@ expected 10 cycles
          00000000 00000001 => 00000000
     flags = 0000_0000
     reg[10] = 00
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 002b: read instruction
   80
@@ -169,8 +156,7 @@ expected 10 cycles
          00000000 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 002d: read instruction
   80
@@ -182,8 +168,7 @@ expected 10 cycles
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 002f: read instruction
   e6
@@ -193,8 +178,7 @@ expected 10 cycles
   e6 12 10
     ld 12, #10
     reg[12] = 10
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0032: read instruction
   a1
@@ -206,8 +190,7 @@ expected 10 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0034: read instruction
   81
@@ -219,8 +202,7 @@ expected 10 cycles
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0036: read instruction
   8d
@@ -229,8 +211,7 @@ expected 10 cycles
 0038: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

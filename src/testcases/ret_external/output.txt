@@ -8,8 +8,7 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 f8 92
     ld f8, #92
     reg[f8] = 92
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 000f: read instruction
   b0
@@ -20,7 +19,7 @@ expected 10 cycles
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[fe] = 00
- 6 cycles
+exact  6 cycles
 
 0011: read instruction
   b0
@@ -31,7 +30,7 @@ expected 10 cycles
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[ff] = 00
- 6 cycles
+exact  6 cycles
 
 0013: read instruction
   d6
@@ -40,22 +39,19 @@ expected 10 cycles
 0015: read 3rd byte
   d6 00 2c
     call 002c
-13 cycles
-expected 20 cycles
+13 cycles, expected 20
 
 002c: read instruction
   31
 002d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 002e: read instruction
   af
     ret
-10 cycles
-expected 14 cycles
+10 cycles, expected 14
 
 0016: read instruction
   0c
@@ -63,7 +59,7 @@ expected 14 cycles
   0c 00
     ld r0, #00
     reg[20] = 00
- 6 cycles
+exact  6 cycles
 
 0018: read instruction
   1c
@@ -71,29 +67,26 @@ expected 14 cycles
   1c 2c
     ld r1, #2c
     reg[21] = 2c
- 6 cycles
+exact  6 cycles
 
 001a: read instruction
   d4
 001b: read 2nd byte
   d4 e0
     call @e0
-11 cycles
-expected 20 cycles
+11 cycles, expected 20
 
 002c: read instruction
   31
 002d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 002e: read instruction
   af
     ret
-10 cycles
-expected 14 cycles
+10 cycles, expected 14
 
 001c: read instruction
   0c
@@ -101,7 +94,7 @@ expected 14 cycles
   0c 00
     ld r0, #00
     reg[20] = 00
- 6 cycles
+exact  6 cycles
 
 001e: read instruction
   1c
@@ -109,7 +102,7 @@ expected 14 cycles
   1c 0c
     ld r1, #0c
     reg[21] = 0c
- 6 cycles
+exact  6 cycles
 
 0020: read instruction
   2c
@@ -117,38 +110,34 @@ expected 14 cycles
   2c a5
     ld r2, #a5
     reg[22] = a5
- 6 cycles
+exact  6 cycles
 
 0022: read instruction
   70
 0023: read 2nd byte
   70 e1
     push e1
- 8 cycles
-expected 12 cycles
+ 8 cycles, expected 12
 
 0024: read instruction
   70
 0025: read 2nd byte
   70 e0
     push e0
- 8 cycles
-expected 12 cycles
+ 8 cycles, expected 12
 
 0026: read instruction
   70
 0027: read 2nd byte
   70 e2
     push e2
- 8 cycles
-expected 12 cycles
+ 8 cycles, expected 12
 
 0028: read instruction
   bf
     iret
     reg[fc] = a5
-12 cycles
-expected 16 cycles
+12 cycles, expected 16
 
 000c: read instruction
 testSoC: SUCCESS

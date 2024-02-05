@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   0c
@@ -14,7 +13,7 @@ expected  6 cycles
   0c 09
     ld r0, #09
     reg[20] = 09
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   1c
@@ -22,7 +21,7 @@ expected  6 cycles
   1c 01
     ld r1, #01
     reg[21] = 01
- 6 cycles
+exact  6 cycles
 
 0012: read instruction
   02
@@ -33,8 +32,7 @@ expected  6 cycles
          00001001 00000001 => 00001010
     flags = 0000_0000
     reg[20] = 0a
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 0014: read instruction
   1c
@@ -42,7 +40,7 @@ expected  6 cycles - TOO SLOW
   1c 06
     ld r1, #06
     reg[21] = 06
- 6 cycles
+exact  6 cycles
 
 0016: read instruction
   02
@@ -53,8 +51,7 @@ expected  6 cycles - TOO SLOW
          00001010 00000110 => 00010000
     flags = 0000_0100
     reg[20] = 10
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 0018: read instruction
   1c
@@ -62,7 +59,7 @@ expected  6 cycles - TOO SLOW
   1c 80
     ld r1, #80
     reg[21] = 80
- 6 cycles
+exact  6 cycles
 
 001a: read instruction
   02
@@ -73,8 +70,7 @@ expected  6 cycles - TOO SLOW
          00010000 10000000 => 10010000
     flags = 0010_0000
     reg[20] = 90
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 001c: read instruction
   1c
@@ -82,7 +78,7 @@ expected  6 cycles - TOO SLOW
   1c 70
     ld r1, #70
     reg[21] = 70
- 6 cycles
+exact  6 cycles
 
 001e: read instruction
   04
@@ -95,7 +91,7 @@ expected  6 cycles - TOO SLOW
          10010000 01110000 => 00000000
     flags = 1100_0000
     reg[20] = 00
-10 cycles
+exact 10 cycles
 
 0021: read instruction
   0c
@@ -103,7 +99,7 @@ expected  6 cycles - TOO SLOW
   0c ff
     ld r0, #ff
     reg[20] = ff
- 6 cycles
+exact  6 cycles
 
 0023: read instruction
   1c
@@ -111,7 +107,7 @@ expected  6 cycles - TOO SLOW
   1c ff
     ld r1, #ff
     reg[21] = ff
- 6 cycles
+exact  6 cycles
 
 0025: read instruction
   02
@@ -122,8 +118,7 @@ expected  6 cycles - TOO SLOW
          11111111 11111111 => 11111110
     flags = 1010_0100
     reg[21] = fe
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 0027: read instruction
   0c
@@ -131,7 +126,7 @@ expected  6 cycles - TOO SLOW
   0c 2d
     ld r0, #2d
     reg[20] = 2d
- 6 cycles
+exact  6 cycles
 
 0029: read instruction
   1c
@@ -139,7 +134,7 @@ expected  6 cycles - TOO SLOW
   1c 38
     ld r1, #38
     reg[21] = 38
- 6 cycles
+exact  6 cycles
 
 002b: read instruction
   2c
@@ -147,7 +142,7 @@ expected  6 cycles - TOO SLOW
   2c 20
     ld r2, #20
     reg[22] = 20
- 6 cycles
+exact  6 cycles
 
 002d: read instruction
   05
@@ -160,7 +155,7 @@ expected  6 cycles - TOO SLOW
          00111000 00101101 => 01100101
     flags = 0000_0100
     reg[21] = 65
-10 cycles
+exact 10 cycles
 
 0030: read instruction
   07
@@ -173,7 +168,7 @@ expected  6 cycles - TOO SLOW
          00101101 11111111 => 00101100
     flags = 1000_0100
     reg[20] = 2c
-10 cycles
+exact 10 cycles
 
 0033: read instruction
   8d
@@ -182,8 +177,7 @@ expected  6 cycles - TOO SLOW
 0035: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

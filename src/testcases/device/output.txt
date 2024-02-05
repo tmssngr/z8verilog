@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 00
     srp 00
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   4c
@@ -14,7 +13,7 @@ expected  6 cycles
   4c 05
     ld r4, #05
     reg[04] = 05
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   2c
@@ -22,7 +21,7 @@ expected  6 cycles
   2c 01
     ld r2, #01
     reg[02] = 01
- 6 cycles
+exact  6 cycles
 
 0012: read instruction
   90
@@ -33,7 +32,7 @@ expected  6 cycles
          00000001 00000000 => 00000010
     flags = 0000_0000
     reg[02] = 02
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   4a
@@ -41,8 +40,7 @@ expected  6 cycles
   4a fc
     djnz r4, fc
     reg[04] = 04
- 7 cycles
-expected 12 cycles
+ 7 cycles, expected 12
 
 0012: read instruction
   90
@@ -53,7 +51,7 @@ expected 12 cycles
          00000010 00000000 => 00000100
     flags = 0000_0000
     reg[02] = 04
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   4a
@@ -61,8 +59,7 @@ expected 12 cycles
   4a fc
     djnz r4, fc
     reg[04] = 03
- 7 cycles
-expected 12 cycles
+ 7 cycles, expected 12
 
 0012: read instruction
   90
@@ -73,7 +70,7 @@ expected 12 cycles
          00000100 00000000 => 00001000
     flags = 0000_0000
     reg[02] = 08
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   4a
@@ -81,8 +78,7 @@ expected 12 cycles
   4a fc
     djnz r4, fc
     reg[04] = 02
- 7 cycles
-expected 12 cycles
+ 7 cycles, expected 12
 
 0012: read instruction
   90
@@ -93,7 +89,7 @@ expected 12 cycles
          00001000 00000000 => 00010000
     flags = 0000_0000
     reg[02] = 10
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   4a
@@ -101,8 +97,7 @@ expected 12 cycles
   4a fc
     djnz r4, fc
     reg[04] = 01
- 7 cycles
-expected 12 cycles
+ 7 cycles, expected 12
 
 0012: read instruction
   90
@@ -113,7 +108,7 @@ expected 12 cycles
          00010000 00000000 => 00100000
     flags = 0000_0000
     reg[02] = 20
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   4a
@@ -121,16 +116,14 @@ expected 12 cycles
   4a fc
     djnz r4, fc
     reg[04] = 00
- 7 cycles
-expected 10 cycles
+ 7 cycles, expected 10
 
 0016: read instruction
   8b
 0017: read 2nd byte
   8b f4
     jr    , f4
- 5 cycles
-expected 12 cycles
+ 5 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

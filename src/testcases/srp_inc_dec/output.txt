@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 10
     srp 10
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   0c
@@ -14,7 +13,7 @@ expected  6 cycles
   0c 09
     ld r0, #09
     reg[10] = 09
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   0e
@@ -23,8 +22,7 @@ expected  6 cycles
          00001001 00000000 => 00001010
     flags = 0000_0000
     reg[10] = 0a
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 0011: read instruction
   00
@@ -35,7 +33,7 @@ expected  6 cycles
          00001010 00000000 => 00001001
     flags = 0000_0000
     reg[10] = 09
- 6 cycles
+exact  6 cycles
 
 0013: read instruction
   0c
@@ -43,7 +41,7 @@ expected  6 cycles
   0c 7f
     ld r0, #7f
     reg[10] = 7f
- 6 cycles
+exact  6 cycles
 
 0015: read instruction
   20
@@ -54,7 +52,7 @@ expected  6 cycles
          01111111 00000000 => 10000000
     flags = 0011_0000
     reg[10] = 80
- 6 cycles
+exact  6 cycles
 
 0017: read instruction
   00
@@ -65,7 +63,7 @@ expected  6 cycles
          10000000 00000000 => 01111111
     flags = 0001_0000
     reg[10] = 7f
- 6 cycles
+exact  6 cycles
 
 0019: read instruction
   0c
@@ -73,7 +71,7 @@ expected  6 cycles
   0c fe
     ld r0, #fe
     reg[10] = fe
- 6 cycles
+exact  6 cycles
 
 001b: read instruction
   20
@@ -84,7 +82,7 @@ expected  6 cycles
          11111110 00000000 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 6 cycles
+exact  6 cycles
 
 001d: read instruction
   20
@@ -95,7 +93,7 @@ expected  6 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 6 cycles
+exact  6 cycles
 
 001f: read instruction
   00
@@ -106,7 +104,7 @@ expected  6 cycles
          00000000 00000000 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 6 cycles
+exact  6 cycles
 
 0021: read instruction
   00
@@ -117,7 +115,7 @@ expected  6 cycles
          11111111 00000000 => 11111110
     flags = 0010_0000
     reg[10] = fe
- 6 cycles
+exact  6 cycles
 
 0023: read instruction
   1c
@@ -125,7 +123,7 @@ expected  6 cycles
   1c 10
     ld r1, #10
     reg[11] = 10
- 6 cycles
+exact  6 cycles
 
 0025: read instruction
   01
@@ -136,7 +134,7 @@ expected  6 cycles
          11111110 00000000 => 11111101
     flags = 0010_0000
     reg[10] = fd
- 6 cycles
+exact  6 cycles
 
 0027: read instruction
   8d
@@ -145,8 +143,7 @@ expected  6 cycles
 0029: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

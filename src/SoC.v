@@ -343,15 +343,17 @@ module Processor(
 `ifdef BENCH
         if (state == STATE_FETCH_INSTR) begin
             if (cycleCounter != 0) begin
-                $display("%d cycles", cycleCounter);
                 if (expectedCycles == 0) begin
                     $display("expected cycles not defined");
                     $finish(2);
                 end
-                else if (cycleCounter < expectedCycles) 
-                    $display("expected %d cycles", expectedCycles);
+
+                if (cycleCounter < expectedCycles) 
+                    $display("%d cycles, expected %d", cycleCounter, expectedCycles);
                 else if (cycleCounter > expectedCycles) 
-                    $display("expected %d cycles - TOO SLOW", expectedCycles);
+                    $display("%d cycles, expected %d - TOO SLOW", cycleCounter, expectedCycles);
+                else
+                    $display("exact %d cycles", cycleCounter);
                 expectedCycles <= 0;
             end
             cycleCounter <= 1;

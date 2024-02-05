@@ -3,26 +3,22 @@ VCD info: dumpfile SoC.vcd opened for output.
 000c: read instruction
   df
     scf
- 4 cycles
-expected  6 cycles
+ 4 cycles, expected  6
 
 000d: read instruction
   cf
     rcf
- 4 cycles
-expected  6 cycles
+ 4 cycles, expected  6
 
 000e: read instruction
   ef
     ccf
- 4 cycles
-expected  6 cycles
+ 4 cycles, expected  6
 
 000f: read instruction
   ef
     ccf
- 4 cycles
-expected  6 cycles
+ 4 cycles, expected  6
 
 0010: read instruction
   8d
@@ -31,8 +27,7 @@ expected  6 cycles
 0012: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

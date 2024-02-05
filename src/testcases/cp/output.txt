@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   0c
@@ -14,7 +13,7 @@ expected  6 cycles
   0c 09
     ld r0, #09
     reg[20] = 09
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   1c
@@ -22,7 +21,7 @@ expected  6 cycles
   1c 01
     ld r1, #01
     reg[21] = 01
- 6 cycles
+exact  6 cycles
 
 0012: read instruction
   2c
@@ -30,7 +29,7 @@ expected  6 cycles
   2c 20
     ld r2, #20
     reg[22] = 20
- 6 cycles
+exact  6 cycles
 
 0014: read instruction
   a3
@@ -40,8 +39,7 @@ expected  6 cycles
     alu:    09       09    =>    00
          00001001 00001001 => 00000000
     flags = 0100_0000
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 0016: read instruction
   2c
@@ -49,7 +47,7 @@ expected  6 cycles - TOO SLOW
   2c 21
     ld r2, #21
     reg[22] = 21
- 6 cycles
+exact  6 cycles
 
 0018: read instruction
   a3
@@ -59,8 +57,7 @@ expected  6 cycles - TOO SLOW
     alu:    09       01    =>    08
          00001001 00000001 => 00001000
     flags = 0000_0000
- 8 cycles
-expected  6 cycles - TOO SLOW
+ 8 cycles, expected  6 - TOO SLOW
 
 001a: read instruction
   8d
@@ -69,8 +66,7 @@ expected  6 cycles - TOO SLOW
 001c: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

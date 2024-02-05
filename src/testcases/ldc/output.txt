@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   0c
@@ -14,7 +13,7 @@ expected  6 cycles
   0c 00
     ld r0, #00
     reg[20] = 00
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   1c
@@ -22,7 +21,7 @@ expected  6 cycles
   1c 0b
     ld r1, #0b
     reg[21] = 0b
- 6 cycles
+exact  6 cycles
 
 0012: read instruction
   c2
@@ -30,8 +29,7 @@ expected  6 cycles
   c2 20
     ldc r2, Irr0
     reg[22] = 0f
- 9 cycles
-expected 12 cycles
+ 9 cycles, expected 12
 
 0014: read instruction
   0c
@@ -39,7 +37,7 @@ expected 12 cycles
   0c 08
     ld r0, #08
     reg[20] = 08
- 6 cycles
+exact  6 cycles
 
 0016: read instruction
   1c
@@ -47,15 +45,14 @@ expected 12 cycles
   1c 12
     ld r1, #12
     reg[21] = 12
- 6 cycles
+exact  6 cycles
 
 0018: read instruction
   d2
 0019: read 2nd byte
   d2 20
     ldc Irr0, r2
- 9 cycles
-expected 12 cycles
+ 9 cycles, expected 12
 
 001a: read instruction
   0c
@@ -63,7 +60,7 @@ expected 12 cycles
   0c ff
     ld r0, #ff
     reg[20] = ff
- 6 cycles
+exact  6 cycles
 
 001c: read instruction
   1c
@@ -71,7 +68,7 @@ expected 12 cycles
   1c 80
     ld r1, #80
     reg[21] = 80
- 6 cycles
+exact  6 cycles
 
 001e: read instruction
   c2
@@ -79,8 +76,7 @@ expected 12 cycles
   c2 20
     ldc r2, Irr0
     reg[22] = 00
- 9 cycles
-expected 12 cycles
+ 9 cycles, expected 12
 
 0020: read instruction
   20
@@ -91,15 +87,14 @@ expected 12 cycles
          00000000 00000000 => 00000001
     flags = 0000_0000
     reg[22] = 01
- 6 cycles
+exact  6 cycles
 
 0022: read instruction
   d2
 0023: read 2nd byte
   d2 20
     ldc Irr0, r2
- 9 cycles
-expected 12 cycles
+ 9 cycles, expected 12
 
 0024: read instruction
   8d
@@ -108,8 +103,7 @@ expected 12 cycles
 0026: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS

@@ -5,8 +5,7 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 000e: read instruction
   0c
@@ -14,7 +13,7 @@ expected  6 cycles
   0c 09
     ld r0, #09
     reg[20] = 09
- 6 cycles
+exact  6 cycles
 
 0010: read instruction
   e4
@@ -24,8 +23,7 @@ expected  6 cycles
   e4 e0 e1
     ld e1, e0
     reg[21] = 09
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0013: read instruction
   1c
@@ -33,7 +31,7 @@ expected 10 cycles
   1c 22
     ld r1, #22
     reg[21] = 22
- 6 cycles
+exact  6 cycles
 
 0015: read instruction
   f5
@@ -43,8 +41,7 @@ expected 10 cycles
   f5 e0 e1
     ld @e1, e0
     reg[22] = 09
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0018: read instruction
   e5
@@ -54,8 +51,7 @@ expected 10 cycles
   e5 e1 e1
     ld e1, @e1
     reg[21] = 09
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 001b: read instruction
   1c
@@ -63,7 +59,7 @@ expected 10 cycles
   1c 80
     ld r1, #80
     reg[21] = 80
- 6 cycles
+exact  6 cycles
 
 001d: read instruction
   28
@@ -71,8 +67,7 @@ expected 10 cycles
   28 21
     ld r2, 21
     reg[22] = 80
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 001f: read instruction
   09
@@ -80,8 +75,7 @@ expected  6 cycles
   09 30
     ld 30, r0
     reg[30] = 09
- 5 cycles
-expected  6 cycles
+ 5 cycles, expected  6
 
 0021: read instruction
   0c
@@ -89,7 +83,7 @@ expected  6 cycles
   0c 30
     ld r0, #30
     reg[20] = 30
- 6 cycles
+exact  6 cycles
 
 0023: read instruction
   e3
@@ -97,7 +91,7 @@ expected  6 cycles
   e3 30
     ld r3, @r0
     reg[23] = 09
- 6 cycles
+exact  6 cycles
 
 0025: read instruction
   f3
@@ -105,7 +99,7 @@ expected  6 cycles
   f3 01
     ld @r0, r1
     reg[30] = 80
- 6 cycles
+exact  6 cycles
 
 0027: read instruction
   e7
@@ -115,8 +109,7 @@ expected  6 cycles
   e7 e0 ff
     ld @e0, #ff
     reg[30] = ff
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 002a: read instruction
   c7
@@ -126,8 +119,7 @@ expected 10 cycles
   c7 40 00
     ld r4, @r0+00
     reg[24] = ff
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 002d: read instruction
   c7
@@ -137,8 +129,7 @@ expected 10 cycles
   c7 40 f0
     ld r4, @r0+f0
     reg[24] = 30
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0030: read instruction
   d7
@@ -148,8 +139,7 @@ expected 10 cycles
   d7 30 01
     ld @r0+01, r3
     reg[31] = 09
- 8 cycles
-expected 10 cycles
+ 8 cycles, expected 10
 
 0033: read instruction
   8d
@@ -158,8 +148,7 @@ expected 10 cycles
 0035: read 3rd byte
   8d 00 0c
     jp    , 000c
-10 cycles
-expected 12 cycles
+10 cycles, expected 12
 
 000c: read instruction
 testSoC: SUCCESS
