@@ -468,7 +468,7 @@ task chk_alu1;
         @(negedge clk);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
-            `assertRegister(register, value);
+            assertRegister(register, value);
             `assertFlags(flags);
     end
 endtask

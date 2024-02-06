@@ -1,23 +1,12 @@
     @(negedge clk);
 
 // ld P01M, #92
-	chk_ld_R_IM(8'hF8, 8'h92);
+	chk_ld_R_IM(P01M, 8'h92);
 
-// clr SPH
-	chk_2byteOp(8'hB0, 8'hFE);
-        `assertState(STATE_ALU1_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp[15:8], 'h00);
-
-// clr SPL
-	chk_2byteOp(8'hB0, 8'hFF);
-        `assertState(STATE_ALU1_OP);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp[7:0], 'h00);
+	chk_alu1(ALU1_CLR, SPH,
+	         8'hFE, 8'h00, FLAG_NONE);
+	chk_alu1(ALU1_CLR, SPL,
+	         8'hFF, 8'h00, FLAG_NONE);
 
 // call L1_
 	chk_call_extern(16'h002C,
