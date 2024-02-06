@@ -36,51 +36,20 @@
         `assertRegister('h04, 'h08);
         `assertRegister('h05, 'h12);
 
-// ldc r6, Irr4
-	chk_2byteOp(8'hC2, 8'h64);
-        `assertState(STATE_LDC_READ1);
-    @(negedge clk);
-        `assertState(STATE_LDC_READ2);
-    @(negedge clk);
-        `assertState(STATE_READ_MEM1);
-    @(negedge clk);
-        `assertState(STATE_READ_MEM2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister(8'h06, 8'h00);
+    chk_ldc_r_Irr(4'h6, 4'h4,
+                  8'h06, 16'h0812, 8'h00);
 
 
 	chk_alu1(ALU1_COM, 8'hE6,
 	         8'h06, 8'hFF, FLAG_S);
 
-// ldc Irr4, r6
-	chk_2byteOp(8'hD2, 8'h64);
-        `assertState(STATE_LDC_WRITE1);
-    @(negedge clk);
-        `assertState(STATE_LDC_WRITE2);
-    @(negedge clk);
-        `assertState(STATE_LDC_WRITE3);
-    @(negedge clk);
-        `assertState(STATE_WRITE_MEM);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ldc_Irr_r(4'h4, 4'h6,
+	              8'h06, 16'h0812, 8'hFF);
         `assertRom(16'h0812, 8'h00);
         `assertRegister(8'h06, 8'hFF);
 
-// ldc r7, Irr4
-	chk_2byteOp(8'hC2, 8'h74);
-        `assertState(STATE_LDC_READ1);
-    @(negedge clk);
-        `assertState(STATE_LDC_READ2);
-    @(negedge clk);
-        `assertState(STATE_READ_MEM1);
-    @(negedge clk);
-        `assertState(STATE_READ_MEM2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+    chk_ldc_r_Irr(4'h7, 4'h4,
+                  8'h07, 16'h0812, 8'h00);
         `assertRegister(8'h06, 8'hFF);
         `assertRegister(8'h07, 8'h00);
 
@@ -88,18 +57,8 @@
 	chk_alu1(ALU1_COM, 8'hE6,
 	         8'h06, 8'h00, FLAG_Z);
 
-// ldc Irr4, r6
-	chk_2byteOp(8'hD2, 8'h64);
-        `assertState(STATE_LDC_WRITE1);
-    @(negedge clk);
-        `assertState(STATE_LDC_WRITE2);
-    @(negedge clk);
-        `assertState(STATE_LDC_WRITE3);
-    @(negedge clk);
-        `assertState(STATE_WRITE_MEM);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ldc_Irr_r(4'h4, 4'h6,
+	              8'h06, 16'h0812, 8'h00);
         `assertRegister(8'h06, 8'h00);
 
 	chk_alu2_r_r(ALU2_XOR, 6, 7,

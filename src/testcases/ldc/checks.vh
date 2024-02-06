@@ -9,25 +9,8 @@
         `assertRegister('h20, 'h00);
         `assertRegister('h21, 'h0B);
 
-// ldc r2, Irr0
-	chk_2byteOp(8'hC2, 8'h20);
-        `assert(uut.proc.register, 'h22);
-        `assertState(STATE_LDC_READ1);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr[15:8], 'h0);
-        `assertState(STATE_LDC_READ2);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr, 'h0B);
-        `assertState(STATE_READ_MEM1);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr, 'h0B);
-        `assertState(STATE_READ_MEM2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ldc_r_Irr(4'h2, 4'h0,
+	              8'h22, 16'h000B, 8'h0F);
         `assertRegister(8'h20, 'h00);
         `assertRegister(8'h21, 'h0B);
         `assertRegister(8'h22, 'h0F);
@@ -37,29 +20,12 @@
 	            8'h20);
 	chk_ld_r_IM(4'h1, 8'h12,
 	            8'h21);
-        `assertRegister('h20, 'h08);
-        `assertRegister('h21, 'h12);
+        `assertRegister(8'h20, 'h08);
+        `assertRegister(8'h21, 'h12);
+        `assertRegister(8'h22, 'h0F);
 
-// ldc Irr0, r2
-	chk_2byteOp(8'hD2, 8'h20);
-        `assert(uut.proc.register, 'h22);
-        `assertState(STATE_LDC_WRITE1);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr[15:8], 'h08);
-        `assertState(STATE_LDC_WRITE2);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr, 'h0812);
-        `assertState(STATE_LDC_WRITE3);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.aluA, 'h0F);
-        `assert(uut.proc.addr, 'h0812);
-        `assertState(STATE_WRITE_MEM);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
+	chk_ldc_Irr_r(4'h0, 4'h2,
+	              8'h22, 16'h0812, 8'h0F);
         `assertRom(16'h812, 8'h00); // remains as is (read-only)
         `assertRegister(8'h20, 'h08);
         `assertRegister(8'h21, 'h12);
@@ -74,57 +40,23 @@
         `assertRegister('h21, 'h80);
 
 // ldc r2, Irr0
-	chk_2byteOp(8'hC2, 8'h20);
-        `assert(uut.proc.register, 'h22);
-        `assertState(STATE_LDC_READ1);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr[15:8], 'hFF);
-        `assertState(STATE_LDC_READ2);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr, 'hFF80);
-        `assertState(STATE_READ_MEM1);
-    @(negedge clk);
-        `assertRam(16'hFF80, 8'h00);
-        `assertState(STATE_READ_MEM2);
-    @(negedge clk);
-        `assert(uut.proc.aluA, 'h00);
-        `assert(uut.proc.aluMode, ALU1_LD);
-        `assert(uut.proc.writeRegister, 1);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assertRegister(8'h22, 'h00);
-
+	chk_ldc_r_Irr(4'h2, 4'h0,
+	              8'h22, 16'hFF80, 8'h00);
         `assertRegister(8'h20, 'hFF);
         `assertRegister(8'h21, 'h80);
+        `assertRegister(8'h22, 'h00);
 
 // inc 22
 	chk_alu1(ALU1_INC, 8'h22,
 	         8'h22, 8'h01, FLAG_NONE);
         `assertRegister(8'h20, 'hFF);
         `assertRegister(8'h21, 'h80);
+        `assertRegister(8'h22, 'h01);
 
 // ldc Irr0, r2
-	chk_2byteOp(8'hD2, 8'h20);
-        `assert(uut.proc.register, 'h22);
-        `assertState(STATE_LDC_WRITE1);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr[15:8], 'hFF);
-        `assertState(STATE_LDC_WRITE2);
-    @(negedge clk);
-        `assert(uut.proc.register, 'h22);
-        `assert(uut.proc.addr, 'hFF80);
-        `assertState(STATE_LDC_WRITE3);
-    @(negedge clk);
-        `assert(uut.proc.aluA, 'h01);
-        `assert(uut.proc.addr, 'hFF80);
-        `assertState(STATE_WRITE_MEM);
-    @(negedge clk);
+	chk_ldc_Irr_r(4'h0, 4'h2,
+	              8'h22, 16'hFF80, 8'h01);
         `assertRam(16'hFF80, 8'h01);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
         `assertRegister(8'h20, 'hFF);
         `assertRegister(8'h21, 'h80);
         `assertRegister(8'h22, 'h01);

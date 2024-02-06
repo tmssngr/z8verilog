@@ -276,6 +276,66 @@ task chk_ld_IrX_r;
     end
 endtask
 
+task chk_ldc_r_Irr;
+    input [3:0] dst;
+    input [3:0] src;
+    input [7:0] register;
+    input[15:0] addr;
+    input [7:0] value;
+    begin
+        chk_2byteOp(8'hC2, {dst, src});
+            `assert(uut.proc.register, register);
+            `assertState(STATE_LDC_READ1);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_LDC_READ2);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_READ_MEM1);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_READ_MEM2);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+    end
+endtask
+task chk_ldc_Irr_r;
+    input [3:0] dst;
+    input [3:0] src;
+    input [7:0] register;
+    input[15:0] addr;
+    input [7:0] value;
+    begin
+        chk_2byteOp(8'hD2, {src, dst});
+            `assert(uut.proc.register, register);
+            `assertState(STATE_LDC_WRITE1);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_LDC_WRITE2);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_LDC_WRITE3);
+        @(negedge clk);
+            `assert(uut.proc.register, register);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_WRITE_MEM);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+    end
+endtask
+
 task chk_jp;
     input[15:0] addr;
     begin
