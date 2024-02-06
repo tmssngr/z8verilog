@@ -44,6 +44,28 @@ task chk_3byteOp;
     end
 endtask
 
+task assertRegister;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        if (register == P01M) begin
+            `assert(uut.proc.p01m, value);
+        end
+        else if (register == P3M) begin
+            `assert(uut.proc.p3m, value);
+        end
+        else if (register == SPH) begin
+            `assert(uut.proc.sp[15:8], value);
+        end
+        else if (register == SPL) begin
+            `assert(uut.proc.sp[7:0], value);
+        end
+        else begin
+            `assertRegister(register, value);
+        end
+    end
+endtask
+
 task chk_srp;
     input[3:0] upper;
     begin
@@ -199,27 +221,6 @@ task chk_ld_IR_R;
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assertRegister(register, value);
-    end
-endtask
-task assertRegister;
-    input[7:0] register;
-    input[7:0] value;
-    begin
-        if (register == P01M) begin
-            `assert(uut.proc.p01m, value);
-        end
-        else if (register == P3M) begin
-            `assert(uut.proc.p3m, value);
-        end
-        else if (register == SPH) begin
-            `assert(uut.proc.sp[15:8], value);
-        end
-        else if (register == SPL) begin
-            `assert(uut.proc.sp[7:0], value);
-        end
-        else begin
-            `assertRegister(register, value);
-        end
     end
 endtask
 task chk_ld_R_IM;
