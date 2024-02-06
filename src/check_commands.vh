@@ -48,6 +48,8 @@ task chk_srp;
     input[3:0] upper;
     begin
         chk_2byteOp(8'h31, {upper, 4'h0});
+            `assertState(STATE_LD);
+        @(negedge clk);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
             `assert(uut.proc.rp, upper);

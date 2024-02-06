@@ -26,7 +26,8 @@ VCD info: dumpfile SoC.vcd opened for output.
 0029: read 2nd byte
   31 20
     srp 20
- 5 cycles, expected  6
+    reg[fd] = 20
+exact  6 cycles
 
 002a: read instruction
   af
@@ -63,7 +64,8 @@ exact  6 cycles
 0029: read 2nd byte
   31 20
     srp 20
- 5 cycles, expected  6
+    reg[fd] = 20
+exact  6 cycles
 
 002a: read instruction
   af

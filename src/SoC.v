@@ -494,8 +494,8 @@ module Processor(
                     $display("    srp %h", second);
                     expectedCycles <= 6;
 `endif
-                    rp <= second[7:4];
-                    nextCommand();
+                    register <= RP;
+                    state <= STATE_LD;
                 end
                 4'h5: begin
 `ifdef BENCH
@@ -1022,6 +1022,10 @@ module Processor(
 
         STATE_LD: begin
             case (instrL)
+            4'h1: begin
+                // srp
+                aluA <= second;
+            end
             4'h3: begin
                 case (instrH)
                 4'hE: begin

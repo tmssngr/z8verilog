@@ -5,7 +5,8 @@ VCD info: dumpfile SoC.vcd opened for output.
 000d: read 2nd byte
   31 20
     srp 20
- 5 cycles, expected  6
+    reg[fd] = 20
+exact  6 cycles
 
 000e: read instruction
   e6
