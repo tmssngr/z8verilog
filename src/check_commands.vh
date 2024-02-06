@@ -762,6 +762,24 @@ task chk_push_extern;
             `assertRam(sp, value);
     end
 endtask
+task chk_push_IRR_intern;
+    input [7:0] src;
+    input [7:0] register;
+    input [7:0] value;
+    input [7:0] sp;
+    begin
+        chk_2byteOp(8'h71, src);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_PUSH_I1);
+        @(negedge clk);
+            `assertState(STATE_PUSH_I2);
+        @(negedge clk);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assert(uut.proc.sp, sp);
+            `assertRegister(sp, value);
+    end
+endtask
 
 task chk_call_intern;
     input[15:0] addr;

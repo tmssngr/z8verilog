@@ -32,17 +32,8 @@
         `assertRegister('h21, 'h12);
         `assertRegister('h22, 'h20);
 
-// push @22
-	chk_2byteOp(8'h71, 8'h22);
-        `assert(uut.proc.register, 'h20);
-        `assertState(STATE_PUSH_I1);
-    @(negedge clk);
-        `assertState(STATE_PUSH_I2);
-    @(negedge clk);
-        `assertState(STATE_FETCH_INSTR);
-    @(negedge clk);
-        `assert(uut.proc.sp, 'h7F);
-        `assertRegister('h7F, 'h34);
+	chk_push_IRR_intern(8'h22,
+	                    8'h20, 8'h34, 8'h7F);
 
 
 	chk_ld_r_IM(4'h2, 8'h24,
