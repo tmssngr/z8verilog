@@ -912,6 +912,7 @@ module Processor(
                 $display("    ld r%h, #%h", instrH, second);
                 expectedCycles <= 6;
 `endif
+                register <= r4(instrH);
                 state <= STATE_LD;
             end
             // ================================================================
@@ -1079,7 +1080,6 @@ module Processor(
                 endcase
             end
             4'hC: begin
-                register <= r4(instrH);
                 aluA <= second;
             end
             endcase
