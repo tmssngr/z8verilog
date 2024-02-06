@@ -459,8 +459,6 @@ module Processor(
                     $display("    decw %h", second);
                     expectedCycles <= 10;
 `endif
-                    aluMode <= ALU1_DEC;
-                    register <= r8(second);
                     state <= STATE_ALU1_WORD1;
                 end
                 4'hA: begin
@@ -468,8 +466,6 @@ module Processor(
                     $display("    incw %h", second);
                     expectedCycles <= 10;
 `endif
-                    aluMode <= ALU1_INC;
-                    register <= r8(second);
                     state <= STATE_ALU1_WORD1;
                 end
                 default: begin
@@ -518,8 +514,6 @@ module Processor(
                     $display("    decw @%h", second);
                     expectedCycles <= 10;
 `endif
-                    aluMode <= ALU1_DEC;
-                    register <= readRegister8(r8(second));
                     state <= STATE_ALU1_WORD1;
                 end
                 4'hA: begin
@@ -527,8 +521,6 @@ module Processor(
                     $display("    incw @%h", second);
                     expectedCycles <= 10;
 `endif
-                    aluMode <= ALU1_INC;
-                    register <= readRegister8(r8(second));
                     state <= STATE_ALU1_WORD1;
                 end
                 default: begin
@@ -1089,13 +1081,23 @@ module Processor(
         end
 
         STATE_ALU1_WORD1: begin
-            aluA <= readRegister8({register[7:1], 1'h1});
-            register <= {register[7:1], 1'h1};
-            writeRegister <= 1;
+            aluMode <= instrH & 7;
+            register <= instrL & 1 
+                ? readRegister8(r8(second))
+                : r8(second);
         end
         STATE_ALU1_WORD2: begin
+            register <= {register[7:1], 1'h1};
+        end
+        STATE_ALU1_WORD3: begin
+            aluA <= readRegister8(register);
+            writeRegister <= 1;
+        end
+        STATE_ALU1_WORD4: begin
             register <= { register[7:1], 1'b0 };
-            aluA <= readRegister8({register[7:1], 1'b0});
+        end
+        STATE_ALU1_WORD5: begin
+            aluA <= readRegister8(register);
             aluB <= aluOut;
             aluMode <= aluMode | 'h8; // inc/dec -> incw/decw
             writeRegister <= 1;

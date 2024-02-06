@@ -398,24 +398,29 @@ task chk_djnz_false;
     end
 endtask
 
-task chk_decw;
-    input[7:0] register;
+task _chk_decw;
+    input [7:0] register;
     input[15:0] expValue;
-    input[7:0] expFlags;
+    input [7:0] expFlags;
     begin
-        chk_2byteOp(8'h80, register);
-            `assert(uut.proc.aluMode, ALU1_DEC);
-            `assert(uut.proc.register, register);
             `assertState(STATE_ALU1_WORD1);
         @(negedge clk);
-            // lower byte:
             `assert(uut.proc.aluMode, ALU1_DEC);
-            `assert(uut.proc.register, register | 1);
-            `assert(uut.proc.writeRegister, 1);
-            `assert(uut.proc.writeFlags, 0);
+            `assert(uut.proc.register, register);
             `assertState(STATE_ALU1_WORD2);
         @(negedge clk);
+            // lower byte:
+            `assert(uut.proc.register, register | 1);
+            `assertState(STATE_ALU1_WORD3);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_DEC);
+            `assert(uut.proc.writeRegister, 1);
+            `assert(uut.proc.writeFlags, 0);
+            `assertState(STATE_ALU1_WORD4);
+        @(negedge clk);
             `assertRegister(register | 1, expValue[7:0]);
+            `assertState(STATE_ALU1_WORD5);
+        @(negedge clk);
             // upper byte:
             `assert(uut.proc.aluMode, ALU1_DECW);
             `assert(uut.proc.register, register & ~1);
@@ -427,24 +432,49 @@ task chk_decw;
             `assertFlags(expFlags);
     end
 endtask
-task chk_incw;
-    input[7:0] register;
+task chk_decw;
+    input [7:0] dst;
+    input [7:0] register;
     input[15:0] expValue;
-    input[7:0] expFlags;
+    input [7:0] expFlags;
     begin
-        chk_2byteOp(8'hA0, register);
+        chk_2byteOp(8'h80, dst);
+        _chk_decw(register, expValue, expFlags);
+    end
+endtask
+task chk_decw_IR;
+    input [7:0] dst;
+    input [7:0] register;
+    input[15:0] expValue;
+    input [7:0] expFlags;
+    begin
+        chk_2byteOp(8'h81, dst);
+        _chk_decw(register, expValue, expFlags);
+    end
+endtask
+task _chk_incw;
+    input [7:0] register;
+    input[15:0] expValue;
+    input [7:0] expFlags;
+    begin
+            `assertState(STATE_ALU1_WORD1);
+        @(negedge clk);
             `assert(uut.proc.aluMode, ALU1_INC);
             `assert(uut.proc.register, register);
-            `assertState(STATE_ALU1_WORD1);
+            `assertState(STATE_ALU1_WORD2);
             // lower byte:
         @(negedge clk);
-            `assert(uut.proc.aluMode, ALU1_INC);
             `assert(uut.proc.register, register | 1);
+            `assertState(STATE_ALU1_WORD3);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_INC);
             `assert(uut.proc.writeRegister, 1);
             `assert(uut.proc.writeFlags, 0);
-            `assertState(STATE_ALU1_WORD2);
+            `assertState(STATE_ALU1_WORD4);
         @(negedge clk);
             `assertRegister(register | 1, expValue[7:0]);
+            `assertState(STATE_ALU1_WORD5);
+        @(negedge clk);
             // upper byte:
             `assert(uut.proc.aluMode, ALU1_INCW);
             `assert(uut.proc.register, register & ~1);
@@ -454,6 +484,26 @@ task chk_incw;
         @(negedge clk);
             `assertRegister(register & ~1, expValue[15:8]);
             `assertFlags(expFlags);
+    end
+endtask
+task chk_incw;
+    input [7:0] dst;
+    input [7:0] register;
+    input[15:0] expValue;
+    input [7:0] expFlags;
+    begin
+        chk_2byteOp(8'hA0, register);
+        _chk_incw(register, expValue, expFlags);
+    end
+endtask
+task chk_incw_IR;
+    input [7:0] dst;
+    input [7:0] register;
+    input[15:0] expValue;
+    input [7:0] expFlags;
+    begin
+        chk_2byteOp(8'hA1, dst);
+        _chk_incw(register, expValue, expFlags);
     end
 endtask
 

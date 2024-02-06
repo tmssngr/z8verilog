@@ -30,7 +30,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 00000011 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles, expected 10
+exact 10 cycles
 
 0014: read instruction
   80
@@ -42,7 +42,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 00000010 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles, expected 10
+exact 10 cycles
 
 0016: read instruction
   e6
@@ -64,7 +64,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 10000000 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles, expected 10
+exact 10 cycles
 
 001b: read instruction
   80
@@ -76,7 +76,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 01111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles, expected 10
+exact 10 cycles
 
 001d: read instruction
   e6
@@ -98,7 +98,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 00000000 => 00000010
     flags = 0000_0000
     reg[10] = 02
- 7 cycles, expected 10
+exact 10 cycles
 
 0022: read instruction
   80
@@ -110,7 +110,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000010 11111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
- 7 cycles, expected 10
+exact 10 cycles
 
 0024: read instruction
   e6
@@ -132,7 +132,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles, expected 10
+exact 10 cycles
 
 0029: read instruction
   a0
@@ -144,7 +144,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 00000001 => 00000000
     flags = 0000_0000
     reg[10] = 00
- 7 cycles, expected 10
+exact 10 cycles
 
 002b: read instruction
   80
@@ -156,7 +156,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles, expected 10
+exact 10 cycles
 
 002d: read instruction
   80
@@ -168,7 +168,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 7 cycles, expected 10
+exact 10 cycles
 
 002f: read instruction
   e6
@@ -190,7 +190,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
- 7 cycles, expected 10
+exact 10 cycles
 
 0034: read instruction
   81
@@ -202,7 +202,7 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
- 7 cycles, expected 10
+exact 10 cycles
 
 0036: read instruction
   8d
