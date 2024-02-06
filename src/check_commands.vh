@@ -497,6 +497,31 @@ task chk_inc_r;
             `assertFlags(flags);
     end
 endtask
+task chk_da;
+    input[7:0] dst;
+    input[7:0] register;
+    input[7:0] value;
+    input[7:0] flags;
+    begin
+        chk_2byteOp(8'h40, dst);
+            `assert(uut.proc.aluMode, ALU1_DA);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_ALU1_OP);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_DA);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_ALU1_DA);
+        @(negedge clk);
+            `assert(uut.proc.aluMode, ALU1_DA_H);
+            `assert(uut.proc.writeRegister, 1);
+            `assert(uut.proc.writeFlags, 1);
+            `assert(uut.proc.register, register);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(register, value);
+            `assertFlags(flags);
+    end
+endtask
 
 task chk_alu2_r_r;
     input[5:0] op;
