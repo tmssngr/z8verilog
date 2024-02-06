@@ -199,6 +199,27 @@ task chk_ld_IR_R;
             `assertRegister(register, value);
     end
 endtask
+task assertRegister;
+    input[7:0] register;
+    input[7:0] value;
+    begin
+        if (register == P01M) begin
+            `assert(uut.proc.p01m, value);
+        end
+        else if (register == P3M) begin
+            `assert(uut.proc.p3m, value);
+        end
+        else if (register == SPH) begin
+            `assert(uut.proc.sp[15:8], value);
+        end
+        else if (register == SPL) begin
+            `assert(uut.proc.sp[7:0], value);
+        end
+        else begin
+            `assertRegister(register, value);
+        end
+    end
+endtask
 task chk_ld_R_IM;
     input[7:0] dst;
     input[7:0] value;
@@ -210,20 +231,7 @@ task chk_ld_R_IM;
             `assert(uut.proc.writeFlags, 0);
             `assertState(STATE_FETCH_INSTR);
         @(negedge clk);
-            if (dst == P01M) begin
-                `assert(uut.proc.p01m, value);
-            end
-            else if (dst == P3M) begin
-                `assert(uut.proc.p3m, value);
-            end
-            else begin
-                if (dst == SPL) begin
-                    `assert(uut.proc.sp[7:0], value);
-                end
-                else begin
-                    `assertRegister(dst, value);
-                end
-            end
+            assertRegister(dst, value);
     end
 endtask
 task chk_ld_r_IrX;
