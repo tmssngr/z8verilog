@@ -20,12 +20,10 @@
 	            16'h001d);
 
 // M_001D:
-// ld P01M, #B6
-	chk_ld_R_IM(8'hF8, 8'hB6);
+	chk_ld_R_IM(P01M, 8'hB6);
         `assert(uut.proc.p01m, 'hB6);
 
-// ld P3M, #8
-	chk_ld_R_IM(8'hF7, 8'h08);
+	chk_ld_R_IM(P3M, 8'h08);
         `assert(uut.proc.p3m, 'h08);
 
 
