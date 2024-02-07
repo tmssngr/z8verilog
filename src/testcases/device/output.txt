@@ -36,7 +36,7 @@ exact  6 cycles
   4a fc
     djnz r4, fc
     reg[04] = 04
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0012: read 1st byte 90
 0013: read 2nd byte e2
@@ -53,7 +53,7 @@ exact  6 cycles
   4a fc
     djnz r4, fc
     reg[04] = 03
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0012: read 1st byte 90
 0013: read 2nd byte e2
@@ -70,7 +70,7 @@ exact  6 cycles
   4a fc
     djnz r4, fc
     reg[04] = 02
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0012: read 1st byte 90
 0013: read 2nd byte e2
@@ -87,7 +87,7 @@ exact  6 cycles
   4a fc
     djnz r4, fc
     reg[04] = 01
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0012: read 1st byte 90
 0013: read 2nd byte e2

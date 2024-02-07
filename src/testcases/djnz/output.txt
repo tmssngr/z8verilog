@@ -24,7 +24,7 @@ exact  6 cycles
   0a fd
     djnz r0, fd
     reg[30] = 02
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0010: read 1st byte ff
   ff
@@ -36,7 +36,7 @@ exact  6 cycles
   0a fd
     djnz r0, fd
     reg[30] = 01
- 7 cycles, expected 12
+ 8 cycles, expected 12
 
 0010: read 1st byte ff
   ff

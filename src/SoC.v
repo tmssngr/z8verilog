@@ -267,30 +267,32 @@ module Processor(
 `endif
 
     `include "states.vh"
-    reg [STATES_MAX_BIT:0] state = STATE_FETCH_INSTR;
+    reg [FETCH_MSB:0] fetchState = FETCH_INSTR_WAIT;
+    reg [OP_MSB:0] opType = OP_UNDECIDED;
+    reg [OPSTATE_MSB:0] opState = OPSTATE0;
 
     wire [15:0] nextRelativePc = pc + { {8{second[7]}}, second };
-    wire [15:0] nextPc = ( state == STATE_READ_INSTR
-                         | state == STATE_READ_2
-                         | state == STATE_READ_3)
-                         ? pc + 16'b1
-                         : ( (state == STATE_DECODE & isJumpRel & takeBranch)
-                           || (state == STATE_DJNZ2 && flagsOut[FLAG_INDEX_Z] == 1'b0 )
-                           ) 
-                             ? nextRelativePc
-                             : (state == STATE_RET6
-                               |state == STATE_JP3)
-                               ? addr
-                               : pc;
+    wire [15:0] nextPc = ( fetchState == FETCH_INSTR_READ
+                         | fetchState == FETCH_SECOND_READ
+                         | fetchState == FETCH_THIRD_READ
+                         ) ? pc + 16'b1
+                           : ( (fetchState == FETCH_DECODE & isJumpRel & takeBranch)
+                             || (opType == OP_DJNZ & opState == OPSTATE2)
+                             ) ? nextRelativePc
+                               : ( (opType == OP_RET  & opState == OPSTATE5)
+                                 | (opType == OP_CALL & opState == OPSTATE6)
+                                 | (opType == OP_JP   & opState == OPSTATE2)
+                                 ) ? addr
+                                   : pc;
     reg readMem = 0;
     reg writeMem = 0;
     assign memAddr = readMem | writeMem
                      ? addr : pc;
     assign memDataWrite = aluA;
     assign memWrite = writeMem;
-    assign memStrobe = (state == STATE_FETCH_INSTR)
-                     | (state == STATE_WAIT_2 & ~isInstrSize1)
-                     | (state == STATE_WAIT_3)
+    assign memStrobe = (fetchState == FETCH_INSTR_WAIT)
+                     | (fetchState == FETCH_SECOND_WAIT & ~isInstrSize1)
+                     | (fetchState == FETCH_THIRD_WAIT)
                      | readMem
                      | writeMem;
 `ifdef BENCH
@@ -300,7 +302,9 @@ module Processor(
 
     task nextCommand;
         begin
-            state <= STATE_FETCH_INSTR;
+            fetchState <= FETCH_INSTR_WAIT;
+            opState <= OPSTATE0;
+            opType <= OP_UNDECIDED;
         end
     endtask
 
@@ -340,7 +344,7 @@ module Processor(
         writeMem <= 0;
 
 `ifdef BENCH
-        if (state == STATE_FETCH_INSTR) begin
+        if (fetchState == FETCH_INSTR_WAIT) begin
             if (cycleCounter != 0) begin
                 if (expectedCycles == 0) begin
                     $display("expected cycles not defined");
@@ -362,10 +366,15 @@ module Processor(
         end
 `endif
 
-        state <= state + 6'b1;
+        if (fetchState != FETCH_DECODE) begin
+            fetchState <= fetchState + FETCH_INC;
+        end
+        if (opType != OP_UNDECIDED) begin
+            opState <= opState + OPSTATE_INC;
+        end
 
-        case (state)
-        STATE_FETCH_INSTR: begin
+        case (fetchState)
+        FETCH_INSTR_WAIT: begin
 `ifdef BENCH
             addr <= 0;
             aluA <= 0;
@@ -378,638 +387,643 @@ module Processor(
 `endif
         end
 
-        STATE_READ_INSTR: begin
+        FETCH_INSTR_READ: begin
 `ifdef BENCH
             $display("\n%h: read 1st byte %h", pc, memDataRead);
 `endif
             instruction <= memDataRead;
         end
 
-        STATE_WAIT_2: begin
+        FETCH_SECOND_WAIT: begin
             if (isInstrSize1) begin
-                state <= STATE_DECODE;
+                fetchState <= FETCH_DECODE;
             end
         end
 
-        STATE_READ_2: begin
+        FETCH_SECOND_READ: begin
 `ifdef BENCH
             $display("%h: read 2nd byte %h", pc, memDataRead);
 `endif
             second <= memDataRead;
             if (isInstrSize2) begin
-                state <= STATE_DECODE;
+                fetchState <= FETCH_DECODE;
             end
         end
 
-        STATE_WAIT_3: begin
+        FETCH_THIRD_WAIT: begin
         end
 
-        STATE_READ_3: begin
+        FETCH_THIRD_READ: begin
 `ifdef BENCH
             $display("%h: read 3rd byte %h", pc, memDataRead);
 `endif
             third <= memDataRead;
         end
 
-        STATE_DECODE: begin
-`ifdef BENCH
-            // $display("  decoding");
-            if (isInstrSize1)
-                $display("  %h", instruction);
-            else if (isInstrSize2)
-                $display("  %h %h", instruction, second);
-            else if (isInstrSize3)
-                $display("  %h %h %h", instruction, second, third);
-`endif
-            case (instrL)
-            // ================================================================
-            // Column 0
-            // ================================================================
-            4'h0: begin
-                case (instrH)
+        FETCH_DECODE: begin
+            if (opType == OP_UNDECIDED) begin
+    `ifdef BENCH
+                // $display("  decoding");
+                if (isInstrSize1)
+                    $display("  %h", instruction);
+                else if (isInstrSize2)
+                    $display("  %h %h", instruction, second);
+                else if (isInstrSize3)
+                    $display("  %h %h %h", instruction, second, third);
+    `endif
+                case (instrL)
+                // ================================================================
+                // Column 0
+                // ================================================================
+                4'h0: begin
+                    case (instrH)
+                    4'h3: begin
+    `ifdef BENCH
+                        $display("    jp @%h", second);
+                        expectedCycles <= 8;
+    `endif
+                        opType <= OP_JP;
+                    end
+                    4'h5: begin
+    `ifdef BENCH
+                        $display("    pop %h", second);
+                        expectedCycles <= 10;
+    `endif
+                        // dst <- @SP
+                        // SP <- SP + 1
+                        register <= r8(second);
+                        opType <= OP_POP;
+                    end
+                    4'h7: begin
+    `ifdef BENCH
+                        $display("    push %h", second);
+                        expectedCycles <= stackInternal ? 10 : 12;
+    `endif
+                        register <= r8(second);
+                        opType <= stackInternal 
+                            ? OP_PUSH_I
+                            : OP_PUSH_E;
+                    end
+                    4'h8: begin
+    `ifdef BENCH
+                        $display("    decw %h", second);
+                        expectedCycles <= 10;
+    `endif
+                        opType <= OP_ALU1WORD;
+                    end
+                    4'hA: begin
+    `ifdef BENCH
+                        $display("    incw %h", second);
+                        expectedCycles <= 10;
+    `endif
+                        opType <= OP_ALU1WORD;
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("   %s %h", 
+                                alu1OpName(instrH), second);
+                        expectedCycles <= instrH == 4 ? 8 : 6;
+    `endif
+                        aluMode <= alu1OpCode(instrH);
+                        register <= r8(second);
+                        opType <= OP_ALU1;
+                    end
+                    endcase
+                end
+                // ================================================================
+                // Column 1
+                // ================================================================
+                4'h1: begin
+                    case (instrH)
+                    4'h3: begin
+    `ifdef BENCH
+                        $display("    srp %h", second);
+                        expectedCycles <= 6;
+    `endif
+                        register <= RP;
+                        opType <= OP_LD;
+                    end
+                    4'h5: begin
+    `ifdef BENCH
+                        $display("    pop @%h", second);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= OP_POP;
+                    end
+                    4'h7: begin
+    `ifdef BENCH
+                        $display("    push @%h", second);
+                        expectedCycles <= stackInternal ? 12 : 14;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= stackInternal 
+                            ? OP_PUSH_I
+                            : OP_PUSH_E;
+                    end
+                    4'h8: begin
+    `ifdef BENCH
+                        $display("    decw @%h", second);
+                        expectedCycles <= 10;
+    `endif
+                        opType <= OP_ALU1WORD;
+                    end
+                    4'hA: begin
+    `ifdef BENCH
+                        $display("    incw @%h", second);
+                        expectedCycles <= 10;
+    `endif
+                        opType <= OP_ALU1WORD;
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("   %s @%h", 
+                                alu1OpName(instrH), second);
+                        expectedCycles <= instrH == 4 ? 8 : 6;
+    `endif
+                        aluMode <= alu1OpCode(instrH);
+                        register <= readRegister8(r8(second));
+                        opType <= OP_ALU1;
+                    end
+                    endcase
+                end
+                // ================================================================
+                // Column 2
+                // ================================================================
+                4'h2: begin
+                    case (instrH)
+                    4'h8: begin
+    `ifdef BENCH
+                        $display("    lde r%h, Irr%h",
+                                secondH, secondL);
+                        expectedCycles <= 12;
+    `endif
+                        register <= r4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'h9: begin
+    `ifdef BENCH
+                        $display("    lde Irr%h, r%h",
+                                secondL, secondH);
+                        expectedCycles <= 12;
+    `endif
+                        register <= r4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hC: begin
+    `ifdef BENCH
+                        $display("    ldc r%h, Irr%h",
+                                secondH, secondL);
+                        expectedCycles <= 12;
+    `endif
+                        register <= r4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    ldc Irr%h, r%h",
+                                secondL, secondH);
+                        expectedCycles <= 12;
+    `endif
+                        register <= r4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hE,
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ? %h", second);
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    // x2
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s r%h, r%h",
+                                alu2OpName(instrH),
+                                secondH, secondL);
+                        expectedCycles <= 6;
+    `endif
+                        register <= r4(secondL);
+                        opType <= OP_ALU2;
+                    end
+                    endcase
+                end
+                // ================================================================
+                // Column 3
+                // ================================================================
                 4'h3: begin
-`ifdef BENCH
-                    $display("    jp @%h", second);
-                    expectedCycles <= 8;
-`endif
-                    state <= STATE_JP1;
+                    case (instrH)
+                    4'h8: begin
+    `ifdef BENCH
+                        $display("    ldei Ir%h, Irr%h",
+                                secondH, secondL);
+                        expectedCycles <= 18;
+    `endif
+                        register <= readRegister4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'h9: begin
+    `ifdef BENCH
+                        $display("    ldei Irr%h, Ir%h",
+                                secondL, secondH);
+                        expectedCycles <= 18;
+    `endif
+                        register <= readRegister4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hC: begin
+    `ifdef BENCH
+                        $display("    ldci Ir%h, Irr%h",
+                                secondH, secondL);
+                        expectedCycles <= 18;
+    `endif
+                        register <= readRegister4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    ldci Irr%h, Ir%h",
+                                secondL, secondH);
+                        expectedCycles <= 18;
+    `endif
+                        register <= readRegister4(secondH);
+                        opType <= OP_LDC;
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ld r%h, @r%h",
+                                secondH, secondL);
+                        expectedCycles <= 6;
+    `endif
+                        register <= readRegister4(secondL);
+                        opType <= OP_LD;
+                    end
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ld @r%h, r%h",
+                                secondH, secondL);
+                        expectedCycles <= 6;
+    `endif
+                        register <= readRegister4(secondH);
+                        opType <= OP_LD;
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s r%h, Ir%h",
+                                alu2OpName(instrH),
+                                secondH, secondL);
+                        expectedCycles <= 6;
+    `endif
+                        register <= readRegister4(secondL);
+                        opType <= OP_ALU2;
+                    end
+                    endcase
                 end
+                // ================================================================
+                // Column 4
+                // ================================================================
+                4'h4: begin
+                    case (instrH)
+                    4'h8,
+                    4'h9,
+                    4'hC,
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ? %h", instruction);
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    call @%h", second);
+                        expectedCycles <= 20;
+    `endif
+                        opType <= OP_CALL;
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ld %h, %h", third, second);
+                        expectedCycles <= 10;
+    `endif
+                        register <= r8(second);
+                        opType <= OP_LD;
+                    end
+                    // x4
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s %h, %h",
+                                alu2OpName(instrH),
+                                third, second);
+                        expectedCycles <= 10;
+    `endif
+                        register <= r8(second);
+                        opType <= OP_ALU2;
+                    end
+                    endcase
+                end
+                // ================================================================
+                // Column 5
+                // ================================================================
                 4'h5: begin
-`ifdef BENCH
-                    $display("    pop %h", second);
-                    expectedCycles <= 10;
-`endif
-                    // dst <- @SP
-                    // SP <- SP + 1
-                    register <= r8(second);
-                    state <= STATE_POP_1;
+                    case (instrH)
+                    4'h8,
+                    4'h9,
+                    4'hC,
+                    4'hD:
+                    begin
+    `ifdef BENCH
+                        $display("    ? %h", instruction);
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ld %h, @%h", third, second);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= OP_LD;
+                    end
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ld @%h, %h", third, second);
+                        expectedCycles <= 10;
+    `endif
+                        aluA <= readRegister8(r8(second));
+                        opType <= OP_LD;
+                    end
+                    // x5
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s %h, @%h",
+                                alu2OpName(instrH),
+                                third, second);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= OP_ALU2;
+                    end
+                    endcase
                 end
+                // ================================================================
+                // Column 6
+                // ================================================================
+                4'h6: begin
+                    case (instrH)
+                    4'h8,
+                    4'h9,
+                    4'hC,
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ? %h", instruction);
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    call %h", directAddress);
+                        expectedCycles <= 20;
+    `endif
+                        opType <= OP_CALL;
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ld %h, #%h", second, third);
+                        expectedCycles <= 10;
+    `endif
+                        register <= r8(second);
+                        opType <= OP_LD;
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s %h, #%h",
+                                alu2OpName(instrH),
+                                second, third);
+                        expectedCycles <= 10;
+    `endif
+                        register <= r8(second);
+                        opType <= OP_ALU2;
+                    end
+                    endcase
+                end
+                // ================================================================
+                // Column 7
+                // ================================================================
                 4'h7: begin
-`ifdef BENCH
-                    $display("    push %h", second);
-                    expectedCycles <= stackInternal ? 10 : 12;
-`endif
-                    register <= r8(second);
-                    state <= stackInternal ? STATE_PUSH_I1 : STATE_PUSH_E1;
+                    case (instrH)
+                    4'h8,
+                    4'h9,
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    ? %h", instruction);
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    4'hC: begin
+    `ifdef BENCH
+                        $display("    ld r%h, @r%h+%h", 
+                                secondH, secondL, third);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister4(secondL);
+                        opType <= OP_LD;
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    ld @r%h+%h, r%h", 
+                                secondL, third, secondH);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister4(secondL);
+                        opType <= OP_LD;
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ld @%h, #%h", second, third);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= OP_LD;
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("    %s @%h, #%h",
+                                alu2OpName(instrH),
+                                second, third);
+                        expectedCycles <= 10;
+    `endif
+                        register <= readRegister8(r8(second));
+                        opType <= OP_ALU2;
+                    end
+                    endcase
                 end
+                // ================================================================
+                // Column 8
+                // ================================================================
                 4'h8: begin
-`ifdef BENCH
-                    $display("    decw %h", second);
-                    expectedCycles <= 10;
-`endif
-                    state <= STATE_ALU1_WORD1;
-                end
-                4'hA: begin
-`ifdef BENCH
-                    $display("    incw %h", second);
-                    expectedCycles <= 10;
-`endif
-                    state <= STATE_ALU1_WORD1;
-                end
-                default: begin
-`ifdef BENCH
-                    $display("   %s %h", 
-                             alu1OpName(instrH), second);
-                    expectedCycles <= instrH == 4 ? 8 : 6;
-`endif
-                    aluMode <= alu1OpCode(instrH);
-                    register <= r8(second);
-                    state <= STATE_ALU1_OP;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 1
-            // ================================================================
-            4'h1: begin
-                case (instrH)
-                4'h3: begin
-`ifdef BENCH
-                    $display("    srp %h", second);
+    `ifdef BENCH
+                    $display("    ld r%h, %h", instrH, second);
                     expectedCycles <= 6;
-`endif
-                    register <= RP;
-                    state <= STATE_LD;
-                end
-                4'h5: begin
-`ifdef BENCH
-                    $display("    pop @%h", second);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= STATE_POP_1;
-                end
-                4'h7: begin
-`ifdef BENCH
-                    $display("    push @%h", second);
-                    expectedCycles <= stackInternal ? 12 : 14;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= stackInternal ? STATE_PUSH_I1 : STATE_PUSH_E1;
-                end
-                4'h8: begin
-`ifdef BENCH
-                    $display("    decw @%h", second);
-                    expectedCycles <= 10;
-`endif
-                    state <= STATE_ALU1_WORD1;
-                end
-                4'hA: begin
-`ifdef BENCH
-                    $display("    incw @%h", second);
-                    expectedCycles <= 10;
-`endif
-                    state <= STATE_ALU1_WORD1;
-                end
-                default: begin
-`ifdef BENCH
-                    $display("   %s @%h", 
-                             alu1OpName(instrH), second);
-                    expectedCycles <= instrH == 4 ? 8 : 6;
-`endif
-                    aluMode <= alu1OpCode(instrH);
-                    register <= readRegister8(r8(second));
-                    state <= STATE_ALU1_OP;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 2
-            // ================================================================
-            4'h2: begin
-                case (instrH)
-                4'h8: begin
-`ifdef BENCH
-                    $display("    lde r%h, Irr%h",
-                             secondH, secondL);
-                    expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    state <= STATE_LDC_READ1;
-                end
-                4'h9: begin
-`ifdef BENCH
-                    $display("    lde Irr%h, r%h",
-                             secondL, secondH);
-                    expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    state <= STATE_LDC_WRITE1;
-                end
-                4'hC: begin
-`ifdef BENCH
-                    $display("    ldc r%h, Irr%h",
-                             secondH, secondL);
-                    expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    state <= STATE_LDC_READ1;
-                end
-                4'hD: begin
-`ifdef BENCH
-                    $display("    ldc Irr%h, r%h",
-                             secondL, secondH);
-                    expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    state <= STATE_LDC_WRITE1;
-                end
-                4'hE,
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ? %h", second);
-`endif
-                    state <= STATE_ILLEGAL;
-                end
-                // x2
-                default: begin
-`ifdef BENCH
-                    $display("    %s r%h, r%h",
-                             alu2OpName(instrH),
-                             secondH, secondL);
-                    expectedCycles <= 6;
-`endif
-                    register <= r4(secondL);
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 3
-            // ================================================================
-            4'h3: begin
-                case (instrH)
-                4'h8: begin
-`ifdef BENCH
-                    $display("    ldei Ir%h, Irr%h",
-                             secondH, secondL);
-                    expectedCycles <= 18;
-`endif
-                    register <= readRegister4(secondH);
-                    state <= STATE_LDC_READ1;
-                end
-                4'h9: begin
-`ifdef BENCH
-                    $display("    ldei Irr%h, Ir%h",
-                             secondL, secondH);
-                    expectedCycles <= 18;
-`endif
-                    register <= readRegister4(secondH);
-                    state <= STATE_LDC_WRITE1;
-                end
-                4'hC: begin
-`ifdef BENCH
-                    $display("    ldci Ir%h, Irr%h",
-                             secondH, secondL);
-                    expectedCycles <= 18;
-`endif
-                    register <= readRegister4(secondH);
-                    state <= STATE_LDC_READ1;
-                end
-                4'hD: begin
-`ifdef BENCH
-                    $display("    ldci Irr%h, Ir%h",
-                             secondL, secondH);
-                    expectedCycles <= 18;
-`endif
-                    register <= readRegister4(secondH);
-                    state <= STATE_LDC_WRITE1;
-                end
-                4'hE: begin
-`ifdef BENCH
-                    $display("    ld r%h, @r%h",
-                             secondH, secondL);
-                    expectedCycles <= 6;
-`endif
-                    register <= readRegister4(secondL);
-                    state <= STATE_LD;
-                end
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ld @r%h, r%h",
-                             secondH, secondL);
-                    expectedCycles <= 6;
-`endif
-                    register <= readRegister4(secondH);
-                    state <= STATE_LD;
-                end
-                default: begin
-`ifdef BENCH
-                    $display("    %s r%h, Ir%h",
-                             alu2OpName(instrH),
-                             secondH, secondL);
-                    expectedCycles <= 6;
-`endif
-                    register <= readRegister4(secondL);
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 4
-            // ================================================================
-            4'h4: begin
-                case (instrH)
-                4'h8,
-                4'h9,
-                4'hC,
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ? %h", instruction);
-`endif
-                    state <= STATE_ILLEGAL;
-                end
-                4'hD: begin
-`ifdef BENCH
-                    $display("    call @%h", second);
-                    expectedCycles <= 20;
-`endif
-                    state <= STATE_CALL1;
-                end
-                4'hE: begin
-`ifdef BENCH
-                    $display("    ld %h, %h", third, second);
-                    expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    state <= STATE_LD;
-                end
-                // x4
-                default: begin
-`ifdef BENCH
-                    $display("    %s %h, %h",
-                             alu2OpName(instrH),
-                             third, second);
-                    expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 5
-            // ================================================================
-            4'h5: begin
-                case (instrH)
-                4'h8,
-                4'h9,
-                4'hC,
-                4'hD:
-                begin
-`ifdef BENCH
-                    $display("    ? %h", instruction);
-`endif
-                    state <= STATE_ILLEGAL;
-                end
-                4'hE: begin
-`ifdef BENCH
-                    $display("    ld %h, @%h", third, second);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= STATE_LD;
-                end
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ld @%h, %h", third, second);
-                    expectedCycles <= 10;
-`endif
+    `endif
+                    register <= r4(instrH);
                     aluA <= readRegister8(r8(second));
-                    state <= STATE_LD;
-                end
-                // x5
-                default: begin
-`ifdef BENCH
-                    $display("    %s %h, @%h",
-                             alu2OpName(instrH),
-                             third, second);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 6
-            // ================================================================
-            4'h6: begin
-                case (instrH)
-                4'h8,
-                4'h9,
-                4'hC,
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ? %h", instruction);
-`endif
-                    state <= STATE_ILLEGAL;
-                end
-                4'hD: begin
-`ifdef BENCH
-                    $display("    call %h", directAddress);
-                    expectedCycles <= 20;
-`endif
-                    // push PCL, PCH
-                    state <= STATE_CALL1;
-                end
-                4'hE: begin
-`ifdef BENCH
-                    $display("    ld %h, #%h", second, third);
-                    expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    state <= STATE_LD;
-                end
-                default: begin
-`ifdef BENCH
-                    $display("    %s %h, #%h",
-                             alu2OpName(instrH),
-                             second, third);
-                    expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 7
-            // ================================================================
-            4'h7: begin
-                case (instrH)
-                4'h8,
-                4'h9,
-                4'hF: begin
-`ifdef BENCH
-                    $display("    ? %h", instruction);
-`endif
-                    state <= STATE_ILLEGAL;
-                end
-                4'hC: begin
-`ifdef BENCH
-                    $display("    ld r%h, @r%h+%h", 
-                             secondH, secondL, third);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister4(secondL);
-                    state <= STATE_LD;
-                end
-                4'hD: begin
-`ifdef BENCH
-                    $display("    ld @r%h+%h, r%h", 
-                             secondL, third, secondH);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister4(secondL);
-                    state <= STATE_LD;
-                end
-                4'hE: begin
-`ifdef BENCH
-                    $display("    ld @%h, #%h", second, third);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= STATE_LD;
-                end
-                default: begin
-`ifdef BENCH
-                    $display("    %s @%h, #%h",
-                             alu2OpName(instrH),
-                             second, third);
-                    expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    state <= STATE_ALU2_OP1;
-                end
-                endcase
-            end
-            // ================================================================
-            // Column 8
-            // ================================================================
-            4'h8: begin
-`ifdef BENCH
-                $display("    ld r%h, %h", instrH, second);
-                expectedCycles <= 6;
-`endif
-                register <= r4(instrH);
-                aluA <= readRegister8(r8(second));
-                aluMode <= ALU1_LD;
-                writeRegister <= 1;
-                nextCommand();
-            end
-            // ================================================================
-            // Column 9
-            // ================================================================
-            4'h9: begin
-`ifdef BENCH
-                $display("    ld %h, r%h", second, instrH);
-                expectedCycles <= 6;
-`endif
-                register <= second; // no r8(second) !
-                aluA <= readRegister4(instrH);
-                aluMode <= ALU1_LD;
-                writeRegister <= 1;
-                nextCommand();
-            end
-            // ================================================================
-            // Column A
-            // ================================================================
-            4'hA: begin
-`ifdef BENCH
-                $display("    djnz r%h, %h", instrH, second);
-`endif
-                register <= r4(instrH);
-                state <= STATE_DJNZ1;
-            end
-            // ================================================================
-            // Column B
-            // ================================================================
-            4'hB: begin
-`ifdef BENCH
-                $display("    jr %s, %h", ccName(instrH), second);
-                expectedCycles <= takeBranch ? 12 : 10;
-`endif
-                nextCommand();
-            end
-            // ================================================================
-            // Column C
-            // ================================================================
-            4'hC: begin
-`ifdef BENCH
-                $display("    ld r%h, #%h", instrH, second);
-                expectedCycles <= 6;
-`endif
-                register <= r4(instrH);
-                state <= STATE_LD;
-            end
-            // ================================================================
-            // Column D
-            // ================================================================
-            4'hD: begin
-`ifdef BENCH
-                $display("    jp %s, %h", ccName(instrH), directAddress);
-                expectedCycles <= takeBranch ? 12 : 10;
-`endif
-                if (takeBranch)
-                    state <= STATE_JP1;
-                else
-                    nextCommand();
-            end
-            // ================================================================
-            // Column E
-            // ================================================================
-            4'hE: begin
-`ifdef BENCH
-                $display("    inc r%h", instrH);
-                expectedCycles <= 6;
-`endif
-                register <= r4(instrH);
-                aluMode <= ALU1_INC;
-                state <= STATE_ALU1_OP;
-            end
-            // ================================================================
-            // Column F
-            // ================================================================
-            4'hF: begin
-                case (instrH)
-                4'h8: begin
-`ifdef BENCH
-                    $display("    di");
-                    expectedCycles <= 6;
-`endif
-                    //TODO
+                    aluMode <= ALU1_LD;
+                    writeRegister <= 1;
                     nextCommand();
                 end
+                // ================================================================
+                // Column 9
+                // ================================================================
                 4'h9: begin
-`ifdef BENCH
-                    $display("    ei");
+    `ifdef BENCH
+                    $display("    ld %h, r%h", second, instrH);
                     expectedCycles <= 6;
-`endif
-                    //TODO
+    `endif
+                    register <= second; // no r8(second) !
+                    aluA <= readRegister4(instrH);
+                    aluMode <= ALU1_LD;
+                    writeRegister <= 1;
                     nextCommand();
                 end
+                // ================================================================
+                // Column A
+                // ================================================================
                 4'hA: begin
-`ifdef BENCH
-                    $display("    ret");
-                    expectedCycles <= 14;
-`endif
-                    // PCH, PCL
-                    state <= STATE_RET1;
+    `ifdef BENCH
+                    $display("    djnz r%h, %h", instrH, second);
+    `endif
+                    register <= r4(instrH);
+                    opType <= OP_DJNZ;
                 end
+                // ================================================================
+                // Column B
+                // ================================================================
                 4'hB: begin
-`ifdef BENCH
-                    $display("    iret");
-                    expectedCycles <= 16;
-`endif
-                    // flags, PCH, PCL
-                    state <= STATE_IRET1;
+    `ifdef BENCH
+                    $display("    jr %s, %h", ccName(instrH), second);
+                    expectedCycles <= takeBranch ? 12 : 10;
+    `endif
+                    nextCommand();
                 end
+                // ================================================================
+                // Column C
+                // ================================================================
                 4'hC: begin
-`ifdef BENCH
-                    $display("    rcf");
+    `ifdef BENCH
+                    $display("    ld r%h, #%h", instrH, second);
                     expectedCycles <= 6;
-`endif
-                    flags[FLAG_INDEX_C] <= instrH[0];
-                    nextCommand();
+    `endif
+                    register <= r4(instrH);
+                    opType <= OP_LD;
                 end
+                // ================================================================
+                // Column D
+                // ================================================================
                 4'hD: begin
-`ifdef BENCH
-                    $display("    scf");
-                    expectedCycles <= 6;
-`endif
-                    flags[FLAG_INDEX_C] <= instrH[0];
-                    nextCommand();
+    `ifdef BENCH
+                    $display("    jp %s, %h", ccName(instrH), directAddress);
+                    expectedCycles <= takeBranch ? 12 : 10;
+    `endif
+                    if (takeBranch)
+                        opType <= OP_JP;
+                    else
+                        nextCommand();
                 end
+                // ================================================================
+                // Column E
+                // ================================================================
                 4'hE: begin
-`ifdef BENCH
-                    $display("    ccf");
+    `ifdef BENCH
+                    $display("    inc r%h", instrH);
                     expectedCycles <= 6;
-`endif
-                    flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
-                    nextCommand();
+    `endif
+                    register <= r4(instrH);
+                    aluMode <= ALU1_INC;
+                    opType <= OP_ALU1;
                 end
+                // ================================================================
+                // Column F
+                // ================================================================
                 4'hF: begin
-`ifdef BENCH
-                    $display("    nop");
-                    expectedCycles <= 6;
-`endif
-                    nextCommand();
+                    case (instrH)
+                    4'h8: begin
+    `ifdef BENCH
+                        $display("    di");
+                        expectedCycles <= 6;
+    `endif
+                        //TODO
+                        nextCommand();
+                    end
+                    4'h9: begin
+    `ifdef BENCH
+                        $display("    ei");
+                        expectedCycles <= 6;
+    `endif
+                        //TODO
+                        nextCommand();
+                    end
+                    4'hA: begin
+    `ifdef BENCH
+                        $display("    ret");
+                        expectedCycles <= 14;
+    `endif
+                        opType <= OP_RET;
+                    end
+                    4'hB: begin
+    `ifdef BENCH
+                        $display("    iret");
+                        expectedCycles <= 16;
+    `endif
+                        opType <= OP_IRET;
+                    end
+                    4'hC: begin
+    `ifdef BENCH
+                        $display("    rcf");
+                        expectedCycles <= 6;
+    `endif
+                        flags[FLAG_INDEX_C] <= instrH[0];
+                        nextCommand();
+                    end
+                    4'hD: begin
+    `ifdef BENCH
+                        $display("    scf");
+                        expectedCycles <= 6;
+    `endif
+                        flags[FLAG_INDEX_C] <= instrH[0];
+                        nextCommand();
+                    end
+                    4'hE: begin
+    `ifdef BENCH
+                        $display("    ccf");
+                        expectedCycles <= 6;
+    `endif
+                        flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
+                        nextCommand();
+                    end
+                    4'hF: begin
+    `ifdef BENCH
+                        $display("    nop");
+                        expectedCycles <= 6;
+    `endif
+                        nextCommand();
+                    end
+                    default: begin
+    `ifdef BENCH
+                        $display("    ?");
+    `endif
+                        opType <= OP_ILLEGAL;
+                    end
+                    endcase
                 end
                 default: begin
-`ifdef BENCH
-                    $display("    ?");
-`endif
-                    state <= STATE_ILLEGAL;
                 end
                 endcase
             end
-            default: begin
-            end
-            endcase
         end
+    endcase
 
-        STATE_LD: begin
+    case (opType)
+        OP_LD: begin
             case (instrL)
             4'h1: begin
                 // srp
@@ -1075,290 +1089,323 @@ module Processor(
             writeRegister <= 1;
             nextCommand();
         end
+        OP_ALU1: begin
+            case (opState)
+            OPSTATE0: begin
+                aluA <= readRegister8(register);
+                writeRegister <= 1;
+                writeFlags <= 1;
 
-        STATE_ALU1_WORD1: begin
-            aluMode <= instrH & 7;
-            register <= instrL & 1 
-                ? readRegister8(r8(second))
-                : r8(second);
-        end
-        STATE_ALU1_WORD2: begin
-            register <= {register[7:1], 1'h1};
-        end
-        STATE_ALU1_WORD3: begin
-            aluA <= readRegister8(register);
-            writeRegister <= 1;
-        end
-        STATE_ALU1_WORD4: begin
-            register <= { register[7:1], 1'b0 };
-        end
-        STATE_ALU1_WORD5: begin
-            aluA <= readRegister8(register);
-            aluB <= aluOut;
-            aluMode <= aluMode | 'h8; // inc/dec -> incw/decw
-            writeRegister <= 1;
-            writeFlags <= 1;
-            nextCommand();
-        end
-
-        STATE_ALU1_OP: begin
-            aluA <= readRegister8(register);
-            writeRegister <= 1;
-            writeFlags <= 1;
-
-            if (aluMode == ALU1_DA) begin
-                state <= STATE_ALU1_DA;
+                if (aluMode != ALU1_DA)
+                    nextCommand();
             end
-            else begin
+            default: begin
+                aluA <= aluOut;
+                aluMode <= ALU1_DA_H;
+                writeRegister <= 1;
+                writeFlags <= 1;
                 nextCommand();
-            end
-        end
-
-        STATE_ALU1_DA: begin
-            aluA <= aluOut;
-            aluMode <= ALU1_DA_H;
-            writeRegister <= 1;
-            writeFlags <= 1;
-            nextCommand();
-        end
-
-        STATE_ALU2_OP1: begin
-            case (instrL)
-            2, // r, r
-            3: // r, Ir
-            begin
-                aluB <= readRegister8(register);
-                register <= r4(secondH);
-            end
-            4, // R, R
-            5: // R, IR
-            begin
-                aluB <= readRegister8(register);
-                register <= r8(third);
-            end
-            6, // R, IM
-            7: // IR, IM
-            begin
-                aluB <= third;
             end
             endcase
         end
-        STATE_ALU2_OP2: begin
-            aluA <= readRegister8(register);
-        end
-        STATE_ALU2_OP3: begin
-            aluMode <= alu2OpCode(instrH);
-            writeRegister <= (instrH[3:2] == 2'b00)     // add, adc, sub, sbc
-                            | (instrH[3:1] == 3'b010)   // or, and
-                            | (instrH      == 4'b1011); // xor
-            writeFlags <= 1;
-            nextCommand();
-        end
-
-        STATE_PUSH_I1: begin
-            sp <= sp - 16'b1;
-        end
-        STATE_PUSH_I2: begin
-            aluMode <= ALU1_LD;
-            aluA <= readRegister8(register);
-            register <= sp[7:0];
-            writeRegister <= 1;
-            nextCommand();
-        end
-
-        STATE_PUSH_E1: begin
-            sp <= sp - 16'b1;
-        end
-        STATE_PUSH_E2: begin
-            aluA <= readRegister8(register);
-            addr <= sp;
-            writeMem <= 1;
-        end
-        STATE_PUSH_E3: begin
-            nextCommand();
-        end
-
-        STATE_POP_1: begin
-            addr <= sp;
-            readMem <= 1;
-        end
-        STATE_POP_2: begin
-            readMem <= 1;
-        end
-        STATE_POP_3: begin
-            aluA <= stackInternal
-                ? readRegister8(addr[7:0])
-                : memDataRead;
-        end
-        STATE_POP_4: begin
-            aluMode <= ALU1_LD;
-            sp <= sp + 16'b1;
-            writeRegister <= 1;
-            nextCommand();
-        end
-
-        STATE_DJNZ1: begin
-            aluA <= readRegister8(register);
-            aluMode <= ALU1_DEC;
-            writeRegister <= 1;
-        end
-
-        STATE_DJNZ2: begin
-`ifdef BENCH
-            expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
-`endif
-            // needs a special state to handle the pc
-            nextCommand();
-        end
-
-        STATE_LDC_READ1: begin
-            addr[15:8] <= readRegister4({secondL[3:1], 1'b0});
-            state <= STATE_LDC_READ2;
-        end
-        STATE_LDC_READ2: begin
-            addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
-            state <= STATE_READ_MEM1;
-            readMem <= 1;
-        end
-
-        STATE_LDC_WRITE1: begin
-            addr[15:8] <= readRegister4({secondL[3:1], 1'b0});
-        end
-        STATE_LDC_WRITE2: begin
-            addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
-        end
-        STATE_LDC_WRITE3: begin
-            aluA <= readRegister8(register);
-            state <= STATE_WRITE_MEM;
-            writeMem <= 1;
-        end
-
-        STATE_READ_MEM1: begin
-            readMem <= 1;
-        end
-        STATE_READ_MEM2: begin
-            aluA <= memDataRead;
-            aluMode <= ALU1_LD;
-            writeRegister <= 1;
-            // ldci?
-            if (instrL == 4'h3)
-                state <= STATE_INC_R_RR1;
-            else
-                nextCommand();
-        end
-
-        STATE_INC_R_RR1: begin
-            aluA <= register;
-            register <= r4(secondH);
-            aluMode <= ALU1_INC;
-            writeRegister <= 1;
-        end
-        STATE_INC_R_RR2: begin
-            aluA <= addr[7:0];
-            register <= r4({secondL[3:1], 1'b1});
-            aluMode <= ALU1_INC;
-            writeRegister <= 1;
-        end
-        STATE_INC_R_RR3: begin
-            aluA <= addr[15:8];
-            aluB <= aluOut;
-            register[0] <= 1'b0;
-            aluMode <= ALU1_INCW;
-            writeRegister <= 1;
-            nextCommand();
-        end
-
-        STATE_WRITE_MEM: begin
-            if (instrL == 4'h3)
-                state <= STATE_INC_R_RR1;
-            else
-                nextCommand();
-        end
-
-        STATE_CALL1: begin
-            sp <= sp - 16'b1;
-            aluA <= pc[7:0];
-        end
-        STATE_CALL3: begin
-            sp <= sp - 16'b1;
-            aluA <= pc[15:8];
-        end
-        STATE_CALL2,
-        STATE_CALL4: begin
-            if (stackInternal) begin
-                aluMode <= ALU1_LD;
-                register <= sp[7:0];
+        OP_ALU1WORD: begin
+            case (opState)
+            OPSTATE0: begin
+                aluMode <= instrH & 7;
+                register <= instrL & 1 
+                    ? readRegister8(r8(second))
+                    : r8(second);
+            end
+            OPSTATE1: begin
+                register <= {register[7:1], 1'h1};
+            end
+            OPSTATE2: begin
+                aluA <= readRegister8(register);
                 writeRegister <= 1;
             end
-            else begin
+            OPSTATE3: begin
+                register <= { register[7:1], 1'b0 };
+            end
+            default: begin
+                aluA <= readRegister8(register);
+                aluB <= aluOut;
+                aluMode <= aluMode | 'h8; // inc/dec -> incw/decw
+                writeRegister <= 1;
+                writeFlags <= 1;
+                nextCommand();
+            end
+            endcase
+        end
+        OP_ALU2: begin
+            case (opState)
+            OPSTATE0: begin
+                case (instrL)
+                2, // r, r
+                3: // r, Ir
+                begin
+                    aluB <= readRegister8(register);
+                    register <= r4(secondH);
+                end
+                4, // R, R
+                5: // R, IR
+                begin
+                    aluB <= readRegister8(register);
+                    register <= r8(third);
+                end
+                6, // R, IM
+                7: // IR, IM
+                begin
+                    aluB <= third;
+                end
+                endcase
+            end
+            OPSTATE1: begin
+                aluA <= readRegister8(register);
+            end
+            default: begin
+                aluMode <= alu2OpCode(instrH);
+                writeRegister <= (instrH[3:2] == 2'b00)     // add, adc, sub, sbc
+                                | (instrH[3:1] == 3'b010)   // or, and
+                                | (instrH      == 4'b1011); // xor
+                writeFlags <= 1;
+                nextCommand();
+            end
+            endcase
+        end
+        OP_POP: begin
+            case (opState)
+            OPSTATE0: begin
+                addr <= sp;
+                readMem <= 1;
+            end
+            OPSTATE1: begin
+                readMem <= 1;
+            end
+            OPSTATE2: begin
+                aluA <= stackInternal
+                    ? readRegister8(addr[7:0])
+                    : memDataRead;
+            end
+            default: begin
+                aluMode <= ALU1_LD;
+                sp <= sp + 16'b1;
+                writeRegister <= 1;
+                nextCommand();
+            end
+            endcase
+        end
+        OP_PUSH_I: begin
+            case (opState)
+            OPSTATE0: begin
+                sp <= sp - 16'b1;
+            end
+            default: begin
+                aluMode <= ALU1_LD;
+                aluA <= readRegister8(register);
+                register <= sp[7:0];
+                writeRegister <= 1;
+                nextCommand();
+            end
+            endcase
+        end
+        OP_PUSH_E: begin
+            case (opState)
+            OPSTATE0: begin
+                sp <= sp - 16'b1;
+            end
+            OPSTATE1: begin
+                aluA <= readRegister8(register);
                 addr <= sp;
                 writeMem <= 1;
             end
+            default: begin
+                nextCommand();
+            end
+            endcase
         end
-        STATE_JP1: begin
-            addr[15:8] = isCallDA | isJumpDA
-                       ? second
-                       : readRegister8(r8({second[7:1], 1'b0}));
+        OP_DJNZ: begin
+            case (opState)
+            OPSTATE0: begin
+                aluA <= readRegister8(register);
+                aluMode <= ALU1_DEC;
+                writeRegister <= 1;
+            end
+            OPSTATE1: begin
+`ifdef BENCH
+                expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
+`endif
+                if (flagsOut[FLAG_INDEX_Z])
+                    nextCommand();
+            end
+            default: begin
+                nextCommand();
+            end
+            endcase
         end
-        STATE_JP2: begin
-            addr[7:0] = isCallDA | isJumpDA
-                       ? third
-                       : readRegister8(r8({second[7:1], 1'b1}));
+        OP_JP: begin
+            case (opState)
+            OPSTATE0: begin
+                addr[15:8] = isJumpDA
+                    ? second
+                    : readRegister8(r8({second[7:1], 1'b0}));
+            end
+            OPSTATE1: begin
+                addr[7:0] = isJumpDA
+                    ? third
+                    : readRegister8(r8({second[7:1], 1'b1}));
+            end
+            default: begin
+                nextCommand();
+            end
+            endcase
         end
-        STATE_JP3: begin
-            nextCommand();
+        OP_CALL: begin
+            // push PCL, PCH
+            case (opState)
+            OPSTATE0: begin
+                sp <= sp - 16'b1;
+                aluA <= pc[7:0];
+            end
+            OPSTATE1,
+            OPSTATE3: begin
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    register <= sp[7:0];
+                    writeRegister <= 1;
+                end
+                else begin
+                    addr <= sp;
+                    writeMem <= 1;
+                end
+            end
+            OPSTATE2: begin
+                sp <= sp - 16'b1;
+                aluA <= pc[15:8];
+            end
+            OPSTATE4: begin
+                addr[15:8] = isCallDA 
+                    ? second
+                    : readRegister8(r8({second[7:1], 1'b0}));
+            end
+            OPSTATE5: begin
+                addr[7:0] = isCallDA
+                    ? third
+                    : readRegister8(r8({second[7:1], 1'b1}));
+            end
+            default: begin
+                nextCommand();
+            end
+            endcase
         end
-
-        STATE_IRET1: begin
-            addr <= sp;
-            sp <= sp + 16'b1;
-            readMem <= ~stackInternal;
+        OP_IRET: begin
+            // flags, PCH, PCL
+            case (opState)
+            OPSTATE0: begin
+                addr <= sp;
+                sp <= sp + 16'b1;
+                readMem <= ~stackInternal;
+            end
+            OPSTATE1: begin
+                aluMode <= ALU1_LD;
+                aluA <= stackInternal
+                    ? readRegister8(addr[7:0])
+                    : memDataRead;
+                register <= FLAGS;
+                writeRegister <= 1;
+                opType <= OP_RET;
+                opState <= OPSTATE0;
+            end
+            endcase
         end
-        STATE_IRET2: begin
-            aluMode <= ALU1_LD;
-            aluA <= stackInternal
-                ? readRegister8(addr[7:0])
-                : memDataRead;
-            register <= FLAGS;
-            writeRegister <= 1;
+        OP_RET: begin
+            // PCH, PCL
+            case (opState)
+            OPSTATE0: begin
+                addr <= sp;
+                readMem <= ~stackInternal;
+            end
+            OPSTATE1: begin
+                sp <= sp + 16'b1;
+                readMem <= ~stackInternal;
+            end
+            OPSTATE2: begin
+                aluA <= stackInternal
+                    ? readRegister8(addr[7:0])
+                    : memDataRead;// temp
+                addr <= sp;
+                readMem <= ~stackInternal;
+            end
+            OPSTATE3: begin
+                sp <= sp + 16'b1;
+                readMem <= ~stackInternal;
+            end
+            OPSTATE4: begin
+                addr[15:8] <= aluA;
+                addr[7:0] <= stackInternal
+                    ? readRegister8(addr[7:0])
+                    : memDataRead;
+            end
+            default: begin
+                nextCommand();
+                //TODO: for iret enable interrupts
+            end
+            endcase
         end
-        STATE_RET1: begin
-            addr <= sp;
-            readMem <= ~stackInternal;
+        OP_LDC: begin
+            case (opState)
+            OPSTATE0: begin
+                addr[15:8] <= readRegister4({secondL[3:1], 1'b0});
+            end
+            OPSTATE1: begin
+                addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
+                if (instrH[0] == 0)
+                    readMem <= 1;
+            end
+            OPSTATE2: begin
+                if (instrH[0] == 0) begin
+                    readMem <= 1;
+                end
+                else begin
+                    aluA <= readRegister8(register);
+                    writeMem <= 1;
+                end
+            end
+            OPSTATE3: begin
+                if (instrH[0] == 0) begin
+                    aluA <= memDataRead;
+                    aluMode <= ALU1_LD;
+                    writeRegister <= 1;
+                end
+                // ldci?
+                if (instrL[0] == 0)
+                    nextCommand();
+            end
+            OPSTATE4: begin
+                aluA <= register;
+                register <= r4(secondH);
+                aluMode <= ALU1_INC;
+                writeRegister <= 1;
+            end
+            OPSTATE5: begin
+                aluA <= addr[7:0];
+                register <= r4({secondL[3:1], 1'b1});
+                aluMode <= ALU1_INC;
+                writeRegister <= 1;
+            end
+            OPSTATE6: begin
+                aluA <= addr[15:8];
+                aluB <= aluOut;
+                register[0] <= 1'b0;
+                aluMode <= ALU1_INCW;
+                writeRegister <= 1;
+                nextCommand();
+            end
+            endcase
         end
-        STATE_RET2: begin
-            sp <= sp + 16'b1;
-            readMem <= ~stackInternal;
+        OP_ILLEGAL: begin
+            opState <= OPSTATE0;
         end
-        STATE_RET3: begin
-            aluA <= stackInternal
-                ? readRegister8(addr[7:0])
-                : memDataRead;// temp
-            addr <= sp;
-            readMem <= ~stackInternal;
-        end
-        STATE_RET4: begin
-            sp <= sp + 16'b1;
-            readMem <= ~stackInternal;
-        end
-        STATE_RET5: begin
-            addr[15:8] <= aluA;
-            addr[7:0] <= stackInternal
-                ? readRegister8(addr[7:0])
-                : memDataRead;
-        end
-        STATE_RET6: begin
-            nextCommand();
-            //TODO: for iret enable interrupts
-        end
-
-        STATE_ILLEGAL: begin
-            // keep it until reset
-            state <= STATE_ILLEGAL;
-        end
-
         endcase
-
         pc <= nextPc;
     end
 endmodule
