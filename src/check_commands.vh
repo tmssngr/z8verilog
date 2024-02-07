@@ -335,6 +335,111 @@ task chk_ldc_Irr_r;
         @(negedge clk);
     end
 endtask
+task chk_ldci_Ir_Irr;
+    input [3:0] dst;
+    input [3:0] src;
+    input [7:0] dstReg;
+    input [7:0] srcRegs;
+    input [7:0] target;
+    input[15:0] addr;
+    input [7:0] value;
+    input[15:0] addrPlus1;
+    begin
+        chk_2byteOp(8'hC3, {dst, src});
+            `assert(uut.proc.register, target);
+            `assertState(STATE_LDC_READ1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_LDC_READ2);
+        @(negedge clk);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_READ_MEM1);
+        @(negedge clk);
+            `assertState(STATE_READ_MEM2);
+        @(negedge clk);
+            `assert(uut.proc.aluA, value);
+            `assert(uut.proc.aluMode, ALU1_LD);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_INC_R_RR1);
+        @(negedge clk);
+            `assertRegister(target, value);
+
+            `assert(uut.proc.aluA, target);
+            `assert(uut.proc.register, dstReg);
+            `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_INC_R_RR2);
+        @(negedge clk);
+            `assertRegister(dstReg, target + 1);
+
+            `assert(uut.proc.aluA, addr[7:0]);
+            `assert(uut.proc.register, srcRegs | 1);
+            `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_INC_R_RR3);
+        @(negedge clk);
+            `assertRegister(srcRegs | 1, addrPlus1[7:0]);
+
+            `assert(uut.proc.aluA, addr[15:8]);
+            `assert(uut.proc.register, srcRegs & ~1);
+            `assert(uut.proc.aluMode, ALU1_INCW);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(srcRegs & ~1, addrPlus1[15:8]);
+    end
+endtask
+task chk_ldci_Irr_Ir;
+    input [3:0] dst;
+    input [3:0] src;
+    input [7:0] dstRegs;
+    input [7:0] srcReg;
+    input [7:0] source;
+    input[15:0] addr;
+    input [7:0] value;
+    input[15:0] addrPlus1;
+    begin
+        chk_2byteOp(8'hD3, {src, dst});
+            `assert(uut.proc.register, source);
+            `assertState(STATE_LDC_WRITE1);
+        @(negedge clk);
+            `assert(uut.proc.addr[15:8], addr[15:8]);
+            `assertState(STATE_LDC_WRITE2);
+        @(negedge clk);
+            `assert(uut.proc.addr, addr);
+            `assertState(STATE_LDC_WRITE3);
+        @(negedge clk);
+            `assertState(STATE_WRITE_MEM);
+        @(negedge clk);
+            `assertState(STATE_INC_R_RR1);
+        @(negedge clk);
+            `assertRegister(source, value);
+
+            `assert(uut.proc.aluA, source);
+            `assert(uut.proc.register, srcReg);
+            `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_INC_R_RR2);
+        @(negedge clk);
+            `assertRegister(srcReg, source + 1);
+
+            `assert(uut.proc.aluA, addr[7:0]);
+            `assert(uut.proc.register, dstRegs | 1);
+            `assert(uut.proc.aluMode, ALU1_INC);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_INC_R_RR3);
+        @(negedge clk);
+            `assertRegister(dstRegs | 1, addrPlus1[7:0]);
+
+            `assert(uut.proc.aluA, addr[15:8]);
+            `assert(uut.proc.register, dstRegs & ~1);
+            `assert(uut.proc.aluMode, ALU1_INCW);
+            `assert(uut.proc.writeRegister, 1);
+            `assertState(STATE_FETCH_INSTR);
+        @(negedge clk);
+            `assertRegister(dstRegs & ~1, addrPlus1[15:8]);
+    end
+endtask
 
 task chk_jp;
     input[15:0] addr;
