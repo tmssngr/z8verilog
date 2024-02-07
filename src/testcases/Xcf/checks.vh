@@ -1,32 +1,11 @@
     @(negedge clk);
-// scf
-	chk_1byteOp(8'hDF);
-        `assertState(STATE_FETCH_INSTR);
-        // c
-        `assertFlags(FLAG_C);
-    @(negedge clk);
 
-// rcf
-	chk_1byteOp(8'hCF);
-        `assertState(STATE_FETCH_INSTR);
-        // -c
-        `assertFlags(FLAG_NONE);
-    @(negedge clk);
+    chk_scf();
 
-// ccf
-	chk_1byteOp(8'hEF);
-        `assertState(STATE_FETCH_INSTR);
-        // !c
-        `assertFlags(FLAG_C);
-    @(negedge clk);
+    chk_rcf();
 
+    chk_ccf(1);
 
-// ccf
-	chk_1byteOp(8'hEF);
-        `assertState(STATE_FETCH_INSTR);
-        // !c
-        `assertFlags(FLAG_NONE);
-    @(negedge clk);
-
+    chk_ccf(0);
 
 	chk_jp(16'h000C);

@@ -1309,3 +1309,31 @@ task chk_iret_extern;
             `assertState(STATE_FETCH_INSTR);
     end
 endtask
+
+task chk_rcf;
+    begin
+        chk_1byteOp(8'hCF);
+            `assertState(STATE_FETCH_INSTR);
+            `assert(uut.proc.flags[FLAG_INDEX_C], 1'b0);
+        @(negedge clk);
+    end
+endtask
+
+task chk_scf;
+    begin
+        chk_1byteOp(8'hDF);
+            `assertState(STATE_FETCH_INSTR);
+            `assert(uut.proc.flags[FLAG_INDEX_C], 1'b1);
+        @(negedge clk);
+    end
+endtask
+
+task chk_ccf;
+    input carry;
+    begin
+        chk_1byteOp(8'hEF);
+            `assertState(STATE_FETCH_INSTR);
+            `assert(uut.proc.flags[FLAG_INDEX_C], carry);
+        @(negedge clk);
+    end
+endtask
