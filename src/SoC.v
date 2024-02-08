@@ -367,7 +367,6 @@ module Processor(
         case (state)
         STATE_FETCH_INSTR: begin
 `ifdef BENCH
-            $display("\n%h: read instruction", pc);
             addr <= 0;
             aluA <= 0;
             aluB <= 0;
@@ -380,13 +379,13 @@ module Processor(
         end
 
         STATE_READ_INSTR: begin
+`ifdef BENCH
+            $display("\n%h: read 1st byte %h", pc, memDataRead);
+`endif
             instruction <= memDataRead;
         end
 
         STATE_WAIT_2: begin
-`ifdef BENCH
-            $display("  %h", instruction);
-`endif
             if (isInstrSize1) begin
                 state <= STATE_DECODE;
             end
@@ -394,7 +393,7 @@ module Processor(
 
         STATE_READ_2: begin
 `ifdef BENCH
-            $display("%h: read 2nd byte", pc);
+            $display("%h: read 2nd byte %h", pc, memDataRead);
 `endif
             second <= memDataRead;
             if (isInstrSize2) begin
@@ -403,25 +402,24 @@ module Processor(
         end
 
         STATE_WAIT_3: begin
-`ifdef BENCH
-            $display("  %h %h", instruction, second);
-`endif
         end
 
         STATE_READ_3: begin
 `ifdef BENCH
-            $display("%h: read 3rd byte", pc);
+            $display("%h: read 3rd byte %h", pc, memDataRead);
 `endif
             third <= memDataRead;
         end
 
         STATE_DECODE: begin
 `ifdef BENCH
-            if (isInstrSize2) begin
+            // $display("  decoding");
+            if (isInstrSize1)
+                $display("  %h", instruction);
+            else if (isInstrSize2)
                 $display("  %h %h", instruction, second);
-            end else if (isInstrSize3) begin
+            else if (isInstrSize3)
                 $display("  %h %h %h", instruction, second, third);
-            end
 `endif
             case (instrL)
             // ================================================================

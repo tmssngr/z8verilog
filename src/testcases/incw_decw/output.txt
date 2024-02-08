@@ -1,28 +1,23 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
-000c: read instruction
-  e6
-000d: read 2nd byte
-  e6 10
-000e: read 3rd byte
+000c: read 1st byte e6
+000d: read 2nd byte 10
+000e: read 3rd byte 01
   e6 10 01
     ld 10, #01
     reg[10] = 01
  8 cycles, expected 10
 
-000f: read instruction
-  e6
-0010: read 2nd byte
-  e6 11
-0011: read 3rd byte
+000f: read 1st byte e6
+0010: read 2nd byte 11
+0011: read 3rd byte 02
   e6 11 02
     ld 11, #02
     reg[11] = 02
  8 cycles, expected 10
 
-0012: read instruction
-  a0
-0013: read 2nd byte
+0012: read 1st byte a0
+0013: read 2nd byte 10
   a0 10
     incw 10
     reg[11] = 03
@@ -32,9 +27,8 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[10] = 01
 exact 10 cycles
 
-0014: read instruction
-  80
-0015: read 2nd byte
+0014: read 1st byte 80
+0015: read 2nd byte 10
   80 10
     decw 10
     reg[11] = 02
@@ -44,19 +38,16 @@ exact 10 cycles
     reg[10] = 01
 exact 10 cycles
 
-0016: read instruction
-  e6
-0017: read 2nd byte
-  e6 11
-0018: read 3rd byte
+0016: read 1st byte e6
+0017: read 2nd byte 11
+0018: read 3rd byte 7f
   e6 11 7f
     ld 11, #7f
     reg[11] = 7f
  8 cycles, expected 10
 
-0019: read instruction
-  a0
-001a: read 2nd byte
+0019: read 1st byte a0
+001a: read 2nd byte 10
   a0 10
     incw 10
     reg[11] = 80
@@ -66,9 +57,8 @@ exact 10 cycles
     reg[10] = 01
 exact 10 cycles
 
-001b: read instruction
-  80
-001c: read 2nd byte
+001b: read 1st byte 80
+001c: read 2nd byte 10
   80 10
     decw 10
     reg[11] = 7f
@@ -78,19 +68,16 @@ exact 10 cycles
     reg[10] = 01
 exact 10 cycles
 
-001d: read instruction
-  e6
-001e: read 2nd byte
-  e6 11
-001f: read 3rd byte
+001d: read 1st byte e6
+001e: read 2nd byte 11
+001f: read 3rd byte ff
   e6 11 ff
     ld 11, #ff
     reg[11] = ff
  8 cycles, expected 10
 
-0020: read instruction
-  a0
-0021: read 2nd byte
+0020: read 1st byte a0
+0021: read 2nd byte 10
   a0 10
     incw 10
     reg[11] = 00
@@ -100,9 +87,8 @@ exact 10 cycles
     reg[10] = 02
 exact 10 cycles
 
-0022: read instruction
-  80
-0023: read 2nd byte
+0022: read 1st byte 80
+0023: read 2nd byte 10
   80 10
     decw 10
     reg[11] = ff
@@ -112,19 +98,16 @@ exact 10 cycles
     reg[10] = 01
 exact 10 cycles
 
-0024: read instruction
-  e6
-0025: read 2nd byte
-  e6 10
-0026: read 3rd byte
+0024: read 1st byte e6
+0025: read 2nd byte 10
+0026: read 3rd byte ff
   e6 10 ff
     ld 10, #ff
     reg[10] = ff
  8 cycles, expected 10
 
-0027: read instruction
-  a0
-0028: read 2nd byte
+0027: read 1st byte a0
+0028: read 2nd byte 10
   a0 10
     incw 10
     reg[11] = 00
@@ -134,9 +117,8 @@ exact 10 cycles
     reg[10] = 00
 exact 10 cycles
 
-0029: read instruction
-  a0
-002a: read 2nd byte
+0029: read 1st byte a0
+002a: read 2nd byte 10
   a0 10
     incw 10
     reg[11] = 01
@@ -146,9 +128,8 @@ exact 10 cycles
     reg[10] = 00
 exact 10 cycles
 
-002b: read instruction
-  80
-002c: read 2nd byte
+002b: read 1st byte 80
+002c: read 2nd byte 10
   80 10
     decw 10
     reg[11] = 00
@@ -158,9 +139,8 @@ exact 10 cycles
     reg[10] = 00
 exact 10 cycles
 
-002d: read instruction
-  80
-002e: read 2nd byte
+002d: read 1st byte 80
+002e: read 2nd byte 10
   80 10
     decw 10
     reg[11] = ff
@@ -170,19 +150,16 @@ exact 10 cycles
     reg[10] = ff
 exact 10 cycles
 
-002f: read instruction
-  e6
-0030: read 2nd byte
-  e6 12
-0031: read 3rd byte
+002f: read 1st byte e6
+0030: read 2nd byte 12
+0031: read 3rd byte 10
   e6 12 10
     ld 12, #10
     reg[12] = 10
  8 cycles, expected 10
 
-0032: read instruction
-  a1
-0033: read 2nd byte
+0032: read 1st byte a1
+0033: read 2nd byte 12
   a1 12
     incw @12
     reg[11] = 00
@@ -192,9 +169,8 @@ exact 10 cycles
     reg[10] = 00
 exact 10 cycles
 
-0034: read instruction
-  81
-0035: read 2nd byte
+0034: read 1st byte 81
+0035: read 2nd byte 12
   81 12
     decw @12
     reg[11] = ff
@@ -204,14 +180,10 @@ exact 10 cycles
     reg[10] = ff
 exact 10 cycles
 
-0036: read instruction
-  8d
-0037: read 2nd byte
-  8d 00
-0038: read 3rd byte
+0036: read 1st byte 8d
+0037: read 2nd byte 00
+0038: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 10 cycles, expected 12
-
-000c: read instruction
 testSoC: SUCCESS

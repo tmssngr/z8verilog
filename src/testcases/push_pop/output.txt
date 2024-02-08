@@ -1,111 +1,94 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
-000c: read instruction
-  31
-000d: read 2nd byte
+000c: read 1st byte 31
+000d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 exact  6 cycles
 
-000e: read instruction
-  0c
-000f: read 2nd byte
+000e: read 1st byte 0c
+000f: read 2nd byte 12
   0c 12
     ld r0, #12
     reg[20] = 12
 exact  6 cycles
 
-0010: read instruction
-  1c
-0011: read 2nd byte
+0010: read 1st byte 1c
+0011: read 2nd byte 34
   1c 34
     ld r1, #34
     reg[21] = 34
 exact  6 cycles
 
-0012: read instruction
-  e6
-0013: read 2nd byte
-  e6 ff
-0014: read 3rd byte
+0012: read 1st byte e6
+0013: read 2nd byte ff
+0014: read 3rd byte 80
   e6 ff 80
     ld ff, #80
     reg[ff] = 80
  8 cycles, expected 10
 
-0015: read instruction
-  70
-0016: read 2nd byte
+0015: read 1st byte 70
+0016: read 2nd byte e0
   70 e0
     push e0
     reg[7f] = 12
  7 cycles, expected 10
 
-0017: read instruction
-  70
-0018: read 2nd byte
+0017: read 1st byte 70
+0018: read 2nd byte e1
   70 e1
     push e1
     reg[7e] = 34
  7 cycles, expected 10
 
-0019: read instruction
-  50
-001a: read 2nd byte
+0019: read 1st byte 50
+001a: read 2nd byte e0
   50 e0
     pop e0
     reg[20] = 34
  9 cycles, expected 10
 
-001b: read instruction
-  50
-001c: read 2nd byte
+001b: read 1st byte 50
+001c: read 2nd byte e1
   50 e1
     pop e1
     reg[21] = 12
  9 cycles, expected 10
 
-001d: read instruction
-  2c
-001e: read 2nd byte
+001d: read 1st byte 2c
+001e: read 2nd byte 20
   2c 20
     ld r2, #20
     reg[22] = 20
 exact  6 cycles
 
-001f: read instruction
-  71
-0020: read 2nd byte
+001f: read 1st byte 71
+0020: read 2nd byte 22
   71 22
     push @22
     reg[7f] = 34
  7 cycles, expected 12
 
-0021: read instruction
-  2c
-0022: read 2nd byte
+0021: read 1st byte 2c
+0022: read 2nd byte 24
   2c 24
     ld r2, #24
     reg[22] = 24
 exact  6 cycles
 
-0023: read instruction
-  51
-0024: read 2nd byte
+0023: read 1st byte 51
+0024: read 2nd byte 22
   51 22
     pop @22
     reg[24] = 34
  9 cycles, expected 10
 
-0025: read instruction
-  8d
-0026: read 2nd byte
-  8d 00
-0027: read 3rd byte
+0025: read 1st byte 8d
+0026: read 2nd byte 00
+0027: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 10 cycles, expected 12
-
-000c: read instruction
 testSoC: SUCCESS

@@ -1,40 +1,35 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
-000c: read instruction
-  31
-000d: read 2nd byte
+000c: read 1st byte 31
+000d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 exact  6 cycles
 
-000e: read instruction
-  0c
-000f: read 2nd byte
+000e: read 1st byte 0c
+000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[20] = 09
 exact  6 cycles
 
-0010: read instruction
-  1c
-0011: read 2nd byte
+0010: read 1st byte 1c
+0011: read 2nd byte 01
   1c 01
     ld r1, #01
     reg[21] = 01
 exact  6 cycles
 
-0012: read instruction
-  2c
-0013: read 2nd byte
+0012: read 1st byte 2c
+0013: read 2nd byte 20
   2c 20
     ld r2, #20
     reg[22] = 20
 exact  6 cycles
 
-0014: read instruction
-  a3
-0015: read 2nd byte
+0014: read 1st byte a3
+0015: read 2nd byte 02
   a3 02
      cp r0, Ir2
     alu:    09       09    =>    00
@@ -42,17 +37,15 @@ exact  6 cycles
     flags = 0100_0000
  8 cycles, expected  6 - TOO SLOW
 
-0016: read instruction
-  2c
-0017: read 2nd byte
+0016: read 1st byte 2c
+0017: read 2nd byte 21
   2c 21
     ld r2, #21
     reg[22] = 21
 exact  6 cycles
 
-0018: read instruction
-  a3
-0019: read 2nd byte
+0018: read 1st byte a3
+0019: read 2nd byte 02
   a3 02
      cp r0, Ir2
     alu:    09       01    =>    08
@@ -60,14 +53,10 @@ exact  6 cycles
     flags = 0000_0000
  8 cycles, expected  6 - TOO SLOW
 
-001a: read instruction
-  8d
-001b: read 2nd byte
-  8d 00
-001c: read 3rd byte
+001a: read 1st byte 8d
+001b: read 2nd byte 00
+001c: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 10 cycles, expected 12
-
-000c: read instruction
 testSoC: SUCCESS

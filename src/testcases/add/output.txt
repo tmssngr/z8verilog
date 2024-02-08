@@ -1,32 +1,28 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
-000c: read instruction
-  31
-000d: read 2nd byte
+000c: read 1st byte 31
+000d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 exact  6 cycles
 
-000e: read instruction
-  0c
-000f: read 2nd byte
+000e: read 1st byte 0c
+000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[20] = 09
 exact  6 cycles
 
-0010: read instruction
-  1c
-0011: read 2nd byte
+0010: read 1st byte 1c
+0011: read 2nd byte 01
   1c 01
     ld r1, #01
     reg[21] = 01
 exact  6 cycles
 
-0012: read instruction
-  02
-0013: read 2nd byte
+0012: read 1st byte 02
+0013: read 2nd byte 01
   02 01
     add r0, r1
     alu:    09       01    =>    0a
@@ -35,17 +31,15 @@ exact  6 cycles
     reg[20] = 0a
  8 cycles, expected  6 - TOO SLOW
 
-0014: read instruction
-  1c
-0015: read 2nd byte
+0014: read 1st byte 1c
+0015: read 2nd byte 06
   1c 06
     ld r1, #06
     reg[21] = 06
 exact  6 cycles
 
-0016: read instruction
-  02
-0017: read 2nd byte
+0016: read 1st byte 02
+0017: read 2nd byte 01
   02 01
     add r0, r1
     alu:    0a       06    =>    10
@@ -54,17 +48,15 @@ exact  6 cycles
     reg[20] = 10
  8 cycles, expected  6 - TOO SLOW
 
-0018: read instruction
-  1c
-0019: read 2nd byte
+0018: read 1st byte 1c
+0019: read 2nd byte 80
   1c 80
     ld r1, #80
     reg[21] = 80
 exact  6 cycles
 
-001a: read instruction
-  02
-001b: read 2nd byte
+001a: read 1st byte 02
+001b: read 2nd byte 01
   02 01
     add r0, r1
     alu:    10       80    =>    90
@@ -73,19 +65,16 @@ exact  6 cycles
     reg[20] = 90
  8 cycles, expected  6 - TOO SLOW
 
-001c: read instruction
-  1c
-001d: read 2nd byte
+001c: read 1st byte 1c
+001d: read 2nd byte 70
   1c 70
     ld r1, #70
     reg[21] = 70
 exact  6 cycles
 
-001e: read instruction
-  04
-001f: read 2nd byte
-  04 e1
-0020: read 3rd byte
+001e: read 1st byte 04
+001f: read 2nd byte e1
+0020: read 3rd byte e0
   04 e1 e0
     add e0, e1
     alu:    90       70    =>    00
@@ -94,25 +83,22 @@ exact  6 cycles
     reg[20] = 00
 exact 10 cycles
 
-0021: read instruction
-  0c
-0022: read 2nd byte
+0021: read 1st byte 0c
+0022: read 2nd byte ff
   0c ff
     ld r0, #ff
     reg[20] = ff
 exact  6 cycles
 
-0023: read instruction
-  1c
-0024: read 2nd byte
+0023: read 1st byte 1c
+0024: read 2nd byte ff
   1c ff
     ld r1, #ff
     reg[21] = ff
 exact  6 cycles
 
-0025: read instruction
-  02
-0026: read 2nd byte
+0025: read 1st byte 02
+0026: read 2nd byte 10
   02 10
     add r1, r0
     alu:    ff       ff    =>    fe
@@ -121,35 +107,30 @@ exact  6 cycles
     reg[21] = fe
  8 cycles, expected  6 - TOO SLOW
 
-0027: read instruction
-  0c
-0028: read 2nd byte
+0027: read 1st byte 0c
+0028: read 2nd byte 2d
   0c 2d
     ld r0, #2d
     reg[20] = 2d
 exact  6 cycles
 
-0029: read instruction
-  1c
-002a: read 2nd byte
+0029: read 1st byte 1c
+002a: read 2nd byte 38
   1c 38
     ld r1, #38
     reg[21] = 38
 exact  6 cycles
 
-002b: read instruction
-  2c
-002c: read 2nd byte
+002b: read 1st byte 2c
+002c: read 2nd byte 20
   2c 20
     ld r2, #20
     reg[22] = 20
 exact  6 cycles
 
-002d: read instruction
-  05
-002e: read 2nd byte
-  05 e2
-002f: read 3rd byte
+002d: read 1st byte 05
+002e: read 2nd byte e2
+002f: read 3rd byte e1
   05 e2 e1
     add e1, @e2
     alu:    38       2d    =>    65
@@ -158,11 +139,9 @@ exact  6 cycles
     reg[21] = 65
 exact 10 cycles
 
-0030: read instruction
-  07
-0031: read 2nd byte
-  07 e2
-0032: read 3rd byte
+0030: read 1st byte 07
+0031: read 2nd byte e2
+0032: read 3rd byte ff
   07 e2 ff
     add @e2, #ff
     alu:    2d       ff    =>    2c
@@ -171,14 +150,10 @@ exact 10 cycles
     reg[20] = 2c
 exact 10 cycles
 
-0033: read instruction
-  8d
-0034: read 2nd byte
-  8d 00
-0035: read 3rd byte
+0033: read 1st byte 8d
+0034: read 2nd byte 00
+0035: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 10 cycles, expected 12
-
-000c: read instruction
 testSoC: SUCCESS

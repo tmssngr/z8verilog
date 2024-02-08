@@ -1,155 +1,128 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
-000c: read instruction
-  31
-000d: read 2nd byte
+000c: read 1st byte 31
+000d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 exact  6 cycles
 
-000e: read instruction
-  0c
-000f: read 2nd byte
+000e: read 1st byte 0c
+000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[20] = 09
 exact  6 cycles
 
-0010: read instruction
-  e4
-0011: read 2nd byte
-  e4 e0
-0012: read 3rd byte
+0010: read 1st byte e4
+0011: read 2nd byte e0
+0012: read 3rd byte e1
   e4 e0 e1
     ld e1, e0
     reg[21] = 09
  8 cycles, expected 10
 
-0013: read instruction
-  1c
-0014: read 2nd byte
+0013: read 1st byte 1c
+0014: read 2nd byte 22
   1c 22
     ld r1, #22
     reg[21] = 22
 exact  6 cycles
 
-0015: read instruction
-  f5
-0016: read 2nd byte
-  f5 e0
-0017: read 3rd byte
+0015: read 1st byte f5
+0016: read 2nd byte e0
+0017: read 3rd byte e1
   f5 e0 e1
     ld @e1, e0
     reg[22] = 09
  8 cycles, expected 10
 
-0018: read instruction
-  e5
-0019: read 2nd byte
-  e5 e1
-001a: read 3rd byte
+0018: read 1st byte e5
+0019: read 2nd byte e1
+001a: read 3rd byte e1
   e5 e1 e1
     ld e1, @e1
     reg[21] = 09
  8 cycles, expected 10
 
-001b: read instruction
-  1c
-001c: read 2nd byte
+001b: read 1st byte 1c
+001c: read 2nd byte 80
   1c 80
     ld r1, #80
     reg[21] = 80
 exact  6 cycles
 
-001d: read instruction
-  28
-001e: read 2nd byte
+001d: read 1st byte 28
+001e: read 2nd byte 21
   28 21
     ld r2, 21
     reg[22] = 80
  5 cycles, expected  6
 
-001f: read instruction
-  09
-0020: read 2nd byte
+001f: read 1st byte 09
+0020: read 2nd byte 30
   09 30
     ld 30, r0
     reg[30] = 09
  5 cycles, expected  6
 
-0021: read instruction
-  0c
-0022: read 2nd byte
+0021: read 1st byte 0c
+0022: read 2nd byte 30
   0c 30
     ld r0, #30
     reg[20] = 30
 exact  6 cycles
 
-0023: read instruction
-  e3
-0024: read 2nd byte
+0023: read 1st byte e3
+0024: read 2nd byte 30
   e3 30
     ld r3, @r0
     reg[23] = 09
 exact  6 cycles
 
-0025: read instruction
-  f3
-0026: read 2nd byte
+0025: read 1st byte f3
+0026: read 2nd byte 01
   f3 01
     ld @r0, r1
     reg[30] = 80
 exact  6 cycles
 
-0027: read instruction
-  e7
-0028: read 2nd byte
-  e7 e0
-0029: read 3rd byte
+0027: read 1st byte e7
+0028: read 2nd byte e0
+0029: read 3rd byte ff
   e7 e0 ff
     ld @e0, #ff
     reg[30] = ff
  8 cycles, expected 10
 
-002a: read instruction
-  c7
-002b: read 2nd byte
-  c7 40
-002c: read 3rd byte
+002a: read 1st byte c7
+002b: read 2nd byte 40
+002c: read 3rd byte 00
   c7 40 00
     ld r4, @r0+00
     reg[24] = ff
  8 cycles, expected 10
 
-002d: read instruction
-  c7
-002e: read 2nd byte
-  c7 40
-002f: read 3rd byte
+002d: read 1st byte c7
+002e: read 2nd byte 40
+002f: read 3rd byte f0
   c7 40 f0
     ld r4, @r0+f0
     reg[24] = 30
  8 cycles, expected 10
 
-0030: read instruction
-  d7
-0031: read 2nd byte
-  d7 30
-0032: read 3rd byte
+0030: read 1st byte d7
+0031: read 2nd byte 30
+0032: read 3rd byte 01
   d7 30 01
     ld @r0+01, r3
     reg[31] = 09
  8 cycles, expected 10
 
-0033: read instruction
-  8d
-0034: read 2nd byte
-  8d 00
-0035: read 3rd byte
+0033: read 1st byte 8d
+0034: read 2nd byte 00
+0035: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 10 cycles, expected 12
-
-000c: read instruction
 testSoC: SUCCESS
