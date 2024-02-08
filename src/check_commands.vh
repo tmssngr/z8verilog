@@ -1,6 +1,6 @@
 `define assertPc(value)            if (uut.proc.pc             !== (value)) begin $display("ASSERTION FAILED in %m: pc(%h) != %h"            , uut.proc.pc, (value)        ); $finish(2); end
 `define assertState(value)         if (uut.proc.state          !== (value)) begin $display("ASSERTION FAILED in %m: state(%h) != value"      , uut.proc.state              ); $finish(2); end
-`define assertInstr(value)         if (uut.proc.instruction    !== (value)) begin $display("ASSERTION FAILED in %m: instruction(%h) != value", uut.proc.instruction        ); $finish(2); end
+`define assertInstr(value)         if (uut.proc.instruction    !== (value)) begin $display("ASSERTION FAILED in %m: instr(%h) != %h"         , uut.proc.instruction, (value)); $finish(2); end
 `define assertSecond(value)        if (uut.proc.second         !== (value)) begin $display("ASSERTION FAILED in %m: second(%h) != %h"        , uut.proc.second, (value)    ); $finish(2); end
 `define assertThird(value)         if (uut.proc.third          !== (value)) begin $display("ASSERTION FAILED in %m: third(%h) != value"      , uut.proc.third              ); $finish(2); end
 `define assertFlags(value)         if (uut.proc.flags          !== (value)) begin $display("ASSERTION FAILED in %m: flags(%b) != %b"         , uut.proc.flags, (value)     ); $finish(2); end
