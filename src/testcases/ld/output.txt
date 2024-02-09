@@ -57,14 +57,14 @@ exact  6 cycles
   28 21
     ld r2, 21
     reg[22] = 80
- 5 cycles, expected  6
+exact  6 cycles
 
 001f: read 1st byte 09
 0020: read 2nd byte 30
   09 30
     ld 30, r0
     reg[30] = 09
- 5 cycles, expected  6
+exact  6 cycles
 
 0021: read 1st byte 0c
 0022: read 2nd byte 30

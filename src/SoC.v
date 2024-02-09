@@ -866,10 +866,7 @@ module Processor(
                     expectedCycles <= 6;
     `endif
                     register <= r4(instrH);
-                    aluA <= readRegister8(r8(second));
-                    aluMode <= ALU1_LD;
-                    writeRegister <= 1;
-                    nextCommand();
+                    opType <= OP_LD;
                 end
                 // ================================================================
                 // Column 9
@@ -880,10 +877,7 @@ module Processor(
                     expectedCycles <= 6;
     `endif
                     register <= second; // no r8(second) !
-                    aluA <= readRegister4(instrH);
-                    aluMode <= ALU1_LD;
-                    writeRegister <= 1;
-                    nextCommand();
+                    opType <= OP_LD;
                 end
                 // ================================================================
                 // Column A
@@ -1080,6 +1074,12 @@ module Processor(
                     aluA <= third;
                 end
                 endcase
+            end
+            4'h8: begin
+                aluA <= readRegister8(r8(second));
+            end
+            4'h9: begin
+                aluA <= readRegister4(instrH);
             end
             4'hC: begin
                 aluA <= second;

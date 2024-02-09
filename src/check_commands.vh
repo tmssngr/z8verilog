@@ -92,7 +92,9 @@ task chk_ld_r_R;
     input[7:0] value;
     begin
         chk_2byteOp({dst, 4'h8}, src);
+            `assertOpType(OP_LD);
             `assert(uut.proc.register, register);
+        @(negedge clk);
             `assert(uut.proc.aluA, value);
             `assert(uut.proc.writeRegister, 1);
             assertCommandFinished();
@@ -107,7 +109,9 @@ task chk_ld_R_r;
     input[7:0] value;
     begin
         chk_2byteOp({src, 4'h9}, dst);
+            `assertOpType(OP_LD);
             `assert(uut.proc.register, register);
+        @(negedge clk);
             `assert(uut.proc.aluA, value);
             `assert(uut.proc.writeRegister, 1);
             assertCommandFinished();
