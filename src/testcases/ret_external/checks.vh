@@ -1,5 +1,3 @@
-    @(negedge clk);
-
 // ld P01M, #92
 	chk_ld_R_IM(P01M, 8'h92);
 
@@ -51,5 +49,3 @@
                     8'h22, 8'hA5, 16'hFFFD);
 
     chk_iret_extern(16'h000C, 16'h0000, 8'b1010_0101);
-
-    #3

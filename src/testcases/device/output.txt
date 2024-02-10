@@ -111,4 +111,6 @@ exact  6 cycles
   8b f4
     jr    , f4
  5 cycles, expected 12
+
+000c: read 1st byte 31
 testSoC: SUCCESS

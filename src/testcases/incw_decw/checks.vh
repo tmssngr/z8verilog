@@ -1,5 +1,3 @@
-    @(negedge clk);
-
 	chk_ld_R_IM(8'h10, 8'h01);
 	chk_ld_R_IM(8'h11, 8'h02);
         `assertRegister('h10, 'h01);

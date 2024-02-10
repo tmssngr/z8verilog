@@ -1,5 +1,3 @@
-    @(negedge clk);
-
     chk_scf();
 
     chk_rcf();

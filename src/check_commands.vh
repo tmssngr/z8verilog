@@ -12,6 +12,12 @@
 `include "jump_conditions.vh"
 `include "flags.vh"
 
+task chk_fetch;
+    begin
+            `assertFetchState(FETCH_INSTR_WAIT);
+        @(negedge clk);
+    end
+endtask
 task chk_1byteOp;
     input[7:0] instruction;
     begin

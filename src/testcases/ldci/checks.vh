@@ -1,4 +1,3 @@
-    @(negedge clk);
 
     chk_srp(2);
 

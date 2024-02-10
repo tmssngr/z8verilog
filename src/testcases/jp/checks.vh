@@ -1,5 +1,3 @@
-    @(negedge clk);
-
     chk_srp(2);
 
 	chk_jp_false(JC_NEVER, 16'hFFFE);

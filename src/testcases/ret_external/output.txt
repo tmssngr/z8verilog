@@ -124,5 +124,3 @@ exact  6 cycles
     reg[fc] = a5
 12 cycles, expected 16
 testSoC: SUCCESS
-
-000c: read 1st byte e6

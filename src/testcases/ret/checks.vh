@@ -1,5 +1,3 @@
-    @(negedge clk);
-
 	// SPL
     chk_ld_R_IM(8'hFF, 8'h80);
 
@@ -47,5 +45,3 @@
                     8'h22, 8'hA5, 8'h7D);
 
     chk_iret_intern(16'h000C, 8'h80, 8'b1010_0101);
-
-    #3

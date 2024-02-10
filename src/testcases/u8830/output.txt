@@ -148,4 +148,6 @@ exact  6 cycles
   8d 08 12
     jp    , 0812
 10 cycles, expected 12
+
+0812: read 1st byte 00
 testSoC: SUCCESS

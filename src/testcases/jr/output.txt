@@ -76,4 +76,6 @@ exact 10 cycles
   8b f3
     jr    , f3
  5 cycles, expected 12
+
+000c: read 1st byte 31
 testSoC: SUCCESS

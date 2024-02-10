@@ -16,7 +16,9 @@ module testSoC();
         #1 clk = ~clk;
 
     initial begin
+        chk_fetch();
 `include "checks.vh"
+        @(negedge clk);
         $display("%m: SUCCESS");
         $finish(0);
     end

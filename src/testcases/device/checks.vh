@@ -1,5 +1,3 @@
-    @(negedge clk);
-
     chk_srp(0);
 
 	chk_ld_r_IM(4'h4, 8'h05,
