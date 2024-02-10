@@ -5,77 +5,78 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 70
     srp 70
     reg[fd] = 70
-exact  6 cycles
 
 000e: read 1st byte 0b
+exact  6 cycles
 000f: read 2nd byte fc
   0b fc
     jr   f, fc
- 5 cycles, expected 10
 
 0010: read 1st byte 0c
+exact 10 cycles
 0011: read 2nd byte 03
   0c 03
     ld r0, #03
     reg[70] = 03
-exact  6 cycles
 
 0012: read 1st byte 06
+exact  6 cycles
 0013: read 2nd byte 70
 0014: read 3rd byte ff
   06 70 ff
     add 70, #ff
+
+0015: read 1st byte eb
     alu:    03       ff    =>    02
          00000011 11111111 => 00000010
     flags = 1000_0100
     reg[70] = 02
 exact 10 cycles
-
-0015: read 1st byte eb
 0016: read 2nd byte fb
   eb fb
     jr  nz, fb
- 5 cycles, expected 12
 
 0012: read 1st byte 06
+exact 12 cycles
 0013: read 2nd byte 70
 0014: read 3rd byte ff
   06 70 ff
     add 70, #ff
+
+0015: read 1st byte eb
     alu:    02       ff    =>    01
          00000010 11111111 => 00000001
     flags = 1000_0100
     reg[70] = 01
 exact 10 cycles
-
-0015: read 1st byte eb
 0016: read 2nd byte fb
   eb fb
     jr  nz, fb
- 5 cycles, expected 12
 
 0012: read 1st byte 06
+exact 12 cycles
 0013: read 2nd byte 70
 0014: read 3rd byte ff
   06 70 ff
     add 70, #ff
+
+0015: read 1st byte eb
     alu:    01       ff    =>    00
          00000001 11111111 => 00000000
     flags = 1100_0100
     reg[70] = 00
 exact 10 cycles
-
-0015: read 1st byte eb
 0016: read 2nd byte fb
   eb fb
     jr  nz, fb
- 5 cycles, expected 10
 
 0017: read 1st byte 8b
+exact 10 cycles
 0018: read 2nd byte f3
   8b f3
     jr    , f3
- 5 cycles, expected 12
 
 000c: read 1st byte 31
+exact 12 cycles
+000d: read 2nd byte 70
 testSoC: SUCCESS

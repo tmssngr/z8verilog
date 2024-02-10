@@ -6,9 +6,9 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 f8 92
     ld f8, #92
     reg[f8] = 92
- 8 cycles, expected 10
 
 000f: read 1st byte b0
+exact 10 cycles
 0010: read 2nd byte fe
   b0 fe
     clr fe
@@ -16,9 +16,9 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[fe] = 00
-exact  6 cycles
 
 0011: read 1st byte b0
+exact  6 cycles
 0012: read 2nd byte ff
   b0 ff
     clr ff
@@ -26,101 +26,108 @@ exact  6 cycles
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[ff] = 00
-exact  6 cycles
 
 0013: read 1st byte d6
+exact  6 cycles
 0014: read 2nd byte 00
 0015: read 3rd byte 2c
   d6 00 2c
     call 002c
-14 cycles, expected 20
 
 002c: read 1st byte 31
+exact 20 cycles
 002d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
-exact  6 cycles
 
 002e: read 1st byte af
+exact  6 cycles
+002f: read 2nd byte 00
   af
     ret
-10 cycles, expected 14
 
 0016: read 1st byte 0c
+exact 14 cycles
 0017: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
-exact  6 cycles
 
 0018: read 1st byte 1c
+exact  6 cycles
 0019: read 2nd byte 2c
   1c 2c
     ld r1, #2c
     reg[21] = 2c
-exact  6 cycles
 
 001a: read 1st byte d4
+exact  6 cycles
 001b: read 2nd byte e0
-  d4 e0
+001c: read 3rd byte 0c
+  d4 e0 0c
     call @e0
-12 cycles, expected 20
 
 002c: read 1st byte 31
+exact 20 cycles
 002d: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
-exact  6 cycles
 
 002e: read 1st byte af
+exact  6 cycles
+002f: read 2nd byte 00
   af
     ret
-10 cycles, expected 14
 
 001c: read 1st byte 0c
+exact 14 cycles
 001d: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
-exact  6 cycles
 
 001e: read 1st byte 1c
+exact  6 cycles
 001f: read 2nd byte 0c
   1c 0c
     ld r1, #0c
     reg[21] = 0c
-exact  6 cycles
 
 0020: read 1st byte 2c
+exact  6 cycles
 0021: read 2nd byte a5
   2c a5
     ld r2, #a5
     reg[22] = a5
-exact  6 cycles
 
 0022: read 1st byte 70
+exact  6 cycles
 0023: read 2nd byte e1
   70 e1
     push e1
- 8 cycles, expected 12
 
 0024: read 1st byte 70
+exact 12 cycles
 0025: read 2nd byte e0
   70 e0
     push e0
- 8 cycles, expected 12
 
 0026: read 1st byte 70
+exact 12 cycles
 0027: read 2nd byte e2
   70 e2
     push e2
- 8 cycles, expected 12
 
 0028: read 1st byte bf
+exact 12 cycles
+0029: read 2nd byte 8d
   bf
     iret
     reg[fc] = a5
-12 cycles, expected 16
+
+000c: read 1st byte e6
+exact 16 cycles
+000d: read 2nd byte f8
 testSoC: SUCCESS

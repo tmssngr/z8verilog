@@ -5,25 +5,26 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 10
     srp 10
     reg[fd] = 10
-exact  6 cycles
 
 000e: read 1st byte 0c
+exact  6 cycles
 000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[10] = 09
-exact  6 cycles
 
 0010: read 1st byte 0e
+exact  6 cycles
+0011: read 2nd byte 00
   0e
     inc r0
     alu:    09       00    =>    0a
          00001001 00000000 => 00001010
     flags = 0000_0000
     reg[10] = 0a
- 5 cycles, expected  6
 
 0011: read 1st byte 00
+exact  6 cycles
 0012: read 2nd byte 10
   00 10
     dec 10
@@ -31,16 +32,16 @@ exact  6 cycles
          00001010 00000000 => 00001001
     flags = 0000_0000
     reg[10] = 09
-exact  6 cycles
 
 0013: read 1st byte 0c
+exact  6 cycles
 0014: read 2nd byte 7f
   0c 7f
     ld r0, #7f
     reg[10] = 7f
-exact  6 cycles
 
 0015: read 1st byte 20
+exact  6 cycles
 0016: read 2nd byte 10
   20 10
     inc 10
@@ -48,9 +49,9 @@ exact  6 cycles
          01111111 00000000 => 10000000
     flags = 0011_0000
     reg[10] = 80
-exact  6 cycles
 
 0017: read 1st byte 00
+exact  6 cycles
 0018: read 2nd byte 10
   00 10
     dec 10
@@ -58,16 +59,16 @@ exact  6 cycles
          10000000 00000000 => 01111111
     flags = 0001_0000
     reg[10] = 7f
-exact  6 cycles
 
 0019: read 1st byte 0c
+exact  6 cycles
 001a: read 2nd byte fe
   0c fe
     ld r0, #fe
     reg[10] = fe
-exact  6 cycles
 
 001b: read 1st byte 20
+exact  6 cycles
 001c: read 2nd byte 10
   20 10
     inc 10
@@ -75,9 +76,9 @@ exact  6 cycles
          11111110 00000000 => 11111111
     flags = 0010_0000
     reg[10] = ff
-exact  6 cycles
 
 001d: read 1st byte 20
+exact  6 cycles
 001e: read 2nd byte e0
   20 e0
     inc e0
@@ -85,9 +86,9 @@ exact  6 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
-exact  6 cycles
 
 001f: read 1st byte 00
+exact  6 cycles
 0020: read 2nd byte e0
   00 e0
     dec e0
@@ -95,9 +96,9 @@ exact  6 cycles
          00000000 00000000 => 11111111
     flags = 0010_0000
     reg[10] = ff
-exact  6 cycles
 
 0021: read 1st byte 00
+exact  6 cycles
 0022: read 2nd byte 10
   00 10
     dec 10
@@ -105,16 +106,16 @@ exact  6 cycles
          11111111 00000000 => 11111110
     flags = 0010_0000
     reg[10] = fe
-exact  6 cycles
 
 0023: read 1st byte 1c
+exact  6 cycles
 0024: read 2nd byte 10
   1c 10
     ld r1, #10
     reg[11] = 10
-exact  6 cycles
 
 0025: read 1st byte 01
+exact  6 cycles
 0026: read 2nd byte e1
   01 e1
     dec @e1
@@ -122,14 +123,15 @@ exact  6 cycles
          11111110 00000000 => 11111101
     flags = 0010_0000
     reg[10] = fd
-exact  6 cycles
 
 0027: read 1st byte 8d
+exact  6 cycles
 0028: read 2nd byte 00
 0029: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
-10 cycles, expected 12
 
 000c: read 1st byte 31
+exact 12 cycles
+000d: read 2nd byte 10
 testSoC: SUCCESS

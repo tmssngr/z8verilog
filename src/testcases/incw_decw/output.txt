@@ -6,17 +6,17 @@ VCD info: dumpfile SoC.vcd opened for output.
   e6 10 01
     ld 10, #01
     reg[10] = 01
- 8 cycles, expected 10
 
 000f: read 1st byte e6
+exact 10 cycles
 0010: read 2nd byte 11
 0011: read 3rd byte 02
   e6 11 02
     ld 11, #02
     reg[11] = 02
- 8 cycles, expected 10
 
 0012: read 1st byte a0
+exact 10 cycles
 0013: read 2nd byte 10
   a0 10
     incw 10
@@ -25,9 +25,9 @@ VCD info: dumpfile SoC.vcd opened for output.
          00000001 00000011 => 00000001
     flags = 0000_0000
     reg[10] = 01
-exact 10 cycles
 
 0014: read 1st byte 80
+exact 10 cycles
 0015: read 2nd byte 10
   80 10
     decw 10
@@ -36,17 +36,17 @@ exact 10 cycles
          00000001 00000010 => 00000001
     flags = 0000_0000
     reg[10] = 01
-exact 10 cycles
 
 0016: read 1st byte e6
+exact 10 cycles
 0017: read 2nd byte 11
 0018: read 3rd byte 7f
   e6 11 7f
     ld 11, #7f
     reg[11] = 7f
- 8 cycles, expected 10
 
 0019: read 1st byte a0
+exact 10 cycles
 001a: read 2nd byte 10
   a0 10
     incw 10
@@ -55,9 +55,9 @@ exact 10 cycles
          00000001 10000000 => 00000001
     flags = 0000_0000
     reg[10] = 01
-exact 10 cycles
 
 001b: read 1st byte 80
+exact 10 cycles
 001c: read 2nd byte 10
   80 10
     decw 10
@@ -66,17 +66,17 @@ exact 10 cycles
          00000001 01111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
-exact 10 cycles
 
 001d: read 1st byte e6
+exact 10 cycles
 001e: read 2nd byte 11
 001f: read 3rd byte ff
   e6 11 ff
     ld 11, #ff
     reg[11] = ff
- 8 cycles, expected 10
 
 0020: read 1st byte a0
+exact 10 cycles
 0021: read 2nd byte 10
   a0 10
     incw 10
@@ -85,9 +85,9 @@ exact 10 cycles
          00000001 00000000 => 00000010
     flags = 0000_0000
     reg[10] = 02
-exact 10 cycles
 
 0022: read 1st byte 80
+exact 10 cycles
 0023: read 2nd byte 10
   80 10
     decw 10
@@ -96,17 +96,17 @@ exact 10 cycles
          00000010 11111111 => 00000001
     flags = 0000_0000
     reg[10] = 01
-exact 10 cycles
 
 0024: read 1st byte e6
+exact 10 cycles
 0025: read 2nd byte 10
 0026: read 3rd byte ff
   e6 10 ff
     ld 10, #ff
     reg[10] = ff
- 8 cycles, expected 10
 
 0027: read 1st byte a0
+exact 10 cycles
 0028: read 2nd byte 10
   a0 10
     incw 10
@@ -115,9 +115,9 @@ exact 10 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
-exact 10 cycles
 
 0029: read 1st byte a0
+exact 10 cycles
 002a: read 2nd byte 10
   a0 10
     incw 10
@@ -126,9 +126,9 @@ exact 10 cycles
          00000000 00000001 => 00000000
     flags = 0000_0000
     reg[10] = 00
-exact 10 cycles
 
 002b: read 1st byte 80
+exact 10 cycles
 002c: read 2nd byte 10
   80 10
     decw 10
@@ -137,9 +137,9 @@ exact 10 cycles
          00000000 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
-exact 10 cycles
 
 002d: read 1st byte 80
+exact 10 cycles
 002e: read 2nd byte 10
   80 10
     decw 10
@@ -148,17 +148,17 @@ exact 10 cycles
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
-exact 10 cycles
 
 002f: read 1st byte e6
+exact 10 cycles
 0030: read 2nd byte 12
 0031: read 3rd byte 10
   e6 12 10
     ld 12, #10
     reg[12] = 10
- 8 cycles, expected 10
 
 0032: read 1st byte a1
+exact 10 cycles
 0033: read 2nd byte 12
   a1 12
     incw @12
@@ -167,9 +167,9 @@ exact 10 cycles
          11111111 00000000 => 00000000
     flags = 0100_0000
     reg[10] = 00
-exact 10 cycles
 
 0034: read 1st byte 81
+exact 10 cycles
 0035: read 2nd byte 12
   81 12
     decw @12
@@ -178,14 +178,15 @@ exact 10 cycles
          00000000 11111111 => 11111111
     flags = 0010_0000
     reg[10] = ff
-exact 10 cycles
 
 0036: read 1st byte 8d
+exact 10 cycles
 0037: read 2nd byte 00
 0038: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
-10 cycles, expected 12
 
 000c: read 1st byte e6
+exact 12 cycles
+000d: read 2nd byte 10
 testSoC: SUCCESS

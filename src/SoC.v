@@ -67,18 +67,9 @@ module Processor(
         sp = 0;
     end
 
-    reg  [7:0] instruction;
-    wire [3:0] instrH = instruction[7:4];
-    wire [3:0] instrL = instruction[3:0];
-    wire isJumpRel = instrL == 4'hB;
-    wire isJumpDA = instrL == 4'hD;
-    wire isCallIRR = instrH == 4'hD && instrL == 4'h4;
-    wire isCallDA = instrH == 4'hD && instrL == 4'h6;
-    wire isInstrSize1 = instrL[3:1] == 3'b111;
-    wire isInstrSize3 = ( (instrL[3:2] == 2'b01) // columns 04-07
-                         | isJumpDA
-                        ) & ~isCallIRR;
-    wire isInstrSize2 = ~isInstrSize1 & ~isInstrSize3;
+    reg [7:0] first;
+    wire [3:0] firstH = first[7:4];
+    wire [3:0] firstL = first[3:0];
 
     reg  [7:0] second;
     wire [3:0] secondH = second[7:4];
@@ -87,6 +78,20 @@ module Processor(
     reg  [7:0] third;
     wire [3:0] thirdH = third[7:4];
     wire [3:0] thirdL = third[3:0];
+
+    reg  [7:0] instruction;
+    wire [3:0] instrH = instruction[7:4];
+    wire [3:0] instrL = instruction[3:0];
+    wire isCallDA = instrH == 4'hD && instrL == 4'h6;
+    wire isInstrSize1 = firstL[3:1] == 3'b111;
+    // call IRR is treated as 3 byte command
+    wire isInstrSize3 = firstL[3:2] == 2'b01  // columns 04-07
+                      | firstL      == 4'hD   // jp DA
+                      ;
+    wire isInstrSize2 = first[2]   == 0     // columns 00-03, 08-0B
+                      | first[3:0] == 4'hC  // column 0C
+                      ;
+
     wire [15:0] directAddress = {second, third};
 
     reg [3:0] rp = 0;
@@ -267,46 +272,29 @@ module Processor(
 `endif
 
     `include "states.vh"
-    reg [FETCH_MSB:0] fetchState = FETCH_INSTR_WAIT;
+    reg [FETCH_MSB:0] fetchState = FETCH_INSTR0;
     reg [OP_MSB:0] opType = OP_UNDECIDED;
     reg [OPSTATE_MSB:0] opState = OPSTATE0;
 
     wire [15:0] nextRelativePc = pc + { {8{second[7]}}, second };
-    wire [15:0] nextPc = ( fetchState == FETCH_INSTR_READ
-                         | fetchState == FETCH_SECOND_READ
-                         | fetchState == FETCH_THIRD_READ
-                         ) ? pc + 16'b1
-                           : ( (fetchState == FETCH_DECODE & isJumpRel & takeBranch)
-                             || (opType == OP_DJNZ & opState == OPSTATE2)
-                             ) ? nextRelativePc
-                               : ( (opType == OP_RET  & opState == OPSTATE5)
-                                 | (opType == OP_CALL & opState == OPSTATE6)
-                                 | (opType == OP_JP   & opState == OPSTATE2)
-                                 ) ? addr
-                                   : pc;
+    reg incPc = 0;
+    reg loadPc = 0;
+    reg canFetch = 1;
     reg readMem = 0;
     reg writeMem = 0;
     assign memAddr = readMem | writeMem
                      ? addr : pc;
     assign memDataWrite = aluA;
     assign memWrite = writeMem;
-    assign memStrobe = (fetchState == FETCH_INSTR_WAIT)
-                     | (fetchState == FETCH_SECOND_WAIT & ~isInstrSize1)
-                     | (fetchState == FETCH_THIRD_WAIT)
+    assign memStrobe = canFetch & (fetchState == FETCH_INSTR1
+                                 | fetchState == FETCH_SECOND1
+                                 | fetchState == FETCH_THIRD1)
                      | readMem
                      | writeMem;
 `ifdef BENCH
-    reg[4:0] cycleCounter = 0;
+    reg[4:0] cycleCounter = 26;
     reg[4:0] expectedCycles = 0;
 `endif
-
-    task nextCommand;
-        begin
-            fetchState <= FETCH_INSTR_WAIT;
-            opState <= OPSTATE0;
-            opType <= OP_UNDECIDED;
-        end
-    endtask
 
     always @(posedge clk) begin
         if (writeFlags) begin
@@ -344,8 +332,8 @@ module Processor(
         writeMem <= 0;
 
 `ifdef BENCH
-        if (fetchState == FETCH_INSTR_WAIT) begin
-            if (cycleCounter != 0) begin
+        if (fetchState == FETCH_SECOND2) begin
+            if (cycleCounter != 0 & cycleCounter != 31) begin
                 if (expectedCycles == 0) begin
                     $display("expected cycles not defined");
                     $finish(2);
@@ -366,728 +354,798 @@ module Processor(
         end
 `endif
 
-        if (fetchState != FETCH_DECODE) begin
+        if (canFetch) begin
             fetchState <= fetchState + FETCH_INC;
         end
         if (opType != OP_UNDECIDED) begin
             opState <= opState + OPSTATE_INC;
         end
 
+        pc <= loadPc ? addr
+                     : incPc ? pc + 16'b1
+                             : pc;
+        incPc <= 0;
+        loadPc <= 0;
+
         case (fetchState)
-        FETCH_INSTR_WAIT: begin
+        FETCH_INSTR0: begin
 `ifdef BENCH
-            addr <= 0;
+/*             addr <= 0;
             aluA <= 0;
             aluB <= 0;
             aluMode <= 0;
             register <= 0;
-            instruction <= 0;
+            first <= 0;
             second <= 0;
             third <= 0;
+ */
 `endif
         end
+        
+        FETCH_INSTR1: begin
+            incPc <= canFetch;
+        end
 
-        FETCH_INSTR_READ: begin
+        FETCH_INSTR2: begin
 `ifdef BENCH
             $display("\n%h: read 1st byte %h", pc, memDataRead);
 `endif
-            instruction <= memDataRead;
+            first <= memDataRead;
         end
 
-        FETCH_SECOND_WAIT: begin
-            if (isInstrSize1) begin
-                fetchState <= FETCH_DECODE;
+        FETCH_SECOND0: begin
+            opType <= OP_UNDECIDED;
+        end
+
+        FETCH_SECOND1: begin
+            if (~isInstrSize1) begin
+                incPc <= 1;
             end
         end
 
-        FETCH_SECOND_READ: begin
+        FETCH_SECOND2: begin
 `ifdef BENCH
             $display("%h: read 2nd byte %h", pc, memDataRead);
 `endif
             second <= memDataRead;
-            if (isInstrSize2) begin
-                fetchState <= FETCH_DECODE;
+            instruction <= first;
+            if (isInstrSize1 | isInstrSize2) begin
+                opType <= OP_DECODE;
+                fetchState <= FETCH_INSTR0;
             end
         end
 
-        FETCH_THIRD_WAIT: begin
+        FETCH_THIRD1: begin
+            incPc <= instruction != 8'hD4;
         end
 
-        FETCH_THIRD_READ: begin
+        FETCH_THIRD2: begin
 `ifdef BENCH
             $display("%h: read 3rd byte %h", pc, memDataRead);
 `endif
             third <= memDataRead;
+            opType <= OP_DECODE;
+            fetchState <= FETCH_INSTR0;
         end
+        endcase
 
-        FETCH_DECODE: begin
-            if (opType == OP_UNDECIDED) begin
-    `ifdef BENCH
-                // $display("  decoding");
-                if (isInstrSize1)
-                    $display("  %h", instruction);
-                else if (isInstrSize2)
-                    $display("  %h %h", instruction, second);
-                else if (isInstrSize3)
-                    $display("  %h %h %h", instruction, second, third);
-    `endif
-                case (instrL)
-                // ================================================================
-                // Column 0
-                // ================================================================
-                4'h0: begin
-                    case (instrH)
-                    4'h3: begin
-    `ifdef BENCH
-                        $display("    jp @%h", second);
-                        expectedCycles <= 8;
-    `endif
-                        opType <= OP_JP;
-                    end
-                    4'h5: begin
-    `ifdef BENCH
-                        $display("    pop %h", second);
-                        expectedCycles <= 10;
-    `endif
-                        // dst <- @SP
-                        // SP <- SP + 1
-                        register <= r8(second);
-                        opType <= OP_POP;
-                    end
-                    4'h7: begin
-    `ifdef BENCH
-                        $display("    push %h", second);
-                        expectedCycles <= stackInternal ? 10 : 12;
-    `endif
-                        register <= r8(second);
-                        opType <= stackInternal 
-                            ? OP_PUSH_I
-                            : OP_PUSH_E;
-                    end
-                    4'h8: begin
-    `ifdef BENCH
-                        $display("    decw %h", second);
-                        expectedCycles <= 10;
-    `endif
-                        opType <= OP_ALU1WORD;
-                    end
-                    4'hA: begin
-    `ifdef BENCH
-                        $display("    incw %h", second);
-                        expectedCycles <= 10;
-    `endif
-                        opType <= OP_ALU1WORD;
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("   %s %h", 
-                                alu1OpName(instrH), second);
-                        expectedCycles <= instrH == 4 ? 8 : 6;
-    `endif
-                        aluMode <= alu1OpCode(instrH);
-                        register <= r8(second);
-                        opType <= OP_ALU1;
-                    end
-                    endcase
-                end
-                // ================================================================
-                // Column 1
-                // ================================================================
-                4'h1: begin
-                    case (instrH)
-                    4'h3: begin
-    `ifdef BENCH
-                        $display("    srp %h", second);
-                        expectedCycles <= 6;
-    `endif
-                        register <= RP;
-                        opType <= OP_LD;
-                    end
-                    4'h5: begin
-    `ifdef BENCH
-                        $display("    pop @%h", second);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= OP_POP;
-                    end
-                    4'h7: begin
-    `ifdef BENCH
-                        $display("    push @%h", second);
-                        expectedCycles <= stackInternal ? 12 : 14;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= stackInternal 
-                            ? OP_PUSH_I
-                            : OP_PUSH_E;
-                    end
-                    4'h8: begin
-    `ifdef BENCH
-                        $display("    decw @%h", second);
-                        expectedCycles <= 10;
-    `endif
-                        opType <= OP_ALU1WORD;
-                    end
-                    4'hA: begin
-    `ifdef BENCH
-                        $display("    incw @%h", second);
-                        expectedCycles <= 10;
-    `endif
-                        opType <= OP_ALU1WORD;
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("   %s @%h", 
-                                alu1OpName(instrH), second);
-                        expectedCycles <= instrH == 4 ? 8 : 6;
-    `endif
-                        aluMode <= alu1OpCode(instrH);
-                        register <= readRegister8(r8(second));
-                        opType <= OP_ALU1;
-                    end
-                    endcase
-                end
-                // ================================================================
-                // Column 2
-                // ================================================================
-                4'h2: begin
-                    case (instrH)
-                    4'h8: begin
-    `ifdef BENCH
-                        $display("    lde r%h, Irr%h",
-                                secondH, secondL);
-                        expectedCycles <= 12;
-    `endif
-                        register <= r4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'h9: begin
-    `ifdef BENCH
-                        $display("    lde Irr%h, r%h",
-                                secondL, secondH);
-                        expectedCycles <= 12;
-    `endif
-                        register <= r4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hC: begin
-    `ifdef BENCH
-                        $display("    ldc r%h, Irr%h",
-                                secondH, secondL);
-                        expectedCycles <= 12;
-    `endif
-                        register <= r4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    ldc Irr%h, r%h",
-                                secondL, secondH);
-                        expectedCycles <= 12;
-    `endif
-                        register <= r4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hE,
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ? %h", second);
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    // x2
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s r%h, r%h",
-                                alu2OpName(instrH),
-                                secondH, secondL);
-                        expectedCycles <= 6;
-    `endif
-                        register <= r4(secondL);
-                        opType <= OP_ALU2;
-                    end
-                    endcase
-                end
-                // ================================================================
-                // Column 3
-                // ================================================================
+        case (opType)
+        OP_DECODE: begin
+`ifdef BENCH
+            // $display("  decoding");
+            if (isInstrSize1)
+                $display("  %h", instruction);
+            else if (isInstrSize2)
+                $display("  %h %h", instruction, second);
+            else if (isInstrSize3)
+                $display("  %h %h %h", instruction, second, third);
+`endif
+            opState <= OPSTATE0;
+
+            case (instrL)
+            // ================================================================
+            // Column 0
+            // ================================================================
+            4'h0: begin
+                case (instrH)
                 4'h3: begin
-                    case (instrH)
-                    4'h8: begin
-    `ifdef BENCH
-                        $display("    ldei Ir%h, Irr%h",
-                                secondH, secondL);
-                        expectedCycles <= 18;
-    `endif
-                        register <= readRegister4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'h9: begin
-    `ifdef BENCH
-                        $display("    ldei Irr%h, Ir%h",
-                                secondL, secondH);
-                        expectedCycles <= 18;
-    `endif
-                        register <= readRegister4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hC: begin
-    `ifdef BENCH
-                        $display("    ldci Ir%h, Irr%h",
-                                secondH, secondL);
-                        expectedCycles <= 18;
-    `endif
-                        register <= readRegister4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    ldci Irr%h, Ir%h",
-                                secondL, secondH);
-                        expectedCycles <= 18;
-    `endif
-                        register <= readRegister4(secondH);
-                        opType <= OP_LDC;
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ld r%h, @r%h",
-                                secondH, secondL);
-                        expectedCycles <= 6;
-    `endif
-                        register <= readRegister4(secondL);
-                        opType <= OP_LD;
-                    end
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ld @r%h, r%h",
-                                secondH, secondL);
-                        expectedCycles <= 6;
-    `endif
-                        register <= readRegister4(secondH);
-                        opType <= OP_LD;
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s r%h, Ir%h",
-                                alu2OpName(instrH),
-                                secondH, secondL);
-                        expectedCycles <= 6;
-    `endif
-                        register <= readRegister4(secondL);
-                        opType <= OP_ALU2;
-                    end
-                    endcase
+`ifdef BENCH
+                    $display("    jp @%h", second);
+                    expectedCycles <= 8;
+`endif
+                    addr[7:0] = readRegister8(r8({second[7:1], 1'b1}));
+                    opType <= OP_JP_IRR;
+                    canFetch <= 0;
                 end
-                // ================================================================
-                // Column 4
-                // ================================================================
                 4'h4: begin
-                    case (instrH)
-                    4'h8,
-                    4'h9,
-                    4'hC,
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ? %h", instruction);
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    call @%h", second);
-                        expectedCycles <= 20;
-    `endif
-                        opType <= OP_CALL;
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ld %h, %h", third, second);
-                        expectedCycles <= 10;
-    `endif
-                        register <= r8(second);
-                        opType <= OP_LD;
-                    end
-                    // x4
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s %h, %h",
-                                alu2OpName(instrH),
-                                third, second);
-                        expectedCycles <= 10;
-    `endif
-                        register <= r8(second);
-                        opType <= OP_ALU2;
-                    end
-                    endcase
+`ifdef BENCH
+                    $display("   da %h", second);
+                    expectedCycles <= 8;
+`endif
+                    aluMode <= alu1OpCode(instrH);
+                    register <= r8(second);
+                    opType <= OP_ALU1DA;
+                    canFetch <= 0;
                 end
-                // ================================================================
-                // Column 5
-                // ================================================================
                 4'h5: begin
-                    case (instrH)
-                    4'h8,
-                    4'h9,
-                    4'hC,
-                    4'hD:
-                    begin
-    `ifdef BENCH
-                        $display("    ? %h", instruction);
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ld %h, @%h", third, second);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= OP_LD;
-                    end
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ld @%h, %h", third, second);
-                        expectedCycles <= 10;
-    `endif
-                        aluA <= readRegister8(r8(second));
-                        opType <= OP_LD;
-                    end
-                    // x5
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s %h, @%h",
-                                alu2OpName(instrH),
-                                third, second);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= OP_ALU2;
-                    end
-                    endcase
+`ifdef BENCH
+                    $display("    pop %h", second);
+                    expectedCycles <= 10;
+`endif
+                    // dst <- @SP
+                    // SP <- SP + 1
+                    register <= r8(second);
+                    opType <= OP_POP;
+                    canFetch <= 0;
                 end
-                // ================================================================
-                // Column 6
-                // ================================================================
-                4'h6: begin
-                    case (instrH)
-                    4'h8,
-                    4'h9,
-                    4'hC,
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ? %h", instruction);
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    call %h", directAddress);
-                        expectedCycles <= 20;
-    `endif
-                        opType <= OP_CALL;
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ld %h, #%h", second, third);
-                        expectedCycles <= 10;
-    `endif
-                        register <= r8(second);
-                        opType <= OP_LD;
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s %h, #%h",
-                                alu2OpName(instrH),
-                                second, third);
-                        expectedCycles <= 10;
-    `endif
-                        register <= r8(second);
-                        opType <= OP_ALU2;
-                    end
-                    endcase
-                end
-                // ================================================================
-                // Column 7
-                // ================================================================
                 4'h7: begin
-                    case (instrH)
-                    4'h8,
-                    4'h9,
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    ? %h", instruction);
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    4'hC: begin
-    `ifdef BENCH
-                        $display("    ld r%h, @r%h+%h", 
-                                secondH, secondL, third);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister4(secondL);
-                        opType <= OP_LD;
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    ld @r%h+%h, r%h", 
-                                secondL, third, secondH);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister4(secondL);
-                        opType <= OP_LD;
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ld @%h, #%h", second, third);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= OP_LD;
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("    %s @%h, #%h",
-                                alu2OpName(instrH),
-                                second, third);
-                        expectedCycles <= 10;
-    `endif
-                        register <= readRegister8(r8(second));
-                        opType <= OP_ALU2;
-                    end
-                    endcase
+`ifdef BENCH
+                    $display("    push %h", second);
+                    expectedCycles <= stackInternal ? 10 : 12;
+`endif
+                    register <= r8(second);
+                    opType <= OP_PUSH;
+                    opState <= OPSTATE2;
+                    canFetch <= 0;
                 end
-                // ================================================================
-                // Column 8
-                // ================================================================
                 4'h8: begin
-    `ifdef BENCH
-                    $display("    ld r%h, %h", instrH, second);
-                    expectedCycles <= 6;
-    `endif
-                    register <= r4(instrH);
-                    opType <= OP_LD;
+`ifdef BENCH
+                    $display("    decw %h", second);
+                    expectedCycles <= 10;
+`endif
+                    opType <= OP_ALU1WORD;
+                    canFetch <= 0;
                 end
-                // ================================================================
-                // Column 9
-                // ================================================================
-                4'h9: begin
-    `ifdef BENCH
-                    $display("    ld %h, r%h", second, instrH);
-                    expectedCycles <= 6;
-    `endif
-                    register <= second; // no r8(second) !
-                    opType <= OP_LD;
-                end
-                // ================================================================
-                // Column A
-                // ================================================================
                 4'hA: begin
-    `ifdef BENCH
-                    $display("    djnz r%h, %h", instrH, second);
-    `endif
-                    register <= r4(instrH);
-                    opType <= OP_DJNZ;
-                end
-                // ================================================================
-                // Column B
-                // ================================================================
-                4'hB: begin
-    `ifdef BENCH
-                    $display("    jr %s, %h", ccName(instrH), second);
-                    expectedCycles <= takeBranch ? 12 : 10;
-    `endif
-                    nextCommand();
-                end
-                // ================================================================
-                // Column C
-                // ================================================================
-                4'hC: begin
-    `ifdef BENCH
-                    $display("    ld r%h, #%h", instrH, second);
-                    expectedCycles <= 6;
-    `endif
-                    register <= r4(instrH);
-                    opType <= OP_LD;
-                end
-                // ================================================================
-                // Column D
-                // ================================================================
-                4'hD: begin
-    `ifdef BENCH
-                    $display("    jp %s, %h", ccName(instrH), directAddress);
-                    expectedCycles <= takeBranch ? 12 : 10;
-    `endif
-                    if (takeBranch)
-                        opType <= OP_JP;
-                    else
-                        nextCommand();
-                end
-                // ================================================================
-                // Column E
-                // ================================================================
-                4'hE: begin
-    `ifdef BENCH
-                    $display("    inc r%h", instrH);
-                    expectedCycles <= 6;
-    `endif
-                    register <= r4(instrH);
-                    aluMode <= ALU1_INC;
-                    opType <= OP_ALU1;
-                end
-                // ================================================================
-                // Column F
-                // ================================================================
-                4'hF: begin
-                    case (instrH)
-                    4'h8: begin
-    `ifdef BENCH
-                        $display("    di");
-                        expectedCycles <= 6;
-    `endif
-                        //TODO
-                        nextCommand();
-                    end
-                    4'h9: begin
-    `ifdef BENCH
-                        $display("    ei");
-                        expectedCycles <= 6;
-    `endif
-                        //TODO
-                        nextCommand();
-                    end
-                    4'hA: begin
-    `ifdef BENCH
-                        $display("    ret");
-                        expectedCycles <= 14;
-    `endif
-                        opType <= OP_RET;
-                    end
-                    4'hB: begin
-    `ifdef BENCH
-                        $display("    iret");
-                        expectedCycles <= 16;
-    `endif
-                        opType <= OP_IRET;
-                    end
-                    4'hC: begin
-    `ifdef BENCH
-                        $display("    rcf");
-                        expectedCycles <= 6;
-    `endif
-                        flags[FLAG_INDEX_C] <= instrH[0];
-                        nextCommand();
-                    end
-                    4'hD: begin
-    `ifdef BENCH
-                        $display("    scf");
-                        expectedCycles <= 6;
-    `endif
-                        flags[FLAG_INDEX_C] <= instrH[0];
-                        nextCommand();
-                    end
-                    4'hE: begin
-    `ifdef BENCH
-                        $display("    ccf");
-                        expectedCycles <= 6;
-    `endif
-                        flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
-                        nextCommand();
-                    end
-                    4'hF: begin
-    `ifdef BENCH
-                        $display("    nop");
-                        expectedCycles <= 6;
-    `endif
-                        nextCommand();
-                    end
-                    default: begin
-    `ifdef BENCH
-                        $display("    ?");
-    `endif
-                        opType <= OP_ILLEGAL;
-                    end
-                    endcase
+`ifdef BENCH
+                    $display("    incw %h", second);
+                    expectedCycles <= 10;
+`endif
+                    opType <= OP_ALU1WORD;
+                    canFetch <= 0;
                 end
                 default: begin
+`ifdef BENCH
+                    $display("   %s %h", 
+                            alu1OpName(instrH), second);
+                    expectedCycles <= 6;
+`endif
+                    aluMode <= alu1OpCode(instrH);
+                    register <= r8(second);
+                    opType <= OP_ALU1;
                 end
                 endcase
             end
-        end
-    endcase
-
-    case (opType)
-        OP_LD: begin
-            case (instrL)
+            // ================================================================
+            // Column 1
+            // ================================================================
             4'h1: begin
-                // srp
-                aluA <= second;
-            end
-            4'h3: begin
                 case (instrH)
-                4'hE: begin
-                    aluA <= readRegister8(register);
+                4'h3: begin
+`ifdef BENCH
+                    $display("    srp %h", second);
+                    expectedCycles <= 6;
+`endif
+                    register <= RP;
+                    opType <= OP_LD;
+                end
+                4'h4: begin
+`ifdef BENCH
+                    $display("   da @%h", second);
+                    expectedCycles <= 8;
+`endif
+                    aluMode <= alu1OpCode(instrH);
+                    register <= readRegister8(r8(second));
+                    opType <= OP_ALU1DA;
+                    canFetch <= 0;
+                end
+                4'h5: begin
+`ifdef BENCH
+                    $display("    pop @%h", second);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister8(r8(second));
+                    opType <= OP_POP;
+                    canFetch <= 0;
+                end
+                4'h7: begin
+`ifdef BENCH
+                    $display("    push @%h", second);
+                    expectedCycles <= stackInternal ? 12 : 14;
+`endif
+                    register <= r8(second);
+                    opType <= OP_PUSH;
+                    canFetch <= 0;
+                end
+                4'h8: begin
+`ifdef BENCH
+                    $display("    decw @%h", second);
+                    expectedCycles <= 10;
+`endif
+                    opType <= OP_ALU1WORD;
+                    canFetch <= 0;
+                end
+                4'hA: begin
+`ifdef BENCH
+                    $display("    incw @%h", second);
+                    expectedCycles <= 10;
+`endif
+                    opType <= OP_ALU1WORD;
+                    canFetch <= 0;
+                end
+                default: begin
+`ifdef BENCH
+                    $display("   %s @%h", 
+                            alu1OpName(instrH), second);
+                    expectedCycles <= instrH == 4 ? 8 : 6;
+`endif
+                    aluMode <= alu1OpCode(instrH);
+                    register <= readRegister8(r8(second));
+                    opType <= OP_ALU1;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 2
+            // ================================================================
+            4'h2: begin
+                case (instrH)
+                4'h8: begin
+`ifdef BENCH
+                    $display("    lde r%h, Irr%h",
+                            secondH, secondL);
+                    expectedCycles <= 12;
+`endif
                     register <= r4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
                 end
-                4'hF: begin
-                    aluA <= readRegister4(secondL);
+                4'h9: begin
+`ifdef BENCH
+                    $display("    lde Irr%h, r%h",
+                            secondL, secondH);
+                    expectedCycles <= 12;
+`endif
+                    register <= r4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
                 end
-                endcase
-            end
-            4'h4: begin
-                case (instrH)
-                4'hE: begin
-                    aluA <= readRegister8(register);
-                    register <= r8(third);
-                end
-                endcase
-            end
-            4'h5: begin
-                case (instrH)
-                4'hE: begin
-                    aluA <= readRegister8(register);
-                    register <= r8(third);
-                end
-                4'hF: begin
-                    register <= readRegister8(r8(third));
-                end
-                endcase
-            end
-            4'h6: begin
-                case (instrH)
-                4'hE: begin
-                    aluA <= third;
-                end
-                endcase
-            end
-            4'h7: begin
-                case (instrH)
                 4'hC: begin
-                    aluA <= readRegister8(register + third);
+`ifdef BENCH
+                    $display("    ldc r%h, Irr%h",
+                            secondH, secondL);
+                    expectedCycles <= 12;
+`endif
                     register <= r4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
                 end
                 4'hD: begin
-                    aluA <= readRegister4(secondH);
-                    register <= register + third;
+`ifdef BENCH
+                    $display("    ldc Irr%h, r%h",
+                            secondL, secondH);
+                    expectedCycles <= 12;
+`endif
+                    register <= r4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
                 end
-                4'hE: begin
-                    aluA <= third;
+                4'hE,
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ? %h", second);
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                // x2
+                default: begin
+`ifdef BENCH
+                    $display("    %s r%h, r%h",
+                            alu2OpName(instrH),
+                            secondH, secondL);
+                    expectedCycles <= 6;
+`endif
+                    register <= r4(secondL);
+                    opType <= OP_ALU2;
                 end
                 endcase
             end
+            // ================================================================
+            // Column 3
+            // ================================================================
+            4'h3: begin
+                case (instrH)
+                4'h8: begin
+`ifdef BENCH
+                    $display("    ldei Ir%h, Irr%h",
+                            secondH, secondL);
+                    expectedCycles <= 18;
+`endif
+                    register <= readRegister4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
+                end
+                4'h9: begin
+`ifdef BENCH
+                    $display("    ldei Irr%h, Ir%h",
+                            secondL, secondH);
+                    expectedCycles <= 18;
+`endif
+                    register <= readRegister4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
+                end
+                4'hC: begin
+`ifdef BENCH
+                    $display("    ldci Ir%h, Irr%h",
+                            secondH, secondL);
+                    expectedCycles <= 18;
+`endif
+                    register <= readRegister4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    ldci Irr%h, Ir%h",
+                            secondL, secondH);
+                    expectedCycles <= 18;
+`endif
+                    register <= readRegister4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld r%h, @r%h",
+                            secondH, secondL);
+                    expectedCycles <= 6;
+`endif
+                    register <= readRegister4(secondL);
+                    opType <= OP_LD;
+                end
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ld @r%h, r%h",
+                            secondH, secondL);
+                    expectedCycles <= 6;
+`endif
+                    register <= readRegister4(secondH);
+                    opType <= OP_LD;
+                end
+                default: begin
+`ifdef BENCH
+                    $display("    %s r%h, Ir%h",
+                            alu2OpName(instrH),
+                            secondH, secondL);
+                    expectedCycles <= 6;
+`endif
+                    register <= readRegister4(secondL);
+                    opType <= OP_ALU2;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 4
+            // ================================================================
+            4'h4: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    call @%h", second);
+                    expectedCycles <= 20;
+`endif
+                    opType <= OP_CALL;
+                    canFetch <= 0;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld %h, %h", third, second);
+                    expectedCycles <= 10;
+`endif
+                    register <= r8(second);
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                // x4
+                default: begin
+`ifdef BENCH
+                    $display("    %s %h, %h",
+                            alu2OpName(instrH),
+                            third, second);
+                    expectedCycles <= 10;
+`endif
+                    register <= r8(second);
+                    opType <= OP_ALU2;
+                    canFetch <= 0;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 5
+            // ================================================================
+            4'h5: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hD:
+                begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld %h, @%h", third, second);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister8(r8(second));
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ld @%h, %h", third, second);
+                    expectedCycles <= 10;
+`endif
+                    aluA <= readRegister8(r8(second));
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                // x5
+                default: begin
+`ifdef BENCH
+                    $display("    %s %h, @%h",
+                            alu2OpName(instrH),
+                            third, second);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister8(r8(second));
+                    opType <= OP_ALU2;
+                    canFetch <= 0;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 6
+            // ================================================================
+            4'h6: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hC,
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    call %h", directAddress);
+                    expectedCycles <= 20;
+`endif
+                    opType <= OP_CALL;
+                    canFetch <= 0;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld %h, #%h", second, third);
+                    expectedCycles <= 10;
+`endif
+                    register <= r8(second);
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                default: begin
+`ifdef BENCH
+                    $display("    %s %h, #%h",
+                            alu2OpName(instrH),
+                            second, third);
+                    expectedCycles <= 10;
+`endif
+                    register <= r8(second);
+                    opType <= OP_ALU2;
+                    canFetch <= 0;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 7
+            // ================================================================
+            4'h7: begin
+                case (instrH)
+                4'h8,
+                4'h9,
+                4'hF: begin
+`ifdef BENCH
+                    $display("    ? %h", instruction);
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                4'hC: begin
+`ifdef BENCH
+                    $display("    ld r%h, @r%h+%h", 
+                            secondH, secondL, third);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister4(secondL);
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    ld @r%h+%h, r%h", 
+                            secondL, third, secondH);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister4(secondL);
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ld @%h, #%h", second, third);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister8(r8(second));
+                    opType <= OP_LD;
+                    canFetch <= 0;
+                end
+                default: begin
+`ifdef BENCH
+                    $display("    %s @%h, #%h",
+                            alu2OpName(instrH),
+                            second, third);
+                    expectedCycles <= 10;
+`endif
+                    register <= readRegister8(r8(second));
+                    opType <= OP_ALU2;
+                    canFetch <= 0;
+                end
+                endcase
+            end
+            // ================================================================
+            // Column 8
+            // ================================================================
             4'h8: begin
-                aluA <= readRegister8(r8(second));
+`ifdef BENCH
+                $display("    ld r%h, %h", instrH, second);
+                expectedCycles <= 6;
+`endif
+                register <= r4(instrH);
+                opType <= OP_LD;
             end
+            // ================================================================
+            // Column 9
+            // ================================================================
             4'h9: begin
-                aluA <= readRegister4(instrH);
+`ifdef BENCH
+                $display("    ld %h, r%h", second, instrH);
+                expectedCycles <= 6;
+`endif
+                register <= second; // no r8(second) !
+                opType <= OP_LD;
             end
+            // ================================================================
+            // Column A
+            // ================================================================
+            4'hA: begin
+`ifdef BENCH
+                $display("    djnz r%h, %h", instrH, second);
+`endif
+                register <= r4(instrH);
+                opType <= OP_DJNZ;
+                canFetch <= 0;
+            end
+            // ================================================================
+            // Column B
+            // ================================================================
+            4'hB: begin
+`ifdef BENCH
+                $display("    jr %s, %h", ccName(instrH), second);
+                expectedCycles <= takeBranch ? 12 : 10;
+`endif
+                opType <= OP_JR;
+                canFetch <= 0;
+            end
+            // ================================================================
+            // Column C
+            // ================================================================
             4'hC: begin
-                aluA <= second;
+`ifdef BENCH
+                $display("    ld r%h, #%h", instrH, second);
+                expectedCycles <= 6;
+`endif
+                register <= r4(instrH);
+                opType <= OP_LD;
+            end
+            // ================================================================
+            // Column D
+            // ================================================================
+            4'hD: begin
+`ifdef BENCH
+                $display("    jp %s, %h", ccName(instrH), directAddress);
+                expectedCycles <= takeBranch ? 12 : 10;
+`endif
+                opType <= OP_JP;
+                canFetch <= 0;
+            end
+            // ================================================================
+            // Column E
+            // ================================================================
+            4'hE: begin
+`ifdef BENCH
+                $display("    inc r%h", instrH);
+                expectedCycles <= 6;
+`endif
+                register <= r4(instrH);
+                aluMode <= ALU1_INC;
+                opType <= OP_ALU1;
+            end
+            // ================================================================
+            // Column F
+            // ================================================================
+            4'hF: begin
+                case (instrH)
+                4'h8: begin
+`ifdef BENCH
+                    $display("    di");
+                    expectedCycles <= 6;
+`endif
+                    //TODO
+                end
+                4'h9: begin
+`ifdef BENCH
+                    $display("    ei");
+                    expectedCycles <= 6;
+`endif
+                    //TODO
+                end
+                4'hA: begin
+`ifdef BENCH
+                    $display("    ret");
+                    expectedCycles <= 14;
+`endif
+                    opType <= OP_RET;
+                    canFetch <= 0;
+                end
+                4'hB: begin
+`ifdef BENCH
+                    $display("    iret");
+                    expectedCycles <= 16;
+`endif
+                    opType <= OP_IRET;
+                    canFetch <= 0;
+                end
+                4'hC: begin
+`ifdef BENCH
+                    $display("    rcf");
+                    expectedCycles <= 6;
+`endif
+                    flags[FLAG_INDEX_C] <= instrH[0];
+                    opType <= OP_MISC;
+                end
+                4'hD: begin
+`ifdef BENCH
+                    $display("    scf");
+                    expectedCycles <= 6;
+`endif
+                    flags[FLAG_INDEX_C] <= instrH[0];
+                    opType <= OP_MISC;
+                end
+                4'hE: begin
+`ifdef BENCH
+                    $display("    ccf");
+                    expectedCycles <= 6;
+`endif
+                    flags[FLAG_INDEX_C] <= ~flags[FLAG_INDEX_C];
+                    opType <= OP_MISC;
+                end
+                4'hF: begin
+`ifdef BENCH
+                    $display("    nop");
+                    expectedCycles <= 6;
+`endif
+                    opType <= OP_MISC;
+                end
+                default: begin
+`ifdef BENCH
+                    $display("    ?");
+`endif
+                    opType <= OP_ILLEGAL;
+                end
+                endcase
             end
             endcase
-            aluMode <= ALU1_LD;
-            writeRegister <= 1;
-            nextCommand();
+        end
+
+        OP_LD: begin
+            case (opState)
+            OPSTATE0: begin
+                canFetch <= 1;
+                case (instrL)
+                4'h1: begin
+                    // srp
+                    aluA <= second;
+                end
+                4'h3: begin
+                    case (instrH)
+                    4'hE: begin
+                        aluA <= readRegister8(register);
+                        register <= r4(secondH);
+                    end
+                    4'hF: begin
+                        aluA <= readRegister4(secondL);
+                    end
+                    endcase
+                end
+                4'h4: begin
+                    case (instrH)
+                    4'hE: begin
+                        aluA <= readRegister8(register);
+                        register <= r8(third);
+                    end
+                    endcase
+                end
+                4'h5: begin
+                    case (instrH)
+                    4'hE: begin
+                        aluA <= readRegister8(register);
+                        register <= r8(third);
+                    end
+                    4'hF: begin
+                        register <= readRegister8(r8(third));
+                    end
+                    endcase
+                end
+                4'h6: begin
+                    case (instrH)
+                    4'hE: begin
+                        aluA <= third;
+                    end
+                    endcase
+                end
+                4'h7: begin
+                    case (instrH)
+                    4'hC: begin
+                        aluA <= readRegister8(register + third);
+                        register <= r4(secondH);
+                    end
+                    4'hD: begin
+                        aluA <= readRegister4(secondH);
+                        register <= register + third;
+                    end
+                    4'hE: begin
+                        aluA <= third;
+                    end
+                    endcase
+                end
+                4'h8: begin
+                    aluA <= readRegister8(r8(second));
+                end
+                4'h9: begin
+                    aluA <= readRegister4(instrH);
+                end
+                4'hC: begin
+                    aluA <= second;
+                end
+                endcase
+                aluMode <= ALU1_LD;
+                writeRegister <= 1;
+            end
+            endcase
         end
         OP_ALU1: begin
             case (opState)
@@ -1095,16 +1153,22 @@ module Processor(
                 aluA <= readRegister8(register);
                 writeRegister <= 1;
                 writeFlags <= 1;
-
-                if (aluMode != ALU1_DA)
-                    nextCommand();
             end
-            default: begin
+            endcase
+        end
+        OP_ALU1DA: begin
+            case (opState)
+            OPSTATE0: begin
+                aluA <= readRegister8(register);
+                writeRegister <= 1;
+                writeFlags <= 1;
+            end
+            OPSTATE1: begin
                 aluA <= aluOut;
                 aluMode <= ALU1_DA_H;
                 writeRegister <= 1;
                 writeFlags <= 1;
-                nextCommand();
+                canFetch <= 1;
             end
             endcase
         end
@@ -1125,14 +1189,14 @@ module Processor(
             end
             OPSTATE3: begin
                 register <= { register[7:1], 1'b0 };
+                canFetch <= 1;
             end
-            default: begin
+            OPSTATE4: begin
                 aluA <= readRegister8(register);
                 aluB <= aluOut;
                 aluMode <= aluMode | 'h8; // inc/dec -> incw/decw
                 writeRegister <= 1;
                 writeFlags <= 1;
-                nextCommand();
             end
             endcase
         end
@@ -1158,17 +1222,17 @@ module Processor(
                     aluB <= third;
                 end
                 endcase
+                canFetch <= 1;
             end
             OPSTATE1: begin
                 aluA <= readRegister8(register);
             end
-            default: begin
+            OPSTATE2: begin
                 aluMode <= alu2OpCode(instrH);
                 writeRegister <= (instrH[3:2] == 2'b00)     // add, adc, sub, sbc
                                 | (instrH[3:1] == 3'b010)   // or, and
                                 | (instrH      == 4'b1011); // xor
                 writeFlags <= 1;
-                nextCommand();
             end
             endcase
         end
@@ -1186,40 +1250,40 @@ module Processor(
                     ? readRegister8(addr[7:0])
                     : memDataRead;
             end
-            default: begin
+            OPSTATE3: begin
                 aluMode <= ALU1_LD;
                 sp <= sp + 16'b1;
                 writeRegister <= 1;
-                nextCommand();
+                canFetch <= 1;
             end
             endcase
         end
-        OP_PUSH_I: begin
+        OP_PUSH: begin
             case (opState)
             OPSTATE0: begin
+                register <= readRegister8(register);
+            end
+            OPSTATE2: begin
                 sp <= sp - 16'b1;
             end
-            default: begin
-                aluMode <= ALU1_LD;
-                aluA <= readRegister8(register);
-                register <= sp[7:0];
-                writeRegister <= 1;
-                nextCommand();
+            OPSTATE3: begin
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    aluA <= readRegister8(register);
+                    register <= sp[7:0];
+                    writeRegister <= 1;
+                end
+                else begin
+                    aluA <= readRegister8(register);
+                    addr <= sp;
+                    writeMem <= 1;
+                end
             end
-            endcase
-        end
-        OP_PUSH_E: begin
-            case (opState)
-            OPSTATE0: begin
-                sp <= sp - 16'b1;
+            OPSTATE5: begin
+                canFetch <= stackInternal;
             end
-            OPSTATE1: begin
-                aluA <= readRegister8(register);
-                addr <= sp;
-                writeMem <= 1;
-            end
-            default: begin
-                nextCommand();
+            OPSTATE7: begin
+                canFetch <= 1;
             end
             endcase
         end
@@ -1235,27 +1299,64 @@ module Processor(
                 expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
 `endif
                 if (flagsOut[FLAG_INDEX_Z])
-                    nextCommand();
+                    opState <= OPSTATE4;
             end
-            default: begin
-                nextCommand();
+            OPSTATE3: begin
+                addr <= nextRelativePc;
+                loadPc <= 1;
+            end
+            OPSTATE4: begin
+                canFetch <= 1;
+                fetchState <= FETCH_INSTR0;
+            end
+            endcase
+        end
+        OP_JP_IRR: begin
+            case (opState)
+            OPSTATE0: begin
+                addr[15:8] = readRegister8(r8({second[7:1], 1'b0}));
+                loadPc <= 1;
+                canFetch <= 1;
+                fetchState <= FETCH_INSTR0;
             end
             endcase
         end
         OP_JP: begin
             case (opState)
             OPSTATE0: begin
-                addr[15:8] = isJumpDA
-                    ? second
-                    : readRegister8(r8({second[7:1], 1'b0}));
+                addr <= {second, third};
+                if (takeBranch) begin
+                    loadPc <= 1;
+                    fetchState <= FETCH_INSTR0;
+                end
+                else begin
+                    canFetch <= 1;
+                end
             end
             OPSTATE1: begin
-                addr[7:0] = isJumpDA
-                    ? third
-                    : readRegister8(r8({second[7:1], 1'b1}));
+                canFetch <= 1;
             end
-            default: begin
-                nextCommand();
+            endcase
+        end
+        OP_JR: begin
+            case (opState)
+            OPSTATE0: begin
+                addr[7:0] = nextRelativePc[7:0];
+            end
+            OPSTATE1: begin
+                addr[15:8] = nextRelativePc[15:8];
+            end
+            OPSTATE3: begin
+                if (takeBranch) begin
+                    loadPc <= 1;
+                    fetchState <= FETCH_INSTR0;
+                end
+                else begin
+                    canFetch <= 1;
+                end
+            end
+            OPSTATE4: begin
+                canFetch <= 1;
             end
             endcase
         end
@@ -1291,10 +1392,11 @@ module Processor(
                 addr[7:0] = isCallDA
                     ? third
                     : readRegister8(r8({second[7:1], 1'b1}));
+                loadPc <= 1;
+                fetchState <= FETCH_INSTR0;
             end
-            default: begin
-                nextCommand();
-            end
+            OPSTATE9:
+                canFetch <= 1;
             endcase
         end
         OP_IRET: begin
@@ -1331,7 +1433,7 @@ module Processor(
             OPSTATE2: begin
                 aluA <= stackInternal
                     ? readRegister8(addr[7:0])
-                    : memDataRead;// temp
+                    : memDataRead; // temp
                 addr <= sp;
                 readMem <= ~stackInternal;
             end
@@ -1344,9 +1446,12 @@ module Processor(
                 addr[7:0] <= stackInternal
                     ? readRegister8(addr[7:0])
                     : memDataRead;
+                loadPc <= 1;
+                fetchState <= FETCH_INSTR0;
             end
-            default: begin
-                nextCommand();
+            OPSTATE6:
+                canFetch <= 1;
+            OPSTATE8: begin
                 //TODO: for iret enable interrupts
             end
             endcase
@@ -1358,8 +1463,9 @@ module Processor(
             end
             OPSTATE1: begin
                 addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
-                if (instrH[0] == 0)
+                if (instrH[0] == 0) begin
                     readMem <= 1;
+                end
             end
             OPSTATE2: begin
                 if (instrH[0] == 0) begin
@@ -1376,37 +1482,46 @@ module Processor(
                     aluMode <= ALU1_LD;
                     writeRegister <= 1;
                 end
-                // ldci?
-                if (instrL[0] == 0)
-                    nextCommand();
             end
             OPSTATE4: begin
-                aluA <= register;
-                register <= r4(secondH);
-                aluMode <= ALU1_INC;
-                writeRegister <= 1;
+                // ldci?
+                if (instrL[0] == 1) begin
+                    aluA <= register;
+                    register <= r4(secondH);
+                    aluMode <= ALU1_INC;
+                    writeRegister <= 1;
+                end
             end
             OPSTATE5: begin
-                aluA <= addr[7:0];
-                register <= r4({secondL[3:1], 1'b1});
-                aluMode <= ALU1_INC;
-                writeRegister <= 1;
+                if (instrL[0] == 1) begin
+                    aluA <= addr[7:0];
+                    register <= r4({secondL[3:1], 1'b1});
+                    aluMode <= ALU1_INC;
+                    writeRegister <= 1;
+                end
+                else begin
+                    canFetch <= 1;
+                end
             end
             OPSTATE6: begin
-                aluA <= addr[15:8];
-                aluB <= aluOut;
-                register[0] <= 1'b0;
-                aluMode <= ALU1_INCW;
-                writeRegister <= 1;
-                nextCommand();
+                if (instrL[0] == 1) begin
+                    aluA <= addr[15:8];
+                    aluB <= aluOut;
+                    register[0] <= 1'b0;
+                    aluMode <= ALU1_INCW;
+                    writeRegister <= 1;
+                end
             end
+            11:
+                canFetch <= 1;
             endcase
+        end
+        OP_MISC: begin
         end
         OP_ILLEGAL: begin
             opState <= OPSTATE0;
         end
         endcase
-        pc <= nextPc;
     end
 endmodule
 

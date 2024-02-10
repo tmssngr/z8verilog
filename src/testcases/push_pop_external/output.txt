@@ -5,17 +5,17 @@ VCD info: dumpfile SoC.vcd opened for output.
   31 20
     srp 20
     reg[fd] = 20
-exact  6 cycles
 
 000e: read 1st byte e6
+exact  6 cycles
 000f: read 2nd byte f8
 0010: read 3rd byte 92
   e6 f8 92
     ld f8, #92
     reg[f8] = 92
- 8 cycles, expected 10
 
 0011: read 1st byte b0
+exact 10 cycles
 0012: read 2nd byte fe
   b0 fe
     clr fe
@@ -23,9 +23,9 @@ exact  6 cycles
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[fe] = 00
-exact  6 cycles
 
 0013: read 1st byte b0
+exact  6 cycles
 0014: read 2nd byte ff
   b0 ff
     clr ff
@@ -33,34 +33,35 @@ exact  6 cycles
          00000000 00000000 => 00000000
     flags = 0000_0000
     reg[ff] = 00
-exact  6 cycles
 
 0015: read 1st byte 0c
+exact  6 cycles
 0016: read 2nd byte 12
   0c 12
     ld r0, #12
     reg[20] = 12
-exact  6 cycles
 
 0017: read 1st byte 70
+exact  6 cycles
 0018: read 2nd byte e0
   70 e0
     push e0
- 8 cycles, expected 12
 
 0019: read 1st byte 50
+exact 12 cycles
 001a: read 2nd byte e1
   50 e1
     pop e1
     reg[21] = 12
- 9 cycles, expected 10
 
 001b: read 1st byte 8d
+exact 10 cycles
 001c: read 2nd byte 00
 001d: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
-10 cycles, expected 12
 
 000c: read 1st byte 31
+exact 12 cycles
+000d: read 2nd byte 20
 testSoC: SUCCESS
