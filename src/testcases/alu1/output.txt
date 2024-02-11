@@ -1,0 +1,53 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read 1st byte 31
+000d: read 2nd byte 10
+  31 10
+    srp 10
+    reg[fd] = 10
+
+000e: read 1st byte 0c
+exact  6 cycles
+000f: read 2nd byte 09
+  0c 09
+    ld r0, #09
+    reg[10] = 09
+
+0010: read 1st byte 1c
+exact  6 cycles
+0011: read 2nd byte 10
+  1c 10
+    ld r1, #10
+    reg[11] = 10
+
+0012: read 1st byte f0
+exact  6 cycles
+0013: read 2nd byte e0
+  f0 e0
+   swap e0
+    alu:    09       00    =>    90
+         00001001 00000000 => 10010000
+    flags = 0010_0000
+    reg[10] = 90
+
+0014: read 1st byte f1
+exact  8 cycles
+0015: read 2nd byte e1
+  f1 e1
+   swap @e1
+    alu:    90       00    =>    09
+         10010000 00000000 => 00001001
+    flags = 0000_0000
+    reg[10] = 09
+
+0016: read 1st byte 8d
+exact  8 cycles
+0017: read 2nd byte 00
+0018: read 3rd byte 0c
+  8d 00 0c
+    jp    , 000c
+
+000c: read 1st byte 31
+exact 12 cycles
+000d: read 2nd byte 10
+testSoC: SUCCESS

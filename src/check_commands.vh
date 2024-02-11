@@ -1000,6 +1000,12 @@ task chk_alu1;
             `assertOpState(OPSTATE2);
         @(negedge clk);
             `assertOpState(OPSTATE3);
+        if (op == ALU1_SWAP) begin
+            @(negedge clk);
+                `assertOpState(OPSTATE4);
+            @(negedge clk);
+                `assertOpState(OPSTATE5);
+        end
         @(negedge clk);
             assertCommandFinished();
             assertRegister(register, value);
@@ -1023,6 +1029,12 @@ task chk_alu1_IR;
             `assertOpState(OPSTATE2);
         @(negedge clk);
             `assertOpState(OPSTATE3);
+        if (op == ALU1_SWAP) begin
+            @(negedge clk);
+                `assertOpState(OPSTATE4);
+            @(negedge clk);
+                `assertOpState(OPSTATE5);
+        end
         @(negedge clk);
             assertCommandFinished();
             `assertRegister(register, value);

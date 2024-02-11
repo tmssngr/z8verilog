@@ -508,11 +508,12 @@ module Processor(
 `ifdef BENCH
                     $display("   %s %h", 
                             alu1OpName(instrH), second);
-                    expectedCycles <= 6;
+                    expectedCycles <= instrH == 4'hF ? 8 : 6;
 `endif
                     aluMode <= alu1OpCode(instrH);
                     register <= r8(second);
                     opType <= OP_ALU1;
+                    canFetch <= instrH != 4'hF;
                 end
                 endcase
             end
@@ -577,11 +578,12 @@ module Processor(
 `ifdef BENCH
                     $display("   %s @%h", 
                             alu1OpName(instrH), second);
-                    expectedCycles <= instrH == 4 ? 8 : 6;
+                    expectedCycles <= instrH == 4'hF ? 8 : 6;
 `endif
                     aluMode <= alu1OpCode(instrH);
                     register <= readRegister8(r8(second));
                     opType <= OP_ALU1;
+                    canFetch <= instrH != 4'hF;
                 end
                 endcase
             end
@@ -1154,6 +1156,8 @@ module Processor(
                 writeRegister <= 1;
                 writeFlags <= 1;
             end
+            OPSTATE1:
+                canFetch <= 1;
             endcase
         end
         OP_ALU1DA: begin
