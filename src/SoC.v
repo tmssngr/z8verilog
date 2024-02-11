@@ -66,6 +66,8 @@ module Processor(
         pc = 'hC;
         sp = 0;
     end
+    wire [7:0] spH = sp[15:8];
+    wire [7:0] spL = sp[7:0];
 
     reg [7:0] first;
     wire [3:0] firstH = first[7:4];
@@ -168,8 +170,8 @@ module Processor(
         P3M:          readRegister8 = p3m;
         FLAGS:        readRegister8 = flags;
         RP:           readRegister8 = { rp, 4'h0 };
-        SPH:          readRegister8 = sp[15:8];
-        SPL:          readRegister8 = sp[7:0];
+        SPH:          readRegister8 = spH;
+        SPL:          readRegister8 = spL;
         default:      readRegister8 = 0;
         endcase
     endfunction
@@ -1285,7 +1287,7 @@ module Processor(
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
                     aluA <= readRegister8(register);
-                    register <= sp[7:0];
+                    register <= spL;
                     writeRegister <= 1;
                 end
                 else begin
@@ -1386,7 +1388,7 @@ module Processor(
             OPSTATE3: begin
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
-                    register <= sp[7:0];
+                    register <= spL;
                     writeRegister <= 1;
                 end
                 else begin
