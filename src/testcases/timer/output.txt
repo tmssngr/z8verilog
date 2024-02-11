@@ -1,0 +1,67 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read 1st byte e6
+000d: read 2nd byte f2
+000e: read 3rd byte 03
+  e6 f2 03
+    ld f2, #03
+    reg[f2] = 03
+
+000f: read 1st byte e6
+exact 10 cycles
+0010: read 2nd byte f3
+0011: read 3rd byte 05
+  e6 f3 05
+    ld f3, #05
+    reg[f3] = 05
+
+0012: read 1st byte e6
+exact 10 cycles
+0013: read 2nd byte f4
+0014: read 3rd byte 04
+  e6 f4 04
+    ld f4, #04
+    reg[f4] = 04
+
+0015: read 1st byte e6
+exact 10 cycles
+0016: read 2nd byte f5
+0017: read 3rd byte 09
+  e6 f5 09
+    ld f5, #09
+    reg[f5] = 09
+
+0018: read 1st byte e6
+exact 10 cycles
+0019: read 2nd byte f1
+001a: read 3rd byte 0f
+  e6 f1 0f
+    ld f1, #0f
+    reg[f1] = 0f
+
+001b: read 1st byte 8d
+loading timer t0 with 04 (pre: 02)
+loading timer t1 with 03 (pre: 01)
+exact 10 cycles
+001c: read 2nd byte 00
+001d: read 3rd byte 1b
+  8d 00 1b
+    jp    , 001b
+
+001b: read 1st byte 8d
+timer t1 overflow
+exact 12 cycles
+001c: read 2nd byte 00
+001d: read 3rd byte 1b
+  8d 00 1b
+    jp    , 001b
+
+001b: read 1st byte 8d
+timer t1 overflow
+exact 12 cycles
+001c: read 2nd byte 00
+001d: read 3rd byte 1b
+  8d 00 1b
+    jp    , 001b
+timer t0 overflow
+testSoC: SUCCESS

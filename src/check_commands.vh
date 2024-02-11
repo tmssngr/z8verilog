@@ -323,7 +323,7 @@ task chk_ld_IR_R;
             `assertRegister(register, value);
     end
 endtask
-task chk_ld_R_IM;
+task chk_ld_R_IM_noRegCheck;
     input[7:0] dst;
     input[7:0] value;
     begin
@@ -342,6 +342,13 @@ task chk_ld_R_IM;
             `assertOpState(OPSTATE4);
         @(negedge clk);
             assertCommandFinished();
+    end
+endtask
+task chk_ld_R_IM;
+    input[7:0] dst;
+    input[7:0] value;
+    begin
+        chk_ld_R_IM_noRegCheck(dst, value);
             assertRegister(dst, value);
     end
 endtask

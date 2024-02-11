@@ -94,6 +94,10 @@ module Processor(
 
     wire [15:0] directAddress = {second, third};
 
+    reg [7:0] imr = 0;
+    reg [7:0] irq = 0;
+    `include "timers.vh"
+
     reg [3:0] rp = 0;
     reg [7:0] registers[0:'h7F];
     reg [7:0] p01m = 8'b01_0_01_1_01;
@@ -158,6 +162,8 @@ module Processor(
         2:            readRegister8 = port2;
         3:            readRegister8 = port3;
         8'b0???_????: readRegister8 = registers[r[6:0]];
+        T1:           readRegister8 = t1counter;
+        T0:           readRegister8 = t0counter;
         P01M:         readRegister8 = p01m;
         P3M:          readRegister8 = p3m;
         FLAGS:        readRegister8 = flags;
@@ -313,6 +319,11 @@ module Processor(
 `endif
             casez (register)
             8'b0???_????: registers[register] <= aluOut;
+            TMR:          tmr                 <= aluOut;
+            T1:           t1load              <= aluOut;
+            PRE1:         pre1                <= aluOut;
+            T0:           t0load              <= aluOut;
+            PRE0:         pre0                <= aluOut;
             P01M:         p01m                <= aluOut;
             P3M:          p3m                 <= aluOut;
             FLAGS:        flags               <= aluOut;
