@@ -40,10 +40,120 @@ exact  8 cycles
     flags = 0000_0000
     reg[10] = 09
 
-0016: read 1st byte 8d
+0016: read 1st byte e0
 exact  8 cycles
-0017: read 2nd byte 00
-0018: read 3rd byte 0c
+0017: read 2nd byte e0
+  e0 e0
+     rr e0
+    alu:    09       00    =>    84
+         00001001 00000000 => 10000100
+    flags = 1010_0000
+    reg[10] = 84
+
+0018: read 1st byte d0
+exact  6 cycles
+0019: read 2nd byte e0
+  d0 e0
+    sra e0
+    alu:    84       00    =>    c2
+         10000100 00000000 => 11000010
+    flags = 0010_0000
+    reg[10] = c2
+
+001a: read 1st byte c0
+exact  6 cycles
+001b: read 2nd byte e0
+  c0 e0
+    rrc e0
+    alu:    c2       00    =>    61
+         11000010 00000000 => 01100001
+    flags = 0000_0000
+    reg[10] = 61
+
+001c: read 1st byte c0
+exact  6 cycles
+001d: read 2nd byte e0
+  c0 e0
+    rrc e0
+    alu:    61       00    =>    30
+         01100001 00000000 => 00110000
+    flags = 1000_0000
+    reg[10] = 30
+
+001e: read 1st byte c0
+exact  6 cycles
+001f: read 2nd byte e0
+  c0 e0
+    rrc e0
+    alu:    30       00    =>    98
+         00110000 00000000 => 10011000
+    flags = 0010_0000
+    reg[10] = 98
+
+0020: read 1st byte 60
+exact  6 cycles
+0021: read 2nd byte e0
+  60 e0
+    com e0
+    alu:    98       00    =>    67
+         10011000 00000000 => 01100111
+    flags = 0000_0000
+    reg[10] = 67
+
+0022: read 1st byte 90
+exact  6 cycles
+0023: read 2nd byte e0
+  90 e0
+     rl e0
+    alu:    67       00    =>    ce
+         01100111 00000000 => 11001110
+    flags = 0010_0000
+    reg[10] = ce
+
+0024: read 1st byte 90
+exact  6 cycles
+0025: read 2nd byte e0
+  90 e0
+     rl e0
+    alu:    ce       00    =>    9d
+         11001110 00000000 => 10011101
+    flags = 1010_0000
+    reg[10] = 9d
+
+0026: read 1st byte 10
+exact  6 cycles
+0027: read 2nd byte e0
+  10 e0
+    rlc e0
+    alu:    9d       00    =>    3b
+         10011101 00000000 => 00111011
+    flags = 1000_0000
+    reg[10] = 3b
+
+0028: read 1st byte 10
+exact  6 cycles
+0029: read 2nd byte e0
+  10 e0
+    rlc e0
+    alu:    3b       00    =>    77
+         00111011 00000000 => 01110111
+    flags = 0000_0000
+    reg[10] = 77
+
+002a: read 1st byte 10
+exact  6 cycles
+002b: read 2nd byte e0
+  10 e0
+    rlc e0
+    alu:    77       00    =>    ee
+         01110111 00000000 => 11101110
+    flags = 0010_0000
+    reg[10] = ee
+
+002c: read 1st byte 8d
+exact  6 cycles
+002d: read 2nd byte 00
+002e: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
