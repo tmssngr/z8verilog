@@ -96,8 +96,10 @@ module Processor(
 
     wire [15:0] directAddress = {second, third};
 
-    reg [7:0] imr = 0;
+    reg [7:0] ipr = 0;
     reg [7:0] irq = 0;
+    reg [7:0] imr = 0;
+    wire [5:0] enabledAndRequestedInterrupts = irq[5:0] & imr[5:0];
     `include "timers.vh"
 
     reg [3:0] rp = 0;
@@ -164,10 +166,17 @@ module Processor(
         2:            readRegister8 = port2;
         3:            readRegister8 = port3;
         8'b0???_????: readRegister8 = registers[r[6:0]];
+        // SIO
+        // TMR is not readable
         T1:           readRegister8 = t1counter;
+        // PRE1
         T0:           readRegister8 = t0counter;
-        P01M:         readRegister8 = p01m;
+        // PRE0
         P3M:          readRegister8 = p3m;
+        P01M:         readRegister8 = p01m;
+        IPR:          readRegister8 = ipr;
+        IRQ:          readRegister8 = irq;
+        IMR:          readRegister8 = imr;
         FLAGS:        readRegister8 = flags;
         RP:           readRegister8 = { rp, 4'h0 };
         SPH:          readRegister8 = spH;
@@ -321,13 +330,17 @@ module Processor(
 `endif
             casez (register)
             8'b0???_????: registers[register] <= aluOut;
+            //SIO:          sioOut              <= aluOut;
             TMR:          tmr                 <= aluOut;
             T1:           t1load              <= aluOut;
             PRE1:         pre1                <= aluOut;
             T0:           t0load              <= aluOut;
             PRE0:         pre0                <= aluOut;
-            P01M:         p01m                <= aluOut;
             P3M:          p3m                 <= aluOut;
+            P01M:         p01m                <= aluOut;
+            IPR:          ipr                 <= aluOut;
+            IRQ:          irq                 <= aluOut;
+            IMR:          imr                 <= aluOut;
             FLAGS:        flags               <= aluOut;
             RP:           rp                  <= aluOut[7:4];
             SPH:          sp[15:8]            <= aluOut;
@@ -420,11 +433,22 @@ module Processor(
 `ifdef BENCH
             $display("%h: read 2nd byte %h", pc, memDataRead);
 `endif
-            second <= memDataRead;
-            instruction <= first;
-            if (isInstrSize1 | isInstrSize2) begin
-                opType <= OP_DECODE;
-                fetchState <= FETCH_INSTR0;
+            if (imr[7] & (enabledAndRequestedInterrupts != 0)) begin
+`ifdef BENCH
+                $display("starting isr");
+`endif
+                imr[7] <= 0;
+                canFetch <= 0;
+                opType <= OP_ISR;
+                opState <= OPSTATE0;
+            end
+            else begin
+                second <= memDataRead;
+                instruction <= first;
+                if (isInstrSize1 | isInstrSize2) begin
+                    opType <= OP_DECODE;
+                    fetchState <= FETCH_INSTR0;
+                end
             end
         end
 
@@ -1019,14 +1043,14 @@ module Processor(
                     $display("    di");
                     expectedCycles <= 6;
 `endif
-                    //TODO
+                    imr[7] <= instrH[0];
                 end
                 4'h9: begin
 `ifdef BENCH
                     $display("    ei");
                     expectedCycles <= 6;
 `endif
-                    //TODO
+                    imr[7] <= instrH[0];
                 end
                 4'hA: begin
 `ifdef BENCH
@@ -1469,7 +1493,9 @@ module Processor(
             OPSTATE6:
                 canFetch <= 1;
             OPSTATE8: begin
-                //TODO: for iret enable interrupts
+                // iret?
+                if (instrH[0])
+                    imr[7] <= 1;
             end
             endcase
         end
@@ -1534,6 +1560,99 @@ module Processor(
             endcase
         end
         OP_MISC: begin
+        end
+        OP_ISR: begin
+            // todo check IPR
+            case (opState)
+            OPSTATE0: begin
+                sp <= sp - 16'b1;
+                pc <= pc - (isInstrSize1 ? 1 : 2);
+            end
+            OPSTATE1: begin
+                aluA <= pc[7:0];
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    register <= spL;
+                    writeRegister <= 1;
+                end
+                else begin
+                    addr <= sp;
+                    writeMem <= 1;
+                end
+                sp <= sp - 16'b1;
+            end
+            OPSTATE2: begin
+                aluA <= pc[15:8];
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    register <= spL;
+                    writeRegister <= 1;
+                end
+                else begin
+                    addr <= sp;
+                    writeMem <= 1;
+                end
+                sp <= sp - 16'b1;
+            end
+            OPSTATE3: begin
+                aluA <= flags;
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    register <= spL;
+                    writeRegister <= 1;
+                end
+                else begin
+                    addr <= sp;
+                    writeMem <= 1;
+                end
+            end
+            OPSTATE4: begin
+                if (enabledAndRequestedInterrupts[0]) begin
+                    addr <= 16'h0000;
+                    irq <= irq & ~8'h01;
+                end
+                else if (enabledAndRequestedInterrupts[1]) begin
+                    addr <= 16'h0002;
+                    irq <= irq & ~8'h02;
+                end
+                else if (enabledAndRequestedInterrupts[2]) begin
+                    addr <= 16'h0004;
+                    irq <= irq & ~8'h04;
+                end
+                else if (enabledAndRequestedInterrupts[3]) begin
+                    addr <= 16'h0006;
+                    irq <= irq & ~8'h08;
+                end
+                else if (enabledAndRequestedInterrupts[4]) begin
+                    addr <= 16'h0008;
+                    irq <= irq & ~8'h10;
+                end
+                else begin
+                    addr <= 16'h000A;
+                    irq <= irq & ~8'h20;
+                end
+                readMem <= 1;
+            end
+            OPSTATE5: begin
+                readMem <= 1;
+            end
+            OPSTATE6: begin
+                pc[15:8] <= memDataRead;
+                addr[0] <= 1;
+                readMem <= 1;
+            end
+            OPSTATE7: begin
+                readMem <= 1;
+            end
+            OPSTATE8: begin
+                pc[7:0] <= memDataRead;
+                canFetch <= 1;
+                fetchState <= FETCH_INSTR0;
+`ifdef BENCH
+                cycleCounter <= 26;
+`endif
+            end
+            endcase
         end
         OP_ILLEGAL: begin
             opState <= OPSTATE0;

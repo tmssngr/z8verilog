@@ -30,7 +30,8 @@ localparam OP_RET       = OP_CALL + 1;
 localparam OP_IRET      = OP_RET + 1;
 localparam OP_LDC       = OP_IRET + 1;
 localparam OP_MISC      = OP_LDC + 1;
-localparam OP_ILLEGAL   = OP_MISC + 1;
+localparam OP_ISR       = OP_MISC + 1;
+localparam OP_ILLEGAL   = OP_ISR + 1;
 
 localparam OPSTATE_MSB = 3;
 localparam OPSTATE_INC = 4'b1;

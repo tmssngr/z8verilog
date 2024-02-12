@@ -100,7 +100,13 @@ task assertRegister;
     input[7:0] register;
     input[7:0] value;
     begin
-        if (register == P01M) begin
+        if (register == IMR) begin
+            `assert(uut.proc.imr, value);
+        end
+        else if (register == IRQ) begin
+            `assert(uut.proc.irq, value);
+        end
+        else if (register == P01M) begin
             `assert(uut.proc.p01m, value);
         end
         else if (register == P3M) begin
@@ -1810,6 +1816,7 @@ task chk_iret_intern;
             `assertOpState(11);
         @(negedge clk);
             assertCommandFinished();
+            `assert(uut.proc.imr[7], 1);
     end
 endtask
 task chk_iret_extern;
@@ -1864,6 +1871,7 @@ task chk_iret_extern;
             `assertOpState(11);
         @(negedge clk);
             assertCommandFinished();
+            `assert(uut.proc.imr[7], 1);
     end
 endtask
 
