@@ -5,7 +5,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
 
 ## State
 
-- [ ] implement all operations
+- [x] implement all operations
   - [x] `nop`
   - [x] carry-flag manipulation operations
   - [x] `srp #IM`
@@ -38,7 +38,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
     - [x] `jr cc, RA`
     - [x] `jp cc, DA`
     - [x] `jp IRR`
-  - [ ] `di`, `ei` (disable/enable interrupt)
+  - [x] `di`, `ei` (disable/enable interrupt)
   - [x] memory operations
     - [x] `ldc r, Irr`
     - [x] `ldc Irr, r`
@@ -56,6 +56,7 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
       - [x] `ret`
       - [x] `iret`
     - [x] external stack
+  - [x] illegal instruction handling (stop at that address)
 - [ ] port 2
   - [ ] input
   - [x] output
@@ -63,7 +64,10 @@ Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/d
   - [ ] P30-P33 generic input
   - [x] P34-P37 generic output
   - [ ] special counter input/output
-- [ ] Counters
+- [ ] Timers/Counters
+  - [x] basics
+  - [ ] special external modes
 - [ ] UART
 - [ ] interrupt handling
-- [x] illegal instruction handling (stop at that address)
+  - [x] basics (launching the right interrupt)
+  - [ ] handle priorities
