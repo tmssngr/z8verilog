@@ -125,6 +125,13 @@ module Processor(
 
     reg [7:0] register;
     reg writeRegister = 0;
+`ifdef BENCH
+    initial begin
+        for (register = 4; register != 8'h80; register = register + 1) begin
+            registers[register] <= 0;
+        end
+    end
+`endif
 
     `include "sfr.vh"
     `include "alu.vh"
