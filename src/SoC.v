@@ -96,11 +96,22 @@ module Processor(
 
     wire [15:0] directAddress = {second, third};
 
+    reg [8:0] pre0counter = 0;
+    reg [7:0] pre0 = 0;
+    reg [8:0] t0counter = 0;
+    reg [7:0] t0load = 0;
+
+    reg [8:0] pre1counter = 0;
+    reg [7:0] pre1 = 0;
+    reg [8:0] t1counter = 0;
+    reg [7:0] t1load = 0;
+
+    reg [7:0] tmr = 0;
+
     reg [7:0] ipr = 0;
     reg [7:0] irq = 0;
     reg [7:0] imr = 0;
     wire [5:0] enabledAndRequestedInterrupts = irq[5:0] & imr[5:0];
-    `include "timers.vh"
 
     reg [3:0] rp = 0;
     reg [7:0] registers[0:'h7F];
@@ -1616,27 +1627,27 @@ module Processor(
             OPSTATE4: begin
                 if (enabledAndRequestedInterrupts[0]) begin
                     addr <= 16'h0000;
-                    irq <= irq & ~8'h01;
+                    irq[0] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[1]) begin
                     addr <= 16'h0002;
-                    irq <= irq & ~8'h02;
+                    irq[1] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[2]) begin
                     addr <= 16'h0004;
-                    irq <= irq & ~8'h04;
+                    irq[2] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[3]) begin
                     addr <= 16'h0006;
-                    irq <= irq & ~8'h08;
+                    irq[3] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[4]) begin
                     addr <= 16'h0008;
-                    irq <= irq & ~8'h10;
+                    irq[4] <= 0;
                 end
                 else begin
                     addr <= 16'h000A;
-                    irq <= irq & ~8'h20;
+                    irq[5] <= 0;
                 end
                 readMem <= 1;
             end
@@ -1665,6 +1676,8 @@ module Processor(
             opState <= OPSTATE0;
         end
         endcase
+
+        `include "timers.vh"
     end
 endmodule
 

@@ -1,16 +1,3 @@
-reg [8:0] pre0counter = 0;
-reg [7:0] pre0 = 0;
-reg [8:0] t0counter = 0;
-reg [7:0] t0load = 0;
-
-reg [8:0] pre1counter = 0;
-reg [7:0] pre1 = 0;
-reg [8:0] t1counter = 0;
-reg [7:0] t1load = 0;
-
-reg [7:0] tmr = 0;
-
-always @(posedge clk) begin
     if (tmr[0]) begin
 `ifdef BENCH
         $display("loading timer t0 with %h (pre: %h)", t0load, pre0[7:2]);
@@ -75,4 +62,3 @@ always @(posedge clk) begin
             pre1counter <= pre1counter - 9'b1;
         end
     end
-end
