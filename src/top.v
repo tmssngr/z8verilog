@@ -4,18 +4,19 @@ module top(
     input wire clk,
     output wire[5:0] leds
 );
-
-    reg[20:0] counter = 0;
-
-    always @(posedge clk) begin
-        counter <= counter + 20'b1;
-    end
+    wire clkOut_unused;
+    wire clkDiv;
+    Gowin_rPLL pll(
+        .clkin(clk),
+        .clkout(clkOut_unused),
+        .clkoutd(clkDiv)
+    );
 
     wire[7:0] port2;
     wire[3:0] port3;
 
     SoC soC(
-        .clk(counter[20]),
+        .clk(clkDiv),
         .port2(port2),
         .port3(port3)
     );
