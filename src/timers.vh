@@ -38,11 +38,11 @@ always @(posedge clk) begin
                 irq[4] <= 1;
             end
             else begin
-                t0counter <= t0counter - 1;
+                t0counter <= t0counter - 9'b1;
             end
         end
         else begin
-            pre0counter <= pre0counter - 1;
+            pre0counter <= pre0counter - 9'b1;
         end
     end
     if (tmr[2]) begin
@@ -68,11 +68,11 @@ always @(posedge clk) begin
                 irq[5] <= 1;
             end
             else begin
-                t1counter <= t1counter - 1;
+                t1counter <= t1counter - 9'b1;
             end
         end
         else begin
-            pre1counter <= pre1counter - 1;
+            pre1counter <= pre1counter - 9'b1;
         end
     end
 end

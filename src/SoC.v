@@ -175,9 +175,9 @@ module Processor(
         8'b0???_????: readRegister8 = registers[r[6:0]];
         // SIO
         // TMR is not readable
-        T1:           readRegister8 = t1counter;
+        T1:           readRegister8 = t1counter[7:0];
         // PRE1
-        T0:           readRegister8 = t0counter;
+        T0:           readRegister8 = t0counter[7:0];
         // PRE0
         P3M:          readRegister8 = p3m;
         P01M:         readRegister8 = p01m;
@@ -1573,7 +1573,7 @@ module Processor(
             case (opState)
             OPSTATE0: begin
                 sp <= sp - 16'b1;
-                pc <= pc - (isInstrSize1 ? 1 : 2);
+                pc <= pc - (isInstrSize1 ? 16'd1 : 16'd2);
             end
             OPSTATE1: begin
                 aluA <= pc[7:0];
