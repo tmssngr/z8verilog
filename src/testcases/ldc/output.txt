@@ -25,6 +25,8 @@ exact  6 cycles
 0013: read 2nd byte 20
   c2 20
     ldc r2, Irr0
+    20 = mem[000b]
+    0f = mem[000b]
     reg[22] = 0f
 
 0014: read 1st byte 0c
@@ -67,6 +69,8 @@ exact  6 cycles
 001f: read 2nd byte 20
   c2 20
     ldc r2, Irr0
+    xx = mem[ff80]
+    00 = mem[ff80]
     reg[22] = 00
 
 0020: read 1st byte 20

@@ -372,6 +372,11 @@ module Processor(
             endcase
         end
         writeRegister <= 0;
+`ifdef BENCH
+        if (readMem) begin
+            $display("    %h = mem[%h]", memDataRead, memAddr);
+        end
+`endif
         readMem <= 0;
 `ifdef BENCH
         if (writeMem) begin

@@ -44,6 +44,10 @@ starting isr
     reg[7f] = 19
     reg[7e] = 00
     reg[7d] = 00
+    fe = mem[0008]
+    00 = mem[0008]
+    00 = mem[0009]
+    1b = mem[0009]
 
 001b: read 1st byte 00
 001c: read 2nd byte 70

@@ -77,6 +77,8 @@ exact  6 cycles
 0028: read 2nd byte 64
   c2 64
     ldc r6, Irr4
+    64 = mem[0812]
+    00 = mem[0812]
     reg[06] = 00
 
 0029: read 1st byte 60
@@ -101,6 +103,8 @@ exact 12 cycles
 002e: read 2nd byte 74
   c2 74
     ldc r7, Irr4
+    74 = mem[0812]
+    00 = mem[0812]
     reg[07] = 00
 
 002f: read 1st byte 60

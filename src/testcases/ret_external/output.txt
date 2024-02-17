@@ -48,6 +48,10 @@ exact  6 cycles
 002f: read 2nd byte 00
   af
     ret
+    00 = mem[fffe]
+    00 = mem[fffe]
+    00 = mem[ffff]
+    16 = mem[ffff]
 
 0016: read 1st byte 0c
 exact 14 cycles
@@ -84,6 +88,10 @@ exact  6 cycles
 002f: read 2nd byte 00
   af
     ret
+    00 = mem[fffe]
+    00 = mem[fffe]
+    00 = mem[ffff]
+    1c = mem[ffff]
 
 001c: read 1st byte 0c
 exact 14 cycles
@@ -132,7 +140,12 @@ exact 12 cycles
 0029: read 2nd byte 8d
   bf
     iret
+    a5 = mem[fffd]
     reg[fc] = a5
+    a5 = mem[fffe]
+    00 = mem[fffe]
+    00 = mem[ffff]
+    0c = mem[ffff]
 
 000c: read 1st byte e6
 exact 16 cycles

@@ -32,6 +32,8 @@ exact  6 cycles
 0015: read 2nd byte 20
   c3 20
     ldci Ir2, Irr0
+    20 = mem[0002]
+    08 = mem[0002]
     reg[24] = 08
     reg[22] = 25
     reg[21] = 03
@@ -42,6 +44,8 @@ exact 18 cycles
 0017: read 2nd byte 20
   c3 20
     ldci Ir2, Irr0
+    20 = mem[0003]
+    03 = mem[0003]
     reg[25] = 03
     reg[22] = 26
     reg[21] = 04

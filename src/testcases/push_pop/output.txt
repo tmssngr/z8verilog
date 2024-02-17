@@ -47,6 +47,8 @@ exact 10 cycles
 001a: read 2nd byte e0
   50 e0
     pop e0
+    e0 = mem[007e]
+    00 = mem[007e]
     reg[20] = 34
 
 001b: read 1st byte 50
@@ -54,6 +56,8 @@ exact 10 cycles
 001c: read 2nd byte e1
   50 e1
     pop e1
+    e1 = mem[007f]
+    00 = mem[007f]
     reg[21] = 12
 
 001d: read 1st byte 2c
@@ -82,6 +86,8 @@ exact  6 cycles
 0024: read 2nd byte 22
   51 22
     pop @22
+    22 = mem[007f]
+    00 = mem[007f]
     reg[24] = 34
 
 0025: read 1st byte 8d

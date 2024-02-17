@@ -53,6 +53,8 @@ exact 12 cycles
 001a: read 2nd byte e1
   50 e1
     pop e1
+    12 = mem[ffff]
+    12 = mem[ffff]
     reg[21] = 12
 
 001b: read 1st byte 8d
