@@ -25,6 +25,7 @@ call :test ret
 call :test ret_external
 call :test timer
 call :test isr
+call :test isr_external
 call :test u8830
 call :test jtc2k-isr
 call :test device

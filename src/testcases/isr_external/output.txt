@@ -1,0 +1,108 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read 1st byte e6
+000d: read 2nd byte f8
+000e: read 3rd byte 92
+  e6 f8 92
+    ld f8, #92
+    reg[f8] = 92
+
+000f: read 1st byte b0
+0010: read 2nd byte fe
+  b0 fe
+    clr fe
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0000_0000
+    reg[fe] = 00
+
+0011: read 1st byte b0
+0012: read 2nd byte ff
+  b0 ff
+    clr ff
+    alu:    00       00    =>    00
+         00000000 00000000 => 00000000
+    flags = 0000_0000
+    reg[ff] = 00
+
+0013: read 1st byte 31
+0014: read 2nd byte 70
+  31 70
+    srp 70
+    reg[fd] = 70
+
+0015: read 1st byte 0c
+0016: read 2nd byte 03
+  0c 03
+    ld r0, #03
+    reg[70] = 03
+
+0017: read 1st byte df
+0018: read 2nd byte e6
+  df
+    scf
+
+0018: read 1st byte e6
+0019: read 2nd byte fb
+001a: read 3rd byte 90
+  e6 fb 90
+    ld fb, #90
+    reg[fb] = 90
+
+001b: read 1st byte e6
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+  e6 fa 10
+    ld fa, #10
+    reg[fa] = 10
+
+001e: read 1st byte ff
+001f: read 2nd byte 8b
+starting isr
+    mem[ffff] = 1e
+    mem[fffe] = 00
+    mem[fffd] = 80
+    8b = mem[0008]
+    00 = mem[0008]
+    00 = mem[0009]
+    21 = mem[0009]
+
+0021: read 1st byte 00
+0022: read 2nd byte 70
+  00 70
+    dec 70
+    alu:    03       00    =>    02
+         00000011 00000000 => 00000010
+    flags = 1000_0000
+    reg[70] = 02
+
+0023: read 1st byte cf
+0024: read 2nd byte bf
+  cf
+    rcf
+
+0024: read 1st byte bf
+0025: read 2nd byte 00
+  bf
+    iret
+    80 = mem[fffd]
+    80 = mem[fffd]
+    reg[fc] = 80
+    80 = mem[fffe]
+    00 = mem[fffe]
+    00 = mem[ffff]
+    1e = mem[ffff]
+
+001e: read 1st byte ff
+001f: read 2nd byte 8b
+  ff
+    nop
+
+001f: read 1st byte 8b
+0020: read 2nd byte fd
+  8b fd
+    jr    , fd
+
+001e: read 1st byte ff
+001f: read 2nd byte 8b
+testSoC: SUCCESS
