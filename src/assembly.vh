@@ -18,7 +18,9 @@ task _asm_;
     input [7:0] a;
     begin
         $fwrite(file, "memory[16'h%h] = 8'h%h;\n", memPC, a);
-        memory[memPC] = a;
+        if (isRom) begin
+            memory[memPC] = a;
+        end
         memPC = memPC + 1;
     end
 endtask

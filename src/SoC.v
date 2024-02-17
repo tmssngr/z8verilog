@@ -1,7 +1,8 @@
 `default_nettype none
 
 module Memory #(
-    parameter addrBusWidth = 8
+    parameter addrBusWidth = 8,
+    parameter isRom = 1
 ) (
     input  wire                      clk,
     input  wire [addrBusWidth - 1:0] addr,
@@ -23,19 +24,20 @@ module Memory #(
     end
 `endif
 
-`include "alu.vh"
-`include "assembly.vh"
-`include "program.vh"
+    `include "alu.vh"
+    `include "assembly.vh"
+    `include "sfr.vh"
+    `include "program.vh"
+
 `ifdef BENCH
     initial begin
         $fclose(file);
     end
 `endif
-`include "sfr.vh"
 
     always @(posedge clk) begin
         if (strobe) begin
-            if (write) begin
+            if (write & ~isRom) begin
                 memory[addr] <= dataIn;
                 dataOut <= dataIn;
             end
@@ -1701,7 +1703,10 @@ module SoC(
     wire        romEnable, ramEnable;
 
     // 8k
-    Memory #(.addrBusWidth(13)) rom(
+    Memory #(
+        .addrBusWidth(13),
+        .isRom(1)
+    ) rom(
         .clk(clk),
         .addr(memAddr[12:0]),
         .dataOut(romRead),
@@ -1711,7 +1716,10 @@ module SoC(
     );
 
     // 2k
-    Memory #(.addrBusWidth(11)) ram(
+    Memory #(
+        .addrBusWidth(11),
+        .isRom(0)
+    ) ram(
         .clk(clk),
         .addr(memAddr[10:0]),
         .dataOut(ramRead),
