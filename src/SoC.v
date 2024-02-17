@@ -1473,16 +1473,11 @@ module Processor(
             case (opState)
             OPSTATE0: begin
                 addr <= sp;
-                sp <= sp + 16'b1;
                 readMem <= ~stackInternal;
             end
             OPSTATE1: begin
-                aluMode <= ALU1_LD;
-                aluA <= stackInternal
-                    ? readRegister8(addr[7:0])
-                    : memDataRead;
-                register <= FLAGS;
-                writeRegister <= 1;
+                sp <= sp + 16'b1;
+                readMem <= ~stackInternal;
                 opType <= OP_RET;
                 opState <= OPSTATE0;
             end
@@ -1492,6 +1487,15 @@ module Processor(
             // PCH, PCL
             case (opState)
             OPSTATE0: begin
+                // iret?
+                if (instrH[0]) begin
+                    aluMode <= ALU1_LD;
+                    aluA <= stackInternal
+                        ? readRegister8(addr[7:0])
+                        : memDataRead;
+                    register <= FLAGS;
+                    writeRegister <= 1;
+                end
                 addr <= sp;
                 readMem <= ~stackInternal;
             end

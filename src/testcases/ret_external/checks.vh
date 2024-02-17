@@ -7,7 +7,7 @@
 	         8'hFF, 8'h00, FLAG_NONE);
 
 // call L1_
-	chk_call_extern(16'h002C,
+	chk_call_extern(16'h002E,
 	                16'h0016, 16'hFFFE);
 
 	chk_srp(2);
@@ -17,14 +17,14 @@
 
 	chk_ld_r_IM(4'h0, 8'h00,
 	            8'h20);
-	chk_ld_r_IM(4'h1, 8'h2C,
+	chk_ld_r_IM(4'h1, 8'h2E,
 	            8'h21);
         `assertRegister('h20, 'h00);
-        `assertRegister('h21, 'h2C);
+        `assertRegister('h21, 'h2E);
 
 // call @r0
 	chk_call_IRR_extern(8'hE0,
-	                    16'h002C, 16'h001C, 16'hFFFE);
+	                    16'h002E, 16'h001C, 16'hFFFE);
 
 	chk_srp(2);
 
@@ -47,5 +47,8 @@
                     8'h20, 8'h00, 16'hFFFE);
     chk_push_extern(8'hE2,
                     8'h22, 8'hA5, 16'hFFFD);
+
+	chk_ldc_r_Irr(4'h2, 4'h0,
+	              8'h22, 16'h000C, 8'hE6);
 
     chk_iret_extern(16'h000C, 16'h0000, 8'b1010_0101);

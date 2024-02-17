@@ -30,22 +30,22 @@ exact  6 cycles
 0013: read 1st byte d6
 exact  6 cycles
 0014: read 2nd byte 00
-0015: read 3rd byte 2c
-  d6 00 2c
-    call 002c
+0015: read 3rd byte 2e
+  d6 00 2e
+    call 002e
     mem[ffff] = 16
     mem[fffe] = 00
 
-002c: read 1st byte 31
+002e: read 1st byte 31
 exact 20 cycles
-002d: read 2nd byte 20
+002f: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
-002e: read 1st byte af
+0030: read 1st byte af
 exact  6 cycles
-002f: read 2nd byte 00
+0031: read 2nd byte 00
   af
     ret
     00 = mem[fffe]
@@ -62,10 +62,10 @@ exact 14 cycles
 
 0018: read 1st byte 1c
 exact  6 cycles
-0019: read 2nd byte 2c
-  1c 2c
-    ld r1, #2c
-    reg[21] = 2c
+0019: read 2nd byte 2e
+  1c 2e
+    ld r1, #2e
+    reg[21] = 2e
 
 001a: read 1st byte d4
 exact  6 cycles
@@ -76,16 +76,16 @@ exact  6 cycles
     mem[ffff] = 1c
     mem[fffe] = 00
 
-002c: read 1st byte 31
+002e: read 1st byte 31
 exact 20 cycles
-002d: read 2nd byte 20
+002f: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
-002e: read 1st byte af
+0030: read 1st byte af
 exact  6 cycles
-002f: read 2nd byte 00
+0031: read 2nd byte 00
   af
     ret
     00 = mem[fffe]
@@ -135,11 +135,21 @@ exact 12 cycles
     push e2
     mem[fffd] = a5
 
-0028: read 1st byte bf
+0028: read 1st byte c2
 exact 12 cycles
-0029: read 2nd byte 8d
+0029: read 2nd byte 20
+  c2 20
+    ldc r2, Irr0
+    20 = mem[000c]
+    e6 = mem[000c]
+    reg[22] = e6
+
+002a: read 1st byte bf
+exact 12 cycles
+002b: read 2nd byte 8d
   bf
     iret
+    a5 = mem[fffd]
     a5 = mem[fffd]
     reg[fc] = a5
     a5 = mem[fffe]
