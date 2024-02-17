@@ -73,6 +73,7 @@ exact  6 cycles
 001f: read 2nd byte 20
   d3 20
     ldci Irr0, Ir2
+    mem[fffe] = 08
     reg[22] = 25
     reg[21] = ff
     reg[20] = ff
@@ -82,6 +83,7 @@ exact 18 cycles
 0021: read 2nd byte 20
   d3 20
     ldci Irr0, Ir2
+    mem[ffff] = 03
     reg[22] = 26
     reg[21] = 00
     reg[20] = 00

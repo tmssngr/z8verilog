@@ -94,6 +94,7 @@ exact  6 cycles
 002c: read 2nd byte 64
   d2 64
     ldc Irr4, r6
+    mem[0812] = ff
 
 002d: read 1st byte c2
 exact 12 cycles
@@ -117,6 +118,7 @@ exact  6 cycles
 0032: read 2nd byte 64
   d2 64
     ldc Irr4, r6
+    mem[0812] = 00
 
 0033: read 1st byte b2
 exact 12 cycles

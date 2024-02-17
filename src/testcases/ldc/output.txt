@@ -46,6 +46,7 @@ exact  6 cycles
 0019: read 2nd byte 20
   d2 20
     ldc Irr0, r2
+    mem[0812] = 0f
 
 001a: read 1st byte 0c
 exact 12 cycles
@@ -83,6 +84,7 @@ exact  6 cycles
 0023: read 2nd byte 20
   d2 20
     ldc Irr0, r2
+    mem[ff80] = 01
 
 0024: read 1st byte 8d
 exact 12 cycles

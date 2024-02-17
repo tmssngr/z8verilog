@@ -46,6 +46,7 @@ exact  6 cycles
 0018: read 2nd byte e0
   70 e0
     push e0
+    mem[ffff] = 12
 
 0019: read 1st byte 50
 exact 12 cycles

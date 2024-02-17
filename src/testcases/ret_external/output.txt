@@ -33,6 +33,8 @@ exact  6 cycles
 0015: read 3rd byte 2c
   d6 00 2c
     call 002c
+    mem[ffff] = 16
+    mem[fffe] = 00
 
 002c: read 1st byte 31
 exact 20 cycles
@@ -67,6 +69,8 @@ exact  6 cycles
 001c: read 3rd byte 0c
   d4 e0 0c
     call @e0
+    mem[ffff] = 1c
+    mem[fffe] = 00
 
 002c: read 1st byte 31
 exact 20 cycles
@@ -107,18 +111,21 @@ exact  6 cycles
 0023: read 2nd byte e1
   70 e1
     push e1
+    mem[ffff] = 0c
 
 0024: read 1st byte 70
 exact 12 cycles
 0025: read 2nd byte e0
   70 e0
     push e0
+    mem[fffe] = 00
 
 0026: read 1st byte 70
 exact 12 cycles
 0027: read 2nd byte e2
   70 e2
     push e2
+    mem[fffd] = a5
 
 0028: read 1st byte bf
 exact 12 cycles
