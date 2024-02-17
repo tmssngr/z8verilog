@@ -1309,10 +1309,10 @@ module Processor(
             case (opState)
             OPSTATE0: begin
                 addr <= sp;
-                readMem <= 1;
+                readMem <= ~stackInternal;
             end
             OPSTATE1: begin
-                readMem <= 1;
+                readMem <= ~stackInternal;
             end
             OPSTATE2: begin
                 aluA <= stackInternal
