@@ -8,7 +8,6 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[f8] = 92
 
 000f: read 1st byte b0
-exact 10 cycles
 0010: read 2nd byte fe
   b0 fe
     clr fe
@@ -18,7 +17,6 @@ exact 10 cycles
     reg[fe] = 00
 
 0011: read 1st byte b0
-exact  6 cycles
 0012: read 2nd byte ff
   b0 ff
     clr ff
@@ -28,7 +26,6 @@ exact  6 cycles
     reg[ff] = 00
 
 0013: read 1st byte d6
-exact  6 cycles
 0014: read 2nd byte 00
 0015: read 3rd byte 2e
   d6 00 2e
@@ -37,14 +34,12 @@ exact  6 cycles
     mem[fffe] = 00
 
 002e: read 1st byte 31
-exact 20 cycles
 002f: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
 0030: read 1st byte af
-exact  6 cycles
 0031: read 2nd byte 00
   af
     ret
@@ -54,21 +49,18 @@ exact  6 cycles
     16 = mem[ffff]
 
 0016: read 1st byte 0c
-exact 14 cycles
 0017: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
 0018: read 1st byte 1c
-exact  6 cycles
 0019: read 2nd byte 2e
   1c 2e
     ld r1, #2e
     reg[21] = 2e
 
 001a: read 1st byte d4
-exact  6 cycles
 001b: read 2nd byte e0
 001c: read 3rd byte 0c
   d4 e0 0c
@@ -77,14 +69,12 @@ exact  6 cycles
     mem[fffe] = 00
 
 002e: read 1st byte 31
-exact 20 cycles
 002f: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
 0030: read 1st byte af
-exact  6 cycles
 0031: read 2nd byte 00
   af
     ret
@@ -94,49 +84,42 @@ exact  6 cycles
     1c = mem[ffff]
 
 001c: read 1st byte 0c
-exact 14 cycles
 001d: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
 001e: read 1st byte 1c
-exact  6 cycles
 001f: read 2nd byte 0c
   1c 0c
     ld r1, #0c
     reg[21] = 0c
 
 0020: read 1st byte 2c
-exact  6 cycles
 0021: read 2nd byte a5
   2c a5
     ld r2, #a5
     reg[22] = a5
 
 0022: read 1st byte 70
-exact  6 cycles
 0023: read 2nd byte e1
   70 e1
     push e1
     mem[ffff] = 0c
 
 0024: read 1st byte 70
-exact 12 cycles
 0025: read 2nd byte e0
   70 e0
     push e0
     mem[fffe] = 00
 
 0026: read 1st byte 70
-exact 12 cycles
 0027: read 2nd byte e2
   70 e2
     push e2
     mem[fffd] = a5
 
 0028: read 1st byte c2
-exact 12 cycles
 0029: read 2nd byte 20
   c2 20
     ldc r2, Irr0
@@ -145,7 +128,6 @@ exact 12 cycles
     reg[22] = e6
 
 002a: read 1st byte bf
-exact 12 cycles
 002b: read 2nd byte 8d
   bf
     iret
@@ -158,6 +140,5 @@ exact 12 cycles
     0c = mem[ffff]
 
 000c: read 1st byte e6
-exact 16 cycles
 000d: read 2nd byte f8
 testSoC: SUCCESS

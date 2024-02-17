@@ -7,21 +7,18 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 00
 
 000e: read 1st byte 4c
-exact  6 cycles
 000f: read 2nd byte 05
   4c 05
     ld r4, #05
     reg[04] = 05
 
 0010: read 1st byte 2c
-exact  6 cycles
 0011: read 2nd byte 01
   2c 01
     ld r2, #01
     reg[02] = 01
 
 0012: read 1st byte 90
-exact  6 cycles
 0013: read 2nd byte e2
   90 e2
      rl e2
@@ -31,14 +28,12 @@ exact  6 cycles
     reg[02] = 02
 
 0014: read 1st byte 4a
-exact  6 cycles
 0015: read 2nd byte fc
   4a fc
     djnz r4, fc
     reg[04] = 04
 
 0012: read 1st byte 90
-exact 12 cycles
 0013: read 2nd byte e2
   90 e2
      rl e2
@@ -48,14 +43,12 @@ exact 12 cycles
     reg[02] = 04
 
 0014: read 1st byte 4a
-exact  6 cycles
 0015: read 2nd byte fc
   4a fc
     djnz r4, fc
     reg[04] = 03
 
 0012: read 1st byte 90
-exact 12 cycles
 0013: read 2nd byte e2
   90 e2
      rl e2
@@ -65,14 +58,12 @@ exact 12 cycles
     reg[02] = 08
 
 0014: read 1st byte 4a
-exact  6 cycles
 0015: read 2nd byte fc
   4a fc
     djnz r4, fc
     reg[04] = 02
 
 0012: read 1st byte 90
-exact 12 cycles
 0013: read 2nd byte e2
   90 e2
      rl e2
@@ -82,14 +73,12 @@ exact 12 cycles
     reg[02] = 10
 
 0014: read 1st byte 4a
-exact  6 cycles
 0015: read 2nd byte fc
   4a fc
     djnz r4, fc
     reg[04] = 01
 
 0012: read 1st byte 90
-exact 12 cycles
 0013: read 2nd byte e2
   90 e2
      rl e2
@@ -99,19 +88,16 @@ exact 12 cycles
     reg[02] = 20
 
 0014: read 1st byte 4a
-exact  6 cycles
 0015: read 2nd byte fc
   4a fc
     djnz r4, fc
     reg[04] = 00
 
 0016: read 1st byte 8b
-exact 10 cycles
 0017: read 2nd byte f4
   8b f4
     jr    , f4
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 00
 testSoC: SUCCESS

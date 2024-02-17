@@ -7,21 +7,18 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 20
 
 000e: read 1st byte 0d
-exact  6 cycles
 000f: read 2nd byte ff
 0010: read 3rd byte fe
   0d ff fe
     jp   f, fffe
 
 0011: read 1st byte 0c
-exact 10 cycles
 0012: read 2nd byte 03
   0c 03
     ld r0, #03
     reg[20] = 03
 
 0013: read 1st byte 06
-exact  6 cycles
 0014: read 2nd byte 20
 0015: read 3rd byte ff
   06 20 ff
@@ -32,14 +29,12 @@ exact  6 cycles
          00000011 11111111 => 00000010
     flags = 1000_0100
     reg[20] = 02
-exact 10 cycles
 0017: read 2nd byte 00
 0018: read 3rd byte 13
   ed 00 13
     jp  nz, 0013
 
 0013: read 1st byte 06
-exact 12 cycles
 0014: read 2nd byte 20
 0015: read 3rd byte ff
   06 20 ff
@@ -50,14 +45,12 @@ exact 12 cycles
          00000010 11111111 => 00000001
     flags = 1000_0100
     reg[20] = 01
-exact 10 cycles
 0017: read 2nd byte 00
 0018: read 3rd byte 13
   ed 00 13
     jp  nz, 0013
 
 0013: read 1st byte 06
-exact 12 cycles
 0014: read 2nd byte 20
 0015: read 3rd byte ff
   06 20 ff
@@ -68,40 +61,34 @@ exact 12 cycles
          00000001 11111111 => 00000000
     flags = 1100_0100
     reg[20] = 00
-exact 10 cycles
 0017: read 2nd byte 00
 0018: read 3rd byte 13
   ed 00 13
     jp  nz, 0013
 
 0019: read 1st byte 0c
-exact 10 cycles
 001a: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
 001b: read 1st byte 1c
-exact  6 cycles
 001c: read 2nd byte 20
   1c 20
     ld r1, #20
     reg[21] = 20
 
 001d: read 1st byte 30
-exact  6 cycles
 001e: read 2nd byte e0
   30 e0
     jp @e0
 
 0020: read 1st byte 8d
-exact  8 cycles
 0021: read 2nd byte 00
 0022: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 20
 testSoC: SUCCESS

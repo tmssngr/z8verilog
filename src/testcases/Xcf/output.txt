@@ -6,31 +6,26 @@ VCD info: dumpfile SoC.vcd opened for output.
     scf
 
 000d: read 1st byte cf
-exact  6 cycles
 000e: read 2nd byte ef
   cf
     rcf
 
 000e: read 1st byte ef
-exact  6 cycles
 000f: read 2nd byte ef
   ef
     ccf
 
 000f: read 1st byte ef
-exact  6 cycles
 0010: read 2nd byte 8d
   ef
     ccf
 
 0010: read 1st byte 8d
-exact  6 cycles
 0011: read 2nd byte 00
 0012: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
 000c: read 1st byte df
-exact 12 cycles
 000d: read 2nd byte cf
 testSoC: SUCCESS

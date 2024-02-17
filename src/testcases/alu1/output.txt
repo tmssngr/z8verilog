@@ -7,21 +7,18 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 10
 
 000e: read 1st byte 0c
-exact  6 cycles
 000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[10] = 09
 
 0010: read 1st byte 1c
-exact  6 cycles
 0011: read 2nd byte 10
   1c 10
     ld r1, #10
     reg[11] = 10
 
 0012: read 1st byte f0
-exact  6 cycles
 0013: read 2nd byte e0
   f0 e0
    swap e0
@@ -31,7 +28,6 @@ exact  6 cycles
     reg[10] = 90
 
 0014: read 1st byte f1
-exact  8 cycles
 0015: read 2nd byte e1
   f1 e1
    swap @e1
@@ -41,7 +37,6 @@ exact  8 cycles
     reg[10] = 09
 
 0016: read 1st byte e0
-exact  8 cycles
 0017: read 2nd byte e0
   e0 e0
      rr e0
@@ -51,7 +46,6 @@ exact  8 cycles
     reg[10] = 84
 
 0018: read 1st byte d0
-exact  6 cycles
 0019: read 2nd byte e0
   d0 e0
     sra e0
@@ -61,7 +55,6 @@ exact  6 cycles
     reg[10] = c2
 
 001a: read 1st byte c0
-exact  6 cycles
 001b: read 2nd byte e0
   c0 e0
     rrc e0
@@ -71,7 +64,6 @@ exact  6 cycles
     reg[10] = 61
 
 001c: read 1st byte c0
-exact  6 cycles
 001d: read 2nd byte e0
   c0 e0
     rrc e0
@@ -81,7 +73,6 @@ exact  6 cycles
     reg[10] = 30
 
 001e: read 1st byte c0
-exact  6 cycles
 001f: read 2nd byte e0
   c0 e0
     rrc e0
@@ -91,7 +82,6 @@ exact  6 cycles
     reg[10] = 98
 
 0020: read 1st byte 60
-exact  6 cycles
 0021: read 2nd byte e0
   60 e0
     com e0
@@ -101,7 +91,6 @@ exact  6 cycles
     reg[10] = 67
 
 0022: read 1st byte 90
-exact  6 cycles
 0023: read 2nd byte e0
   90 e0
      rl e0
@@ -111,7 +100,6 @@ exact  6 cycles
     reg[10] = ce
 
 0024: read 1st byte 90
-exact  6 cycles
 0025: read 2nd byte e0
   90 e0
      rl e0
@@ -121,7 +109,6 @@ exact  6 cycles
     reg[10] = 9d
 
 0026: read 1st byte 10
-exact  6 cycles
 0027: read 2nd byte e0
   10 e0
     rlc e0
@@ -131,7 +118,6 @@ exact  6 cycles
     reg[10] = 3b
 
 0028: read 1st byte 10
-exact  6 cycles
 0029: read 2nd byte e0
   10 e0
     rlc e0
@@ -141,7 +127,6 @@ exact  6 cycles
     reg[10] = 77
 
 002a: read 1st byte 10
-exact  6 cycles
 002b: read 2nd byte e0
   10 e0
     rlc e0
@@ -151,13 +136,11 @@ exact  6 cycles
     reg[10] = ee
 
 002c: read 1st byte 8d
-exact  6 cycles
 002d: read 2nd byte 00
 002e: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 10
 testSoC: SUCCESS

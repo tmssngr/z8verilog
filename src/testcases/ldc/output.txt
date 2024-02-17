@@ -7,21 +7,18 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 20
 
 000e: read 1st byte 0c
-exact  6 cycles
 000f: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
 0010: read 1st byte 1c
-exact  6 cycles
 0011: read 2nd byte 0b
   1c 0b
     ld r1, #0b
     reg[21] = 0b
 
 0012: read 1st byte c2
-exact  6 cycles
 0013: read 2nd byte 20
   c2 20
     ldc r2, Irr0
@@ -30,42 +27,36 @@ exact  6 cycles
     reg[22] = 0f
 
 0014: read 1st byte 0c
-exact 12 cycles
 0015: read 2nd byte 08
   0c 08
     ld r0, #08
     reg[20] = 08
 
 0016: read 1st byte 1c
-exact  6 cycles
 0017: read 2nd byte 12
   1c 12
     ld r1, #12
     reg[21] = 12
 
 0018: read 1st byte d2
-exact  6 cycles
 0019: read 2nd byte 20
   d2 20
     ldc Irr0, r2
     mem[0812] = 0f
 
 001a: read 1st byte 0c
-exact 12 cycles
 001b: read 2nd byte ff
   0c ff
     ld r0, #ff
     reg[20] = ff
 
 001c: read 1st byte 1c
-exact  6 cycles
 001d: read 2nd byte 80
   1c 80
     ld r1, #80
     reg[21] = 80
 
 001e: read 1st byte c2
-exact  6 cycles
 001f: read 2nd byte 20
   c2 20
     ldc r2, Irr0
@@ -74,7 +65,6 @@ exact  6 cycles
     reg[22] = 00
 
 0020: read 1st byte 20
-exact 12 cycles
 0021: read 2nd byte 22
   20 22
     inc 22
@@ -84,20 +74,17 @@ exact 12 cycles
     reg[22] = 01
 
 0022: read 1st byte d2
-exact  6 cycles
 0023: read 2nd byte 20
   d2 20
     ldc Irr0, r2
     mem[ff80] = 01
 
 0024: read 1st byte 8d
-exact 12 cycles
 0025: read 2nd byte 00
 0026: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 20
 testSoC: SUCCESS

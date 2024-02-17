@@ -7,14 +7,12 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 20
 
 000e: read 1st byte 0c
-exact  6 cycles
 000f: read 2nd byte 09
   0c 09
     ld r0, #09
     reg[20] = 09
 
 0010: read 1st byte e4
-exact  6 cycles
 0011: read 2nd byte e0
 0012: read 3rd byte e1
   e4 e0 e1
@@ -22,14 +20,12 @@ exact  6 cycles
     reg[21] = 09
 
 0013: read 1st byte 1c
-exact 10 cycles
 0014: read 2nd byte 22
   1c 22
     ld r1, #22
     reg[21] = 22
 
 0015: read 1st byte f5
-exact  6 cycles
 0016: read 2nd byte e0
 0017: read 3rd byte e1
   f5 e0 e1
@@ -37,7 +33,6 @@ exact  6 cycles
     reg[22] = 09
 
 0018: read 1st byte e5
-exact 10 cycles
 0019: read 2nd byte e1
 001a: read 3rd byte e1
   e5 e1 e1
@@ -45,49 +40,42 @@ exact 10 cycles
     reg[21] = 09
 
 001b: read 1st byte 1c
-exact 10 cycles
 001c: read 2nd byte 80
   1c 80
     ld r1, #80
     reg[21] = 80
 
 001d: read 1st byte 28
-exact  6 cycles
 001e: read 2nd byte 21
   28 21
     ld r2, 21
     reg[22] = 80
 
 001f: read 1st byte 09
-exact  6 cycles
 0020: read 2nd byte 30
   09 30
     ld 30, r0
     reg[30] = 09
 
 0021: read 1st byte 0c
-exact  6 cycles
 0022: read 2nd byte 30
   0c 30
     ld r0, #30
     reg[20] = 30
 
 0023: read 1st byte e3
-exact  6 cycles
 0024: read 2nd byte 30
   e3 30
     ld r3, @r0
     reg[23] = 09
 
 0025: read 1st byte f3
-exact  6 cycles
 0026: read 2nd byte 01
   f3 01
     ld @r0, r1
     reg[30] = 80
 
 0027: read 1st byte e7
-exact  6 cycles
 0028: read 2nd byte e0
 0029: read 3rd byte ff
   e7 e0 ff
@@ -95,7 +83,6 @@ exact  6 cycles
     reg[30] = ff
 
 002a: read 1st byte c7
-exact 10 cycles
 002b: read 2nd byte 40
 002c: read 3rd byte 00
   c7 40 00
@@ -103,7 +90,6 @@ exact 10 cycles
     reg[24] = ff
 
 002d: read 1st byte c7
-exact 10 cycles
 002e: read 2nd byte 40
 002f: read 3rd byte f0
   c7 40 f0
@@ -111,7 +97,6 @@ exact 10 cycles
     reg[24] = 30
 
 0030: read 1st byte d7
-exact 10 cycles
 0031: read 2nd byte 30
 0032: read 3rd byte 01
   d7 30 01
@@ -119,13 +104,11 @@ exact 10 cycles
     reg[31] = 09
 
 0033: read 1st byte 8d
-exact 10 cycles
 0034: read 2nd byte 00
 0035: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 20
 testSoC: SUCCESS

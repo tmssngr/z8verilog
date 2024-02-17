@@ -7,58 +7,49 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[fd] = 30
 
 000e: read 1st byte 0c
-exact  6 cycles
 000f: read 2nd byte 03
   0c 03
     ld r0, #03
     reg[30] = 03
 
 0010: read 1st byte ff
-exact  6 cycles
 0011: read 2nd byte 0a
   ff
     nop
 
 0011: read 1st byte 0a
-exact  6 cycles
 0012: read 2nd byte fd
   0a fd
     djnz r0, fd
     reg[30] = 02
 
 0010: read 1st byte ff
-exact 12 cycles
 0011: read 2nd byte 0a
   ff
     nop
 
 0011: read 1st byte 0a
-exact  6 cycles
 0012: read 2nd byte fd
   0a fd
     djnz r0, fd
     reg[30] = 01
 
 0010: read 1st byte ff
-exact 12 cycles
 0011: read 2nd byte 0a
   ff
     nop
 
 0011: read 1st byte 0a
-exact  6 cycles
 0012: read 2nd byte fd
   0a fd
     djnz r0, fd
     reg[30] = 00
 
 0013: read 1st byte 8b
-exact 10 cycles
 0014: read 2nd byte f7
   8b f7
     jr    , f7
 
 000c: read 1st byte 31
-exact 12 cycles
 000d: read 2nd byte 30
 testSoC: SUCCESS
