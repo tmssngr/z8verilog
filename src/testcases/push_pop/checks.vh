@@ -7,7 +7,8 @@
         `assertRegister('h20, 'h12);
         `assertRegister('h21, 'h34);
 
-	chk_ld_R_IM(8'hFF, 8'h80);
+	chk_ld_R_IM(SPH, 8'h00);
+	chk_ld_R_IM(SPL, 8'h80);
         `assert(uut.proc.sp, 'h80);
 
     chk_push_intern(8'hE0,

@@ -13,39 +13,46 @@ VCD info: dumpfile SoC.vcd opened for output.
     reg[70] = 03
 
 0010: read 1st byte e6
-0011: read 2nd byte ff
-0012: read 3rd byte 80
+0011: read 2nd byte fe
+0012: read 3rd byte 00
+  e6 fe 00
+    ld fe, #00
+    reg[fe] = 00
+
+0013: read 1st byte e6
+0014: read 2nd byte ff
+0015: read 3rd byte 80
   e6 ff 80
     ld ff, #80
     reg[ff] = 80
 
-0013: read 1st byte e6
-0014: read 2nd byte fb
-0015: read 3rd byte 90
+0016: read 1st byte e6
+0017: read 2nd byte fb
+0018: read 3rd byte 90
   e6 fb 90
     ld fb, #90
     reg[fb] = 90
 
-0016: read 1st byte e6
-0017: read 2nd byte fa
-0018: read 3rd byte 10
+0019: read 1st byte e6
+001a: read 2nd byte fa
+001b: read 3rd byte 10
   e6 fa 10
     ld fa, #10
     reg[fa] = 10
 
-0019: read 1st byte 8b
-001a: read 2nd byte fe
+001c: read 1st byte 8b
+001d: read 2nd byte fe
 starting isr
-    reg[7f] = 19
+    reg[7f] = 1c
     reg[7e] = 00
     reg[7d] = 00
     fe = mem[0008]
     00 = mem[0008]
     00 = mem[0009]
-    1b = mem[0009]
+    1e = mem[0009]
 
-001b: read 1st byte 00
-001c: read 2nd byte 70
+001e: read 1st byte 00
+001f: read 2nd byte 70
   00 70
     dec 70
     alu:    03       00    =>    02
@@ -53,17 +60,17 @@ starting isr
     flags = 0000_0000
     reg[70] = 02
 
-001d: read 1st byte bf
-001e: read 2nd byte 00
+0020: read 1st byte bf
+0021: read 2nd byte 00
   bf
     iret
     reg[fc] = 00
 
-0019: read 1st byte 8b
-001a: read 2nd byte fe
+001c: read 1st byte 8b
+001d: read 2nd byte fe
   8b fe
     jr    , fe
 
-0019: read 1st byte 8b
-001a: read 2nd byte fe
+001c: read 1st byte 8b
+001d: read 2nd byte fe
 testSoC: SUCCESS

@@ -1,104 +1,111 @@
 VCD info: dumpfile SoC.vcd opened for output.
 
 000c: read 1st byte e6
-000d: read 2nd byte ff
-000e: read 3rd byte 80
+000d: read 2nd byte fe
+000e: read 3rd byte 00
+  e6 fe 00
+    ld fe, #00
+    reg[fe] = 00
+
+000f: read 1st byte e6
+0010: read 2nd byte ff
+0011: read 3rd byte 80
   e6 ff 80
     ld ff, #80
     reg[ff] = 80
 
-000f: read 1st byte d6
-0010: read 2nd byte 00
-0011: read 3rd byte 28
-  d6 00 28
-    call 0028
-    reg[7f] = 12
+0012: read 1st byte d6
+0013: read 2nd byte 00
+0014: read 3rd byte 2b
+  d6 00 2b
+    call 002b
+    reg[7f] = 15
     reg[7e] = 00
 
-0028: read 1st byte 31
-0029: read 2nd byte 20
+002b: read 1st byte 31
+002c: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
-002a: read 1st byte af
-002b: read 2nd byte 00
+002d: read 1st byte af
+002e: read 2nd byte 00
   af
     ret
 
-0012: read 1st byte 0c
-0013: read 2nd byte 00
+0015: read 1st byte 0c
+0016: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
-0014: read 1st byte 1c
-0015: read 2nd byte 28
-  1c 28
-    ld r1, #28
-    reg[21] = 28
+0017: read 1st byte 1c
+0018: read 2nd byte 2b
+  1c 2b
+    ld r1, #2b
+    reg[21] = 2b
 
-0016: read 1st byte d4
-0017: read 2nd byte e0
-0018: read 3rd byte 0c
+0019: read 1st byte d4
+001a: read 2nd byte e0
+001b: read 3rd byte 0c
   d4 e0 0c
     call @e0
-    reg[7f] = 18
+    reg[7f] = 1b
     reg[7e] = 00
 
-0028: read 1st byte 31
-0029: read 2nd byte 20
+002b: read 1st byte 31
+002c: read 2nd byte 20
   31 20
     srp 20
     reg[fd] = 20
 
-002a: read 1st byte af
-002b: read 2nd byte 00
+002d: read 1st byte af
+002e: read 2nd byte 00
   af
     ret
 
-0018: read 1st byte 0c
-0019: read 2nd byte 00
+001b: read 1st byte 0c
+001c: read 2nd byte 00
   0c 00
     ld r0, #00
     reg[20] = 00
 
-001a: read 1st byte 1c
-001b: read 2nd byte 0c
+001d: read 1st byte 1c
+001e: read 2nd byte 0c
   1c 0c
     ld r1, #0c
     reg[21] = 0c
 
-001c: read 1st byte 2c
-001d: read 2nd byte a5
+001f: read 1st byte 2c
+0020: read 2nd byte a5
   2c a5
     ld r2, #a5
     reg[22] = a5
 
-001e: read 1st byte 70
-001f: read 2nd byte e1
+0021: read 1st byte 70
+0022: read 2nd byte e1
   70 e1
     push e1
     reg[7f] = 0c
 
-0020: read 1st byte 70
-0021: read 2nd byte e0
+0023: read 1st byte 70
+0024: read 2nd byte e0
   70 e0
     push e0
     reg[7e] = 00
 
-0022: read 1st byte 70
-0023: read 2nd byte e2
+0025: read 1st byte 70
+0026: read 2nd byte e2
   70 e2
     push e2
     reg[7d] = a5
 
-0024: read 1st byte bf
-0025: read 2nd byte 8d
+0027: read 1st byte bf
+0028: read 2nd byte 8d
   bf
     iret
     reg[fc] = a5
 
 000c: read 1st byte e6
-000d: read 2nd byte ff
+000d: read 2nd byte fe
 testSoC: SUCCESS

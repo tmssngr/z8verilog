@@ -1,30 +1,29 @@
-	// SPL
-    chk_ld_R_IM(8'hFF, 8'h80);
+    chk_ld_R_IM(SPH, 8'h00);
+    chk_ld_R_IM(SPL, 8'h80);
 
 // call L1_
-	chk_call_intern(16'h0028,
-	                16'h0012, 8'h7E);
-
+	chk_call_intern(16'h002B,
+	                16'h0015, 8'h7E);
 
 	chk_srp(2);
 
-	chk_ret_intern(16'h0012, 8'h80);
+	chk_ret_intern(16'h0015, 8'h80);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,
 	            8'h20);
-	chk_ld_r_IM(4'h1, 8'h28,
+	chk_ld_r_IM(4'h1, 8'h2B,
 	            8'h21);
         `assertRegister('h20, 'h00);
-        `assertRegister('h21, 'h28);
+        `assertRegister('h21, 'h2B);
 
 // call IRR0
 	chk_call_IRR_intern(8'hE0,
-	                    16'h0028, 16'h0018, 8'h7E);
+	                    16'h002B, 16'h001B, 8'h7E);
 
 	chk_srp(2);
 
-	chk_ret_intern(16'h0018, 8'h80);
+	chk_ret_intern(16'h001B, 8'h80);
 
 
 	chk_ld_r_IM(4'h0, 8'h00,

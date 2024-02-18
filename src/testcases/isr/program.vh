@@ -1,5 +1,5 @@
-localparam L1_ = 16'h0019;
-localparam ISR = 16'h001B;
+localparam L1_ = 16'h001C;
+localparam ISR = 16'h001E;
 
 initial begin
 	asm2('h8, 0); // IRQ0
@@ -12,6 +12,7 @@ initial begin
 	asm_srp(8'h70);
 	asm_ld_r_IM(0, 3);
 
+	asm_ld_R_IM(SPH, 8'h00);
 	asm_ld_R_IM(SPL, 8'h80);
 	asm_ld_R_IM(IMR, 8'h90);
 	asm_ld_R_IM(IRQ, 8'h10);
