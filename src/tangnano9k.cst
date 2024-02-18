@@ -1,3 +1,12 @@
+//Copyright (C)2014-2023 Gowin Semiconductor Corporation.
+//All rights reserved. 
+//File Title: Physical Constraints file
+//GOWIN Version: 1.9.9 Beta-4 Education
+//Part Number: GW1NR-LV9QN88PC6/I5
+//Device: GW1NR-9
+//Device Version: C
+//Created Time: Thu 02 15 20:28:09 2024
+
 IO_LOC  "leds[0]" 10;
 IO_LOC  "leds[1]" 11;
 IO_LOC  "leds[2]" 13;
@@ -5,8 +14,13 @@ IO_LOC  "leds[3]" 14;
 IO_LOC  "leds[4]" 15;
 IO_LOC  "leds[5]" 16;
 
-//IO_LOC  "btn" 3;
-//IO_PORT "btn" PULL_MODE=UP;
+IO_LOC  "videoSync" 25;
+IO_PORT "videoSync" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=24 BANK_VCCIO=3.3;
+IO_LOC  "videoPixel" 27;
+IO_PORT "videoPixel" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=24 BANK_VCCIO=3.3;
+
+IO_LOC  "btn" 3;
+IO_PORT "btn" PULL_MODE=UP;
 
 IO_LOC  "clk" 52;
 IO_PORT "clk" PULL_MODE=UP;

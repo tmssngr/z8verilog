@@ -19,7 +19,11 @@ label(L1_);
 end
 
 `else
+
 initial begin
-`include "memory.txt"
+	if (isRom) begin
+		`include "testcases/jtc2k/memory.vh"
+	end
 end
+
 `endif

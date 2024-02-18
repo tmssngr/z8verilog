@@ -1705,17 +1705,23 @@ module Processor(
 endmodule
 
 module SoC(
-    input  wire       clk,
-    input  wire       reset,
-    output wire [7:0] port2,
-    output wire [3:0] port3
+    input  wire        clk,
+    input  wire        reset,
+    output wire [15:0] addr,
+    output wire  [7:0] port2,
+    output wire  [3:0] port3,
+    output wire        videoSync,
+    output wire        videoPixel
 );
     wire [15:0] memAddr;
     wire [7:0]  memDataRead, romRead, ramRead;
     wire [7:0]  memDataWrite;
     wire        memWrite;
     wire        memStrobe, romStrobe, ramStrobe;
-    wire        romEnable, ramEnable;
+    wire        romEnable, ramEnable, keyboardEnable;
+    wire        vramRead;
+    reg         clkDivider = 0;
+    reg [7:0]   pixels;
 
     // 8k
     Memory #(
@@ -1743,11 +1749,36 @@ module SoC(
         .strobe(ramStrobe)
     );
 
-    assign romEnable = memAddr[15] == 1'b0;
-    assign ramEnable = memAddr[15] == 1'b1;
+    assign romEnable      = memAddr[15:14] == 2'b00;  // 0000-3FFF
+    assign keyboardEnable = memAddr[15:13] == 3'b011; // 6000-7FFF
+    assign ramEnable      = memAddr[15:13] == 3'b111; // E000-FFFF
+    assign vramRead = (memAddr[15:9] == 7'b1111_111) & memStrobe & ~memWrite;
+    assign videoSync = ~port3[3];
+    assign videoPixel = videoSync & ~pixels[7];
     assign romStrobe = memStrobe  & romEnable;
     assign ramStrobe = memStrobe  & ramEnable;
-    assign memDataRead = romEnable ? romRead : ramRead;
+    assign memDataRead = romEnable     ? romRead :
+                         ramEnable     ? ramRead : 0;
+    assign addr = memAddr;
+
+    reg loadDelay = 0;
+
+    always @(posedge clk) begin
+        if (vramRead & ~loadDelay) begin
+            loadDelay <= 1;
+            clkDivider <= 1;
+        end
+        else begin
+            loadDelay <= 0;
+            clkDivider <= ~clkDivider;
+        end
+
+
+        if (loadDelay)
+            pixels <= memDataRead;
+        else if (clkDivider)
+            pixels <= { pixels[6:0], 1'b1 };
+    end
 
     Processor proc(
         .clk(clk),

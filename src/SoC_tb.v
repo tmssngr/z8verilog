@@ -7,10 +7,14 @@ module testSoC();
 `include "check_commands.vh"
 
     reg clk = 0;
+    wire sync;
+    wire pixel;
 
     SoC uut(
         .clk(clk),
-        .reset(1'b0)
+        .reset(1'b0),
+        .videoSync(sync),
+        .videoPixel(pixel)
     );
 
     always
