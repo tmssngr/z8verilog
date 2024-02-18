@@ -96,8 +96,6 @@ module Processor(
                       | first[3:0] == 4'hC  // column 0C
                       ;
 
-    wire [15:0] directAddress = {second, third};
-
     reg [8:0] pre0counter = 0;
     reg [7:0] pre0 = 0;
     reg [8:0] t0counter = 0;
@@ -895,7 +893,7 @@ module Processor(
                 end
                 4'hD: begin
 `ifdef BENCH
-                    $display("    call %h", directAddress);
+                    $display("    call %h%h", second, third);
                     expectedCycles <= 20;
 `endif
                     opType <= OP_CALL;
@@ -1038,7 +1036,7 @@ module Processor(
             // ================================================================
             4'hD: begin
 `ifdef BENCH
-                $display("    jp %s, %h", ccName(instrH), directAddress);
+                $display("    jp %s, %h%h", ccName(instrH), second, third);
                 expectedCycles <= takeBranch ? 12 : 10;
 `endif
                 opType <= OP_JP;
