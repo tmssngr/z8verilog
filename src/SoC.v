@@ -52,7 +52,7 @@ endmodule
 
 module Processor(
     input  wire        clk,
-    //input  wire        reset,
+    input  wire        reset,
     output wire [15:0] memAddr,
     input  wire  [7:0] memDataRead,
     output wire  [7:0] memDataWrite,
@@ -63,13 +63,15 @@ module Processor(
 );
     `include "flags.vh"
 
-    reg [15:0] pc, sp, addr;
-    initial begin
-        pc = 'hC;
-        sp = 0;
-    end
+    reg autoReset = 1;
+    wire isReset = reset | autoReset;
+
+    reg [15:0] pc;
+    reg [15:0] sp;
     wire [7:0] spH = sp[15:8];
     wire [7:0] spL = sp[7:0];
+
+    reg [15:0] addr;
 
     reg [7:0] first;
     wire [3:0] firstH = first[7:4];
@@ -409,24 +411,13 @@ module Processor(
         end
 
         pc <= loadPc ? addr
-                     : incPc ? pc + 16'b1
-                             : pc;
+                    : incPc ? pc + 16'b1
+                            : pc;
         incPc <= 0;
         loadPc <= 0;
 
         case (fetchState)
         FETCH_INSTR0: begin
-`ifdef BENCH
-/*             addr <= 0;
-            aluA <= 0;
-            aluB <= 0;
-            aluMode <= 0;
-            register <= 0;
-            first <= 0;
-            second <= 0;
-            third <= 0;
- */
-`endif
         end
         
         FETCH_INSTR1: begin
@@ -1684,12 +1675,38 @@ module Processor(
         end
         endcase
 
+        if (isReset) begin
+            autoReset <= 0;
+            pc <= 16'h000C;
+
+            // see page 34 of "Z8 family"
+            tmr <= 0;
+            pre1 <= 0;
+            pre0 <= 0;
+            p3m <= 0;
+            p01m <= 8'b01_0_01_1_01;
+            irq <= 0;
+            rp <= 0;
+
+            canFetch <= 1;
+            readMem <= 0;
+            writeMem <= 0;
+            incPc <= 0;
+            loadPc <= 0;
+            fetchState <= 0;
+            opType <= 0;
+            opState <= 0;
+            writeFlags <= 0;
+            writeRegister <= 0;
+        end
+
         `include "timers.vh"
     end
 endmodule
 
 module SoC(
     input  wire       clk,
+    input  wire       reset,
     output wire [7:0] port2,
     output wire [3:0] port3
 );
@@ -1734,6 +1751,7 @@ module SoC(
 
     Processor proc(
         .clk(clk),
+        .reset(reset),
         .memAddr(memAddr),
         .memDataRead(memDataRead),
         .memDataWrite(memDataWrite),

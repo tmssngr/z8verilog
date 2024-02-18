@@ -24,8 +24,8 @@ VCD info: dumpfile SoC.vcd opened for output.
 0015: read 2nd byte ff
   b0 ff
     clr ff
-    alu:    00       00    =>    00
-         00000000 00000000 => 00000000
+    alu:    xx       00    =>    00
+         xxxxxxxx 00000000 => 00000000
     flags = 0000_0000
     reg[ff] = 00
 
