@@ -1,7 +1,13 @@
 # Z8 Softcore
 
 The project is about implementing a Zilog Z8 microcontroller in Verilog.
-Its aim is to be able to run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku.php/tiny) in a Tang Tano 9k (if possible).
+
+So far it already can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku.php/tiny):
+
+![Video Output](images/IMG_2479s.jpg)
+
+on a Tang Tano 9k:
+![Tang Nano 9k](images/tang-nano-9k-ju+te.jpg)
 
 ## State
 
