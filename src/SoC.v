@@ -315,6 +315,8 @@ module Processor(
     reg [OPSTATE_MSB:0] opState = OPSTATE0;
 
     wire [15:0] nextRelativePc = pc + { {8{second[7]}}, second };
+    wire [7:0] nextRelativePcH = nextRelativePc[15:8];
+    wire [7:0] nextRelativePcL = nextRelativePc[7:0];
     reg incPc = 0;
     reg loadPc = 0;
     reg canFetch = 1;
@@ -1351,11 +1353,12 @@ module Processor(
 `ifdef BENCH
                 expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
 `endif
+                addr[7:0] = nextRelativePcL;
                 if (flagsOut[FLAG_INDEX_Z])
                     opState <= OPSTATE4;
             end
             OPSTATE3: begin
-                addr <= nextRelativePc;
+                addr[15:8] = nextRelativePcH;
                 loadPc <= 1;
             end
             OPSTATE4: begin
@@ -1394,10 +1397,10 @@ module Processor(
         OP_JR: begin
             case (opState)
             OPSTATE0: begin
-                addr[7:0] = nextRelativePc[7:0];
+                addr[7:0] = nextRelativePcL;
             end
             OPSTATE1: begin
-                addr[15:8] = nextRelativePc[15:8];
+                addr[15:8] = nextRelativePcH;
             end
             OPSTATE3: begin
                 if (takeBranch) begin
