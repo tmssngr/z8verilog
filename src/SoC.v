@@ -66,7 +66,10 @@ module Processor(
     reg autoReset = 1;
     wire isReset = reset | autoReset;
 
-    reg [15:0] pc;
+    reg [7:0] pcL;
+    reg [7:0] pcH;
+    wire [15:0] pc = {pcH, pcL};
+
     reg [15:0] sp;
     wire [7:0] spH = sp[15:8];
     wire [7:0] spL = sp[7:0];
@@ -415,9 +418,9 @@ module Processor(
             opState <= opState + OPSTATE_INC;
         end
 
-        pc <= loadPc ? addr
-                    : incPc ? pc + 16'b1
-                            : pc;
+        {pcH, pcL} <= loadPc ? addr
+                             : incPc ? pc + 16'b1
+                                     : pc;
         incPc <= 0;
         loadPc <= 0;
 
@@ -1424,7 +1427,7 @@ module Processor(
             case (opState)
             OPSTATE0: begin
                 sp <= sp - 16'b1;
-                aluA <= pc[7:0];
+                aluA <= pcL;
             end
             OPSTATE1,
             OPSTATE3: begin
@@ -1440,7 +1443,7 @@ module Processor(
             end
             OPSTATE2: begin
                 sp <= sp - 16'b1;
-                aluA <= pc[15:8];
+                aluA <= pcH;
             end
             OPSTATE4: begin
                 addrH = isCallDA 
@@ -1588,10 +1591,10 @@ module Processor(
             case (opState)
             OPSTATE0: begin
                 sp <= sp - 16'b1;
-                pc <= pc - (isInstrSize1 ? 16'd1 : 16'd2);
+                {pcH, pcL} <= pc - (isInstrSize1 ? 16'd1 : 16'd2);
             end
             OPSTATE1: begin
-                aluA <= pc[7:0];
+                aluA <= pcL;
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
                     register <= spL;
@@ -1604,7 +1607,7 @@ module Processor(
                 sp <= sp - 16'b1;
             end
             OPSTATE2: begin
-                aluA <= pc[15:8];
+                aluA <= pcH;
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
                     register <= spL;
@@ -1660,7 +1663,7 @@ module Processor(
                 readMem <= 1;
             end
             OPSTATE6: begin
-                pc[15:8] <= memDataRead;
+                pcH <= memDataRead;
                 addrL[0] <= 1;
                 readMem <= 1;
             end
@@ -1668,7 +1671,7 @@ module Processor(
                 readMem <= 1;
             end
             OPSTATE8: begin
-                pc[7:0] <= memDataRead;
+                pcL <= memDataRead;
                 canFetch <= 1;
                 fetchState <= FETCH_INSTR0;
 `ifdef BENCH
@@ -1684,7 +1687,7 @@ module Processor(
 
         if (isReset) begin
             autoReset <= 0;
-            pc <= 16'h000C;
+            {pcH, pcL} <= 16'h000C;
 
             // see page 34 of "Z8 family"
             tmr <= 0;
