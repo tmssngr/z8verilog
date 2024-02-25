@@ -4,6 +4,7 @@ module SerialRx
 #(
     parameter counterBits = 8,
     parameter delay = 234 // 27,000,000 (27Mhz) / 115200 Baud rate
+                          // 9600 baud -> one bit has 1s / 9600 = 104.16 us length
 )
 (
     input           clk,
