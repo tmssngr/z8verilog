@@ -1,3 +1,4 @@
+`include "SerialRx.v"
 `default_nettype none
 
 module Memory #(
@@ -1707,6 +1708,7 @@ endmodule
 module SoC(
     input  wire        clk,
     input  wire        reset,
+    input  wire        serialIn,
     output wire [15:0] addr,
     output wire  [7:0] port2,
     output wire  [3:0] port3,
@@ -1749,6 +1751,27 @@ module SoC(
         .strobe(ramStrobe)
     );
 
+    wire [7:0] serialData;
+    wire       serialDataValid;
+    reg  [7:0] keyboardSerialData = 0;
+    wire [7:0] keyboardData = (keyboardSerialData[7] & memAddr[3:0] == 0 ? 8'b1 : 8'b0)
+                            | (keyboardSerialData[6] & memAddr[3:0] == keyboardSerialData[3:0] ? (8'b1 << keyboardSerialData[5:4]) : 8'b0);
+    assign port2Out = keyboardSerialData;    
+    SerialRx #(
+        .counterBits(10),
+        .delay(416) // 4MHz / 9600
+    ) serialKbd(
+        .clk(clk),
+        .serialIn(serialIn),
+        .data(serialData),
+        .dataReady(serialDataValid)
+    );
+    always @(posedge clk) begin
+        if (serialDataValid) begin
+            keyboardSerialData <= serialData;
+        end
+    end
+
     assign romEnable      = memAddr[15:14] == 2'b00;  // 0000-3FFF
     assign keyboardEnable = memAddr[15:13] == 3'b011; // 6000-7FFF
     assign ramEnable      = memAddr[15:13] == 3'b111; // E000-FFFF
@@ -1757,8 +1780,9 @@ module SoC(
     assign videoPixel = videoSync & ~pixels[7];
     assign romStrobe = memStrobe  & romEnable;
     assign ramStrobe = memStrobe  & ramEnable;
-    assign memDataRead = romEnable     ? romRead :
-                         ramEnable     ? ramRead : 0;
+    assign memDataRead = romEnable      ? romRead :
+                         ramEnable      ? ramRead : 
+                         keyboardEnable ? keyboardData : 0;
     assign addr = memAddr;
 
     reg loadDelay = 0;
@@ -1788,7 +1812,7 @@ module SoC(
         .memDataWrite(memDataWrite),
         .memWrite(memWrite),
         .memStrobe(memStrobe),
-        .port2Out(port2),
+//        .port2Out(port2),
         .port3Out(port3)
     );
 endmodule

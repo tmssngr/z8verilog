@@ -3,6 +3,7 @@
 module top(
     input  wire      clk,
     input  wire      btn,
+    input  wire      serialIn,
     output wire[5:0] leds,
     output wire      videoSync,
     output wire      videoPixel
@@ -24,6 +25,7 @@ module top(
     SoC soC(
         .clk(clkDiv),
         .reset(~btn),
+        .serialIn(serialIn),
         .addr(addr),
         .port2(port2),
         .port3(port3),
