@@ -7,8 +7,8 @@ module SerialRx
                           // 9600 baud -> one bit has 1s / 9600 = 104.16 us length
 )
 (
-    input           clk,
-    input           serialIn,
+    input wire      clk,
+    input wire      serialIn,
     output reg[7:0] data,
     output reg      dataReady
 );
@@ -43,20 +43,20 @@ module SerialRx
                 state <= STATE_DATA_BITS;
                 counter <= 0;
             end else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         STATE_DATA_BITS: begin
             if (counter == delay - 1) begin
                 counter <= 0;
                 data <= {serialIn, data[7:1]};
-                bitNumber <= bitNumber + 1;
+                bitNumber <= bitNumber + 1'b1;
                 if (bitNumber == 3'b111) begin
                     state <= STATE_STOP_BIT;
                 end
             end
             else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         STATE_STOP_BIT: begin
@@ -68,7 +68,7 @@ module SerialRx
                 counter <= 0;
             end
             else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         endcase

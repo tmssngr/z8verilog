@@ -49,13 +49,13 @@ module SerialTx
                 bits <= { 1'b1, bits[7:1]};
             end
             else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         STATE_DATA_BITS: begin
             if (counter == delay) begin
                 counter <= 1;
-                bitCount <= bitCount + 1;
+                bitCount <= bitCount + 1'b1;
                 serialOut <= bits[0];
                 if (bitCount == 3'b111) begin
                     state <= STATE_STOP_BIT;
@@ -65,7 +65,7 @@ module SerialTx
                 end
             end
             else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         STATE_STOP_BIT: begin
@@ -73,7 +73,7 @@ module SerialTx
                 state <= STATE_IDLE;
             end
             else begin
-                counter <= counter + 1;
+                counter <= counter + 1'b1;
             end
         end
         endcase
