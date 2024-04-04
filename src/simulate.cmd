@@ -6,6 +6,7 @@ call C:\oss-cad-suite\environment.bat
 :repeat
 cls
 call :simulate Alu
+call :simulate Ps2Rx
 call :simulate SerialTx
 call :simulate SerialRx
 call :test Xcf
