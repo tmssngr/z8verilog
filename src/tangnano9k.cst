@@ -14,10 +14,20 @@ IO_LOC  "leds[3]" 14;
 IO_LOC  "leds[4]" 15;
 IO_LOC  "leds[5]" 16;
 
+IO_LOC  "serialOut" 17;
+IO_PORT "serialOut" IO_TYPE=LVCMOS33;
+IO_LOC  "serialIn" 18;
+IO_PORT "serialIn" IO_TYPE=LVCMOS33;
+
 IO_LOC  "videoSync" 26;
 IO_PORT "videoSync" IO_TYPE=LVCMOS33;
 IO_LOC  "videoPixel" 25;
 IO_PORT "videoPixel" IO_TYPE=LVCMOS33;
+
+IO_LOC  "rawPs2Clk" 48;
+IO_PORT "rawPs2Clk" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "rawPs2Data" 49;
+IO_PORT "rawPs2Data" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
 
 IO_LOC  "btn" 3;
 IO_PORT "btn" PULL_MODE=UP;
