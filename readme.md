@@ -10,7 +10,7 @@ on a Tang Tano 9k:
 ![Tang Nano 9k](images/schematic-ju+te.png)
 
 
-## State
+## State of the Z8 Softcore
 
 - [x] implement all operations
   - [x] `nop`
@@ -70,11 +70,11 @@ on a Tang Tano 9k:
 - [ ] port 3
   - [ ] P30-P33 generic input
   - [x] P34-P37 generic output
-  - [ ] special counter input/output
+  - [ ] special counter/serial input/output
 - [ ] Timers/Counters
   - [x] basics
   - [ ] special external modes
-- [ ] UART
+  - [ ] UART
 - [ ] interrupt handling
   - [x] basics (launching the right interrupt)
   - [ ] handle priorities
