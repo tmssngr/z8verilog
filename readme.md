@@ -7,7 +7,8 @@ So far it already can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku
 ![Video Output](images/IMG_2479s.jpg)
 
 on a Tang Tano 9k:
-![Tang Nano 9k](images/tang-nano-9k-ju+te.jpg)
+![Tang Nano 9k](images/schematic-ju+te.png)
+
 
 ## State
 
