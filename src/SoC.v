@@ -24,6 +24,7 @@ module SoC(
     wire        memStrobe, rom00Strobe, rom08Strobe, ramStrobe;
     wire        rom00Enable, rom08Enable, ramEnable, keyboardEnable;
     wire        vramRead;
+    wire        isIsr;
     reg         clkDivider = 0;
     reg [7:0]   pixels;
 
@@ -81,7 +82,7 @@ module SoC(
     assign rom08Enable    = memAddr[15:11] == 5'b0000_1;  // 0800-0FFF
     assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 6000-7FFF; only 7F0x are used
     assign ramEnable      = memAddr[15:13] == 5'b111;     // E000-FFFF;
-    assign vramRead = (memAddr[15:9] == 7'b1111_111) & memStrobe & ~memWrite;
+    assign vramRead = (memAddr[15:9] == 7'b1111_111) & memStrobe & ~memWrite & isIsr;
     assign videoSync = ~port3[3];
     assign videoPixel = videoSync & ~pixels[7];
     assign rom00Strobe = memStrobe & rom00Enable;
@@ -120,6 +121,7 @@ module SoC(
         .memDataWrite(memDataWrite),
         .memWrite(memWrite),
         .memStrobe(memStrobe),
+        .isIsr(isIsr),
 //        .port2Out(port2),
         .port3Out(port3)
     );

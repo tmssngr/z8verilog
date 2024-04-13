@@ -10,6 +10,7 @@ module Processor(
     output wire  [7:0] memDataWrite,
     output wire        memWrite,
     output wire        memStrobe,
+    output reg         isIsr,
     output wire  [7:0] port2Out,
     output wire  [3:0] port3Out
 );
@@ -405,6 +406,7 @@ module Processor(
                 canFetch <= 0;
                 opType <= OP_ISR;
                 opState <= OPSTATE0;
+                isIsr <= 1;
             end
             else begin
                 second <= memDataRead;
@@ -1462,8 +1464,10 @@ module Processor(
                 canFetch <= 1;
             OPSTATE8: begin
                 // iret?
-                if (instrH[0])
+                if (instrH[0]) begin
                     imr[7] <= 1;
+                    isIsr <= 0;
+                end
             end
             endcase
         end
@@ -1650,6 +1654,8 @@ module Processor(
             opState <= 0;
             writeFlags <= 0;
             writeRegister <= 0;
+
+            isIsr <= 0;
         end
 
         `include "timers.vh"
