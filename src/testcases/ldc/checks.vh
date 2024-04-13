@@ -24,7 +24,7 @@
 
 	chk_ldc_Irr_r(4'h0, 4'h2,
 	              8'h22, 16'h0812, 8'h0F);
-        `assertRom(16'h812, 8'h00); // remains as is (read-only)
+        `assertRom08(16'h812, 8'h00); // remains as is (read-only)
         `assertRegister(8'h20, 'h08);
         `assertRegister(8'h21, 'h12);
         `assertRegister(8'h22, 'h0F);

@@ -12,7 +12,7 @@
         `assertRegister('h20, 'h00);
         `assertRegister('h21, 'h02);
         `assertRegister('h22, 'h24);
-        `assertRom(16'h0002, 8'h08);
+        `assertRom00(16'h0002, 8'h08);
 
     chk_ldci_Ir_Irr(4'h2, 4'h0,
                     8'h22, 8'h20, 8'h24, 16'h0002, 8'h08,
@@ -22,7 +22,7 @@
         `assertRegister(8'h22, 8'h25);
         `assertRegister(8'h24, 8'h08);
 
-        `assertRom(16'h0003, 8'h03);
+        `assertRom00(16'h0003, 8'h03);
     chk_ldci_Ir_Irr(4'h2, 4'h0,
                     8'h22, 8'h20, 8'h25, 16'h0003, 8'h03,
                     16'h0004);

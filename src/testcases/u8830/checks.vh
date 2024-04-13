@@ -41,7 +41,7 @@
 
 	chk_ldc_Irr_r(4'h4, 4'h6,
 	              8'h06, 16'h0812, 8'hFF);
-        `assertRom(16'h0812, 8'h00);
+        `assertRom08(16'h0812, 8'h00);
         `assertRegister(8'h06, 8'hFF);
 
     chk_ldc_r_Irr(4'h7, 4'h4,
