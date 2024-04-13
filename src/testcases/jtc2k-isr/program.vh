@@ -1,3 +1,7 @@
+`include "alu.vh"
+`include "assembly.vh"
+`include "sfr.vh"
+
 localparam M_000C = 16'h000C;
 localparam M_0AEB = 16'h001D;
 localparam M_0AFD = 16'h002F;

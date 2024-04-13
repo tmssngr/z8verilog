@@ -1,3 +1,6 @@
+`include "alu.vh"
+`include "assembly.vh"
+
 localparam L0_ = 16'h0C;
 localparam L1_ = 16'h13;
 localparam L2_ = 16'h20;

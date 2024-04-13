@@ -1,3 +1,6 @@
+`include "alu.vh"
+`include "assembly.vh"
+
 localparam BOOT = 16'h000C;
 
 initial begin

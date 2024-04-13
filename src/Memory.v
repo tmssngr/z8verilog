@@ -24,9 +24,6 @@ module Memory #(
     end
 `endif
 
-    `include "alu.vh"
-    `include "assembly.vh"
-    `include "sfr.vh"
     `include "program.vh"
 
 `ifdef BENCH
