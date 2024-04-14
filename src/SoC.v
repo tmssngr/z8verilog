@@ -14,6 +14,11 @@ module SoC(
     output wire [15:0] addr,
     output wire  [7:0] port2,
     output wire  [3:0] port3,
+    output wire      debugShift,
+    output wire      debugCtrl,
+    output wire      debugAlt,
+    output wire      debugE0,
+    output wire      debugF0,
     output wire        videoSync,
     output wire        videoPixel
 );
@@ -72,6 +77,13 @@ module SoC(
         .keybits(keybits),
         .error(ps2Error),
         .softReset(softReset),
+
+        .debugShift(debugShift),
+        .debugCtrl(debugCtrl),
+        .debugAlt(debugAlt),
+        .debugE0(debugE0),
+        .debugF0(debugF0),
+
         .debugSerialOut(serialOut)
     );
 

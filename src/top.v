@@ -37,6 +37,12 @@ module top(
     wire sync;
     wire pixel;
 
+    wire      debugShift;
+    wire      debugCtrl;
+    wire      debugAlt;
+    wire      debugE0;
+    wire      debugF0;
+
     SoC soC(
         .clk(clkDiv),
         .reset(~btn),
@@ -47,12 +53,24 @@ module top(
         .ps2Data(ps2Data),
         .serialIn(serialIn),
         .serialOut(serialOut),
+
+        .debugShift(debugShift),
+        .debugCtrl(debugCtrl),
+        .debugAlt(debugAlt),
+        .debugE0(debugE0),
+        .debugF0(debugF0),
+
         .videoSync(sync),
         .videoPixel(pixel)
     );
 
     assign leds[5] = ps2Data;//port2[5];
     assign leds[4] = ps2Clk;//port2[4];
+    /*
+    assign leds[3] = ~debugShift;
+    assign leds[2] = ~debugCtrl;
+    assign leds[1] = ~debugAlt;
+    */
     assign leds[3] = ~port2[3];
     assign leds[2] = ~port2[2];
     assign leds[1] = ~port2[1];

@@ -19,6 +19,11 @@ module Ps2Decoder #(
     output wire[7:0] keybits,
     output wire      error,
     output reg       softReset,
+    output wire      debugShift,
+    output wire      debugCtrl,
+    output wire      debugAlt,
+    output wire      debugE0,
+    output wire      debugF0,
     output wire      debugSerialOut
 );
     wire [7:0] data;
@@ -196,4 +201,9 @@ module Ps2Decoder #(
 
     assign keybits = (column == address ? {columnMask, 4'b0} : 0)
                    | (shift & (address == 1) ? 8'h20 : 0);
+    assign debugShift = shift;
+    assign debugCtrl = ctrl;
+    assign debugAlt = alt;
+    assign debugE0 = receivedE0;
+    assign debugF0 = receivedF0;
 endmodule
