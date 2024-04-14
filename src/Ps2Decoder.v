@@ -102,7 +102,7 @@ module Ps2Decoder #(
                             case (data)
                             8'h0D: setColumn(4'h1, 2'h2); // tab (left/right)
                             8'h0E: setColumn(4'h1, 2'h3); // ` (up/down)
-                            8'h12: setColumn(4'h1, 2'h1); // shift
+                            8'h12: setColumn(4'h1, 2'h1); // left shift
                             8'h15: setColumn(4'h2, 2'h2); // Q
                             8'h16: setColumn(4'h2, 2'h3); // 1
                             8'h1A: setColumn(4'h2, 2'h0); // Y
@@ -146,7 +146,11 @@ module Ps2Decoder #(
                             8'h4D: setColumn(4'hB, 2'h2); // P
                             8'h52: setColumn(4'hC, 2'h1); // ' (ä-)
                             8'h54: setColumn(4'hC, 2'h2); // [ (ü+)
+                            8'h55: setColumn(4'hC, 2'h2); // =
+                            8'h59: setColumn(4'h1, 2'h1); // right shift
                             8'h5A: setColumn(4'hC, 2'h0); // Enter
+                            8'h5B: setColumn(4'hC, 2'h2); // ]
+                            8'h5D: setColumn(4'hC, 2'h1); // \
                             8'h66: setColumn(4'hC, 2'h3); // backspace
 
                             8'h6B: if (receivedE0) // cursor left
@@ -157,6 +161,7 @@ module Ps2Decoder #(
                                         setColumn(4'hD, 2'h0);
                             8'h75: if (receivedE0) // cursor up
                                         setColumn(4'hD, 2'h3);
+                            8'h76: setColumn(4'h1, 2'h3); // ESC
                             endcase
                         end
                         receivedE0 <= 0;
