@@ -57,10 +57,6 @@ module SoC(
 
     wire       ps2Error;
     wire [7:0] keybits;
-    assign port2[0] = ~ps2Error;
-    assign port2[1] = ps2Clk;
-    assign port2[2] = keyboardEnable;
-    assign port2[7:3] = ~keybits[7:4];
     Ps2Decoder #(
         .counterBits(8),
         .minClk(120),
@@ -122,7 +118,7 @@ module SoC(
         .memWrite(memWrite),
         .memStrobe(memStrobe),
         .isIsr(isIsr),
-//        .port2Out(port2),
+        .port2Out(port2),
         .port3Out(port3)
     );
 endmodule

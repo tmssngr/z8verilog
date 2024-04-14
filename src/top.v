@@ -51,12 +51,12 @@ module top(
         .videoPixel(pixel)
     );
 
-    assign leds[5] = port2[5];
-    assign leds[4] = port2[4];
-    assign leds[3] = port2[3];
-    assign leds[2] = port2[2];
-    assign leds[1] = port2[1];
-    assign leds[0] = port2[0];
+    assign leds[5] = ps2Data;//port2[5];
+    assign leds[4] = ps2Clk;//port2[4];
+    assign leds[3] = ~port2[3];
+    assign leds[2] = ~port2[2];
+    assign leds[1] = ~port2[1];
+    assign leds[0] = ~port2[0];
 
     assign videoSync = sync;
     assign videoPixel = pixel;
