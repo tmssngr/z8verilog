@@ -56,6 +56,7 @@ module SoC(
     );
 
     wire       ps2Error;
+    wire       softReset;
     wire [7:0] keybits;
     Ps2Decoder #(
         .counterBits(8),
@@ -70,6 +71,7 @@ module SoC(
         .address(memAddr[3:0]),
         .keybits(keybits),
         .error(ps2Error),
+        .softReset(softReset),
         .debugSerialOut(serialOut)
     );
 
@@ -111,7 +113,7 @@ module SoC(
 
     Processor proc(
         .clk(clk),
-        .reset(reset),
+        .reset(reset | softReset),
         .memAddr(memAddr),
         .memDataRead(memDataRead),
         .memDataWrite(memDataWrite),

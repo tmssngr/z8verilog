@@ -18,6 +18,7 @@ module Ps2Decoder #(
     input wire[3:0]  address,
     output wire[7:0] keybits,
     output wire      error,
+    output reg       softReset,
     output wire      debugSerialOut
 );
     wire [7:0] data;
@@ -27,6 +28,10 @@ module Ps2Decoder #(
     reg        receivedF0 = 0;
     reg [3:0]  column = 0;
     reg [3:0]  columnMask = 0;
+
+    reg        shift = 0;
+    reg        ctrl = 0;
+    reg        alt = 0;
 
     Ps2Rx #(
         .counterBits(counterBits),
@@ -77,6 +82,9 @@ module Ps2Decoder #(
             prevDataReady <= 0;
             column <= 0;
             columnMask <= 0;
+            shift <= 0;
+            ctrl <= 0;
+            alt <= 0;
         end
         else begin
             if (dataReady != prevDataReady) begin
@@ -93,16 +101,32 @@ module Ps2Decoder #(
                     8'hF0: begin
                         receivedF0 <= 1;
                     end
+                    8'h11: alt <= ~receivedF0;
+                    8'h14: ctrl <= ~receivedF0;
+                    8'h71: if (receivedE0 & ctrl & alt) begin// Del
+                        softReset <= ~receivedF0;
+                    end
                     default: begin
                         if (receivedF0) begin
                             column <= 0;
                             columnMask <= 0;
                         end
+                        else if (receivedE0) begin
+                            case (data)
+                            8'h6B: setColumn(4'hD, 2'h2); // cursor left
+                            //8'h71: del
+                            8'h72: setColumn(4'hD, 2'h1); // cursor down
+                            8'h74: setColumn(4'hD, 2'h0); // cursor right
+                            8'h75: setColumn(4'hD, 2'h3); // cursor up
+                            endcase
+                        end
                         else begin
                             case (data)
                             8'h0D: setColumn(4'h1, 2'h2); // tab (left/right)
                             8'h0E: setColumn(4'h1, 2'h3); // ` (up/down)
+                            //8'h11: alt <= ~receivedF0;    // left alt
                             8'h12: setColumn(4'h1, 2'h1); // left shift
+                            //8'h14: ctrl <= ~receivedF0;   // left ctrl
                             8'h15: setColumn(4'h2, 2'h2); // Q
                             8'h16: setColumn(4'h2, 2'h3); // 1
                             8'h1A: setColumn(4'h2, 2'h0); // Y
@@ -153,14 +177,6 @@ module Ps2Decoder #(
                             8'h5D: setColumn(4'hC, 2'h1); // \
                             8'h66: setColumn(4'hC, 2'h3); // backspace
 
-                            8'h6B: if (receivedE0) // cursor left
-                                        setColumn(4'hD, 2'h2);
-                            8'h72: if (receivedE0) // cursor down
-                                        setColumn(4'hD, 2'h1);
-                            8'h74: if (receivedE0) // cursor right
-                                        setColumn(4'hD, 2'h0);
-                            8'h75: if (receivedE0) // cursor up
-                                        setColumn(4'hD, 2'h3);
                             8'h76: setColumn(4'h1, 2'h3); // ESC
                             endcase
                         end
