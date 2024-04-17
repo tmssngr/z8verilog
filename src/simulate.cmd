@@ -5,6 +5,9 @@ call C:\oss-cad-suite\environment.bat
 
 :repeat
 cls
+
+set ARGS=
+
 call :simulate Alu
 call :simulate Ps2Rx
 call :simulate SerialTx
@@ -32,6 +35,10 @@ call :test isr_external
 call :test u8830
 call :test jtc2k-isr
 call :test jtc2k
+
+set ARGS=-DJTC_VIDEO
+call :test jtc6k-video
+
 call :test device
 copy /Y testcases\device\memory.txt memory.txt
 
@@ -47,13 +54,13 @@ set NAME=SoC
 set INCLUDE_DIR=..\..
 
 echo testing %TEST%
-echo -------------
 pushd testcases\%TEST%
-iverilog -o test.o -I . -I %INCLUDE_DIR% -DBENCH -s test%NAME% %INCLUDE_DIR%\%NAME%.v %INCLUDE_DIR%\%NAME%_tb.v
+
+iverilog -o test.o -I . -I %INCLUDE_DIR% -DBENCH %ARGS% -s test%NAME% %INCLUDE_DIR%\%NAME%.v %INCLUDE_DIR%\%NAME%_tb.v
 if  %ERRORLEVEL% NEQ 0 (
     echo FAILURE
 	popd
-	goto :eof
+	goto :end
 )
 
 vvp test.o > output.txt
@@ -62,6 +69,8 @@ if  %ERRORLEVEL% NEQ 0 (
 	type output.txt
 )
 popd
+:end
+set ARGS=
 goto :eof
 
 

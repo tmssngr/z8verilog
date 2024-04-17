@@ -51,6 +51,16 @@ module SoC(
         .strobe(rom08Strobe)
     );
 
+`ifdef JTC_VIDEO
+    assign rom00Enable    = memAddr[15:11] == 5'b0000_0;  // 0000-07FF
+    assign rom08Enable    = ~rom00Enable;
+    assign videoSync = port3[1];
+    assign videoPixel = videoSync & ~pixels[7];
+    assign rom00Strobe = memStrobe & rom00Enable;
+    assign rom08Strobe = memStrobe & rom08Enable;
+    assign memDataRead = rom00Enable ? rom00Read : rom08Read;
+    reg softReset = 0;
+`else
     RAM8k ram(
         .clk(clk),
         .addr(memAddr[12:0]),
@@ -102,6 +112,8 @@ module SoC(
                          rom00Enable    ? rom00Read :
                          rom08Enable    ? rom08Read :
                          ramEnable      ? ramRead : 0;
+`endif
+
     assign addr = memAddr;
 
     reg loadDelay = 0;

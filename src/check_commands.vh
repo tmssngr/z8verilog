@@ -9,7 +9,13 @@
 `define assertRegister(num, value) if (uut.proc.registers[num] !== (value)) begin $display("ASSERTION FAILED in %m: reg[%h] = %h != %h"      , num, uut.proc.registers[num], (value)); $finish(2); end
 `define assertRom00(addr, value)   if (uut.rom00.rom.memory[(addr) % 2048] !== (value)) begin $display("ASSERTION FAILED in %m: rom[%h] = %h != %h", (addr) % 2048, uut.rom00.rom.memory[(addr) % 2048], (value)); $finish(2); end
 `define assertRom08(addr, value)   if (uut.rom08.rom.memory[(addr) % 2048] !== (value)) begin $display("ASSERTION FAILED in %m: rom[%h] = %h != %h", (addr) % 2048, uut.rom08.rom.memory[(addr) % 2048], (value)); $finish(2); end
-`define assertRam(addr, value)     if (uut.ram.ram3.ram.memory[(addr) % 2048] !== (value)) begin $display("ASSERTION FAILED in %m: ram[%h] = %h != %h", (addr) % 2048, uut.ram.ram3.ram.memory[(addr) % 2048], (value)); $finish(2); end
+
+`ifdef JTC_VIDEO
+	`define assertRam(addr, value)     $display("no RAM"); $finish(2);
+`else
+	`define assertRam(addr, value)     if (uut.ram.ram3.ram.memory[(addr) % 2048] !== (value)) begin $display("ASSERTION FAILED in %m: ram[%h] = %h != %h", (addr) % 2048, uut.ram.ram3.ram.memory[(addr) % 2048], (value)); $finish(2); end
+`endif
+
 `include "jump_conditions.vh"
 `include "flags.vh"
 
