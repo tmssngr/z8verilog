@@ -1,6 +1,7 @@
 `default_nettype none
 
 `include "debouncer.v"
+`include "VbsGenerator.v"
 
 module top(
     input  wire      clk,
@@ -52,6 +53,16 @@ module top(
     wire      debugE0;
     wire      debugF0;
 
+    wire vbsSync, vbsPixel;
+    VbsGenerator vbs(
+        .clk(clkDiv),
+        .sync(vbsSync),
+        .pixel(vbsPixel)
+    );
+    assign videoSync = vbsSync;
+    assign videoPixel = vbsPixel;
+
+/*
     SoC_tiny soC(
         .clk(clkDiv),
         .reset(~btn),
@@ -75,16 +86,17 @@ module top(
 
     assign leds[5] = ps2Data;//port2[5];
     assign leds[4] = ps2Clk;//port2[4];
-    /*
+*/    /*
     assign leds[3] = ~debugShift;
     assign leds[2] = ~debugCtrl;
     assign leds[1] = ~debugAlt;
     */
-    assign leds[3] = ~port2[3];
+/*    assign leds[3] = ~port2[3];
     assign leds[2] = ~port2[2];
     assign leds[1] = ~port2[1];
     assign leds[0] = ~port2[0];
 
     assign videoSync = sync;
     assign videoPixel = pixel;
+*/
 endmodule
