@@ -4,7 +4,12 @@
 module VbsGenerator(
     input wire  clk, // assuming 4MHz
     output reg  sync,
-    output wire pixel
+    output wire pixel,
+    input wire[10:0] addr,
+    input wire[7:0] dataIn,
+    input wire      strobe,
+    input wire      write,
+    output reg[7:0] dataOut
 );
     parameter LINE_COUNT = 313;
     reg[7:0] hCounter = 0; // perfect fit 64us * 4
@@ -64,8 +69,19 @@ module VbsGenerator(
 
     reg[7:0] shiftReg = 0;
 
-    wire[10:0] addr = {yCounter[7:1], xCounter[6:3]};
+    wire[10:0] videoAddr = {yCounter[7:1], xCounter[6:3]};
     wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
+
+    always @(posedge clk) begin
+        if (strobe) begin
+            if (write) begin
+                memory[addr] <= dataIn;
+            end
+            else begin
+                dataOut <= memory[addr];
+            end
+        end
+    end
 
     always @(posedge clk) begin
         hCounter <= hCounter + 1'b1;
@@ -86,7 +102,7 @@ module VbsGenerator(
 
             if (xRange) begin
                 if (loadShiftReg) begin
-                    shiftReg <= memory[addr];
+                    shiftReg <= memory[videoAddr];
                 end
 
                 if (xCounter == 7'b1111_111) begin
