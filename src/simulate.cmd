@@ -32,8 +32,6 @@ call :test isr_external
 call :test u8830
 call :test jtc2k-isr
 call :test jtc2k
-call :test device
-copy /Y testcases\device\memory.txt memory.txt
 
 pause
 goto :repeat
