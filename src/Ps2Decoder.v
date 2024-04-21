@@ -23,8 +23,7 @@ module Ps2Decoder #(
     output wire      debugCtrl,
     output wire      debugAlt,
     output wire      debugE0,
-    output wire      debugF0,
-    output wire      debugSerialOut
+    output wire      debugF0
 );
     wire [7:0] data;
     wire       dataReady;
@@ -55,30 +54,12 @@ module Ps2Decoder #(
         .error(error)
     );
 
-    reg [7:0] serialData = 0;
-    reg       serialTxLoad = 0;
-    wire      serialTxReady;
-    SerialTxDbg #(
-        .counterBits(10),
-        .delay(35) // 115200
-        //.delay(416) 9600
-    ) serialTx(
-        .clk(clk),
-        .data(serialData),
-        .dataLoad(serialTxLoad),
-        .serialOut(debugSerialOut),
-        .ready(serialTxReady)
-    );
-
     task setColumn;
         input [3:0] col;
         input [1:0] row;
         begin
             column <= col;
             columnMask <= 1 << row;
-
-            serialData <= {row, col};
-            serialTxLoad <= 1;
         end
     endtask
 
@@ -99,13 +80,12 @@ module Ps2Decoder #(
                 prevDataReady <= dataReady;
 
                 if (dataReady) begin
-/*                     serialData <= data;
-                    serialTxLoad <= 1;
- */
-                    if (data == 8'hE0)
+                    if (data == 8'hE0) begin
                         receivedE0 <= 1;
-                    else if (data == 8'hF0)
+                    end
+                    else if (data == 8'hF0) begin
                         receivedF0 <= 1;
+                    end
                     else begin
                         receivedE0 <= 0;
                         receivedF0 <= 0;
@@ -124,10 +104,16 @@ module Ps2Decoder #(
                             end
                             else if (receivedE0) begin
                                 case (data)
+                                //8'h69: // End
                                 8'h6B: setColumn(4'hD, 2'h2); // cursor left
+                                //8'h6C: // Home
+                                //8'h70: // Ins
+                                //8'h71: // Del
                                 8'h72: setColumn(4'hD, 2'h1); // cursor down
                                 8'h74: setColumn(4'hD, 2'h0); // cursor right
                                 8'h75: setColumn(4'hD, 2'h3); // cursor up
+                                //8'h7A: // page down
+                                //8'h7D: // page up
                                 endcase
                             end
                             else begin
@@ -175,6 +161,7 @@ module Ps2Decoder #(
                                 8'h4B: setColumn(4'hA, 2'h1); // L
                                 8'h4C: setColumn(4'hB, 2'h1); // ; (ö*)
                                 8'h4D: setColumn(4'hB, 2'h2); // P
+                                //8'h4E: // -
                                 8'h52: setColumn(4'hC, 2'h1); // ' (ä-)
                                 8'h54: setColumn(4'hC, 2'h2); // [ (ü+)
                                 8'h55: setColumn(4'hC, 2'h2); // =
@@ -189,11 +176,6 @@ module Ps2Decoder #(
                         end
                         endcase
                     end
-                end
-            end
-            else begin
-                if (serialTxLoad) begin
-                    serialTxLoad <= 0;
                 end
             end
         end

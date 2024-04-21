@@ -82,9 +82,7 @@ module SoC(
         .debugCtrl(debugCtrl),
         .debugAlt(debugAlt),
         .debugE0(debugE0),
-        .debugF0(debugF0),
-
-        .debugSerialOut(serialOut)
+        .debugF0(debugF0)
     );
 
     // 15 14 13 12   11 10 9 8   7 6 5 4   3 2 1 0
