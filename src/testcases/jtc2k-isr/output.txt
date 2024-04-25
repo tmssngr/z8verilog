@@ -39806,4 +39806,4 @@ HL on port37 expected
 
 000e: read 1st byte e6
 000f: read 2nd byte f8
-testSoC: SUCCESS
+testSoC_tiny: SUCCESS

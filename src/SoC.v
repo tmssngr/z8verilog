@@ -7,20 +7,9 @@
 module SoC(
     input  wire        clk,
     input  wire        reset,
-    input  wire        ps2Clk,
-    input  wire        ps2Data,
-    input  wire        serialIn,
-    output wire        serialOut,
     output wire [15:0] addr,
     output wire  [7:0] port2,
-    output wire  [3:0] port3,
-    output wire      debugShift,
-    output wire      debugCtrl,
-    output wire      debugAlt,
-    output wire      debugE0,
-    output wire      debugF0,
-    output wire        videoSync,
-    output wire        videoPixel
+    output wire  [3:0] port3
 );
     wire [15:0] memAddr;
     wire [7:0]  memDataRead, rom00Read, rom08Read, ramRead;
@@ -60,70 +49,21 @@ module SoC(
         .strobe(ramStrobe)
     );
 
-    wire       ps2Error;
-    wire       softReset;
-    wire [7:0] keybits;
-    Ps2Decoder #(
-        .counterBits(8),
-        .minClk(120),
-        .maxClk(220),
-        .readAt(50)
-    ) ps2(
-        .clk(clk),
-        .ps2Clk(ps2Clk),
-        .ps2Data(ps2Data),
-        .reset(reset),
-        .address(memAddr[3:0]),
-        .keybits(keybits),
-        .error(ps2Error),
-        .softReset(softReset),
-
-        .debugShift(debugShift),
-        .debugCtrl(debugCtrl),
-        .debugAlt(debugAlt),
-        .debugE0(debugE0),
-        .debugF0(debugF0)
-    );
-
     // 15 14 13 12   11 10 9 8   7 6 5 4   3 2 1 0
     assign rom00Enable    = memAddr[15:11] == 5'b0000_0;  // 0000-07FF
     assign rom08Enable    = memAddr[15:11] == 5'b0000_1;  // 0800-0FFF
-    assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 6000-7FFF; only 7F0x are used
     assign ramEnable      = memAddr[15:13] == 5'b111;     // E000-FFFF;
-    assign vramRead = (memAddr[15:9] == 7'b1111_111) & memStrobe & ~memWrite & isIsr;
-    assign videoSync = ~port3[3];
-    assign videoPixel = videoSync & ~pixels[7];
     assign rom00Strobe = memStrobe & rom00Enable;
     assign rom08Strobe = memStrobe & rom08Enable;
     assign ramStrobe   = memStrobe & ramEnable;
-    assign memDataRead = keyboardEnable ? keybits :
-                         rom00Enable    ? rom00Read :
+    assign memDataRead = rom00Enable    ? rom00Read :
                          rom08Enable    ? rom08Read :
                          ramEnable      ? ramRead : 0;
     assign addr = memAddr;
 
-    reg loadDelay = 0;
-
-    always @(posedge clk) begin
-        if (vramRead & ~loadDelay) begin
-            loadDelay <= 1;
-            clkDivider <= 1;
-        end
-        else begin
-            loadDelay <= 0;
-            clkDivider <= ~clkDivider;
-        end
-
-
-        if (loadDelay)
-            pixels <= memDataRead;
-        else if (clkDivider)
-            pixels <= { pixels[6:0], 1'b1 };
-    end
-
     Processor proc(
         .clk(clk),
-        .reset(reset | softReset),
+        .reset(reset),
         .memAddr(memAddr),
         .memDataRead(memDataRead),
         .memDataWrite(memDataWrite),

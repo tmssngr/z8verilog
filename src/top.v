@@ -43,7 +43,7 @@ module top(
     wire      debugE0;
     wire      debugF0;
 
-    SoC soC(
+    SoC_tiny soC(
         .clk(clkDiv),
         .reset(~btn),
         .addr(addr),

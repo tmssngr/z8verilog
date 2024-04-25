@@ -9,29 +9,29 @@ call :simulate Alu
 call :simulate Ps2Rx
 call :simulate SerialTx
 call :simulate SerialRx
-call :test Xcf
-call :test srp_inc_dec
-call :test ld
-call :test alu1
-call :test incw_decw
-call :test da
-call :test add
-call :test cp
-call :test jp
-call :test jr
-call :test ldc
-call :test ldci
-call :test djnz
-call :test push_pop
-call :test push_pop_external
-call :test ret
-call :test ret_external
-call :test timer
-call :test isr
-call :test isr_external
-call :test u8830
-call :test jtc2k-isr
-call :test jtc2k
+call :test SoC Xcf
+call :test SoC srp_inc_dec
+call :test SoC ld
+call :test SoC alu1
+call :test SoC incw_decw
+call :test SoC da
+call :test SoC add
+call :test SoC cp
+call :test SoC jp
+call :test SoC jr
+call :test SoC ldc
+call :test SoC ldci
+call :test SoC djnz
+call :test SoC push_pop
+call :test SoC push_pop_external
+call :test SoC ret
+call :test SoC ret_external
+call :test SoC timer
+call :test SoC isr
+call :test SoC isr_external
+call :test SoC_tiny u8830
+call :test SoC_tiny jtc2k-isr
+call :test SoC_tiny jtc2k
 
 pause
 goto :repeat
@@ -40,8 +40,8 @@ exit
 
 :: ======================
 :test
-set TEST=%~1
-set NAME=SoC
+set NAME=%~1
+set TEST=%~2
 set INCLUDE_DIR=..\..
 
 echo testing %TEST%
