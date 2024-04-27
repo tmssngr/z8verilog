@@ -94,13 +94,11 @@ module Ps2Decoder #(
                         8'h12: shiftLeft  <= ~receivedF0;
                         8'h14: ctrl       <= ~receivedF0;
                         8'h59: shiftRight <= ~receivedF0;
-                        8'h71: begin // Del
-                            softReset <= receivedE0 & ~receivedF0 & ctrl & alt & ~shift;
-                        end
                         default: begin
                             if (receivedF0) begin
                                 column <= 0;
                                 columnMask <= 0;
+                                softReset <= 0;
                             end
                             else if (receivedE0) begin
                                 case (data)
@@ -108,10 +106,13 @@ module Ps2Decoder #(
                                 8'h6B: setColumn(4'hD, 2'h2); // cursor left
                                 //8'h6C: // Home
                                 //8'h70: // Ins
-                                //8'h71: // Del
-                                8'h72: setColumn(4'hD, 2'h1); // cursor down
-                                8'h74: setColumn(4'hD, 2'h0); // cursor right
-                                8'h75: setColumn(4'hD, 2'h3); // cursor up
+                                8'h71: begin // Del
+                                    if (ctrl & alt & ~shift)
+                                        softReset <= 1;
+                                end
+                                8'h72: setColumn(4'hE, 2'h0); // cursor down
+                                8'h74: setColumn(4'hF, 2'h1); // cursor right
+                                8'h75: setColumn(4'hE, 2'h2); // cursor up
                                 //8'h7A: // page down
                                 //8'h7D: // page up
                                 endcase
