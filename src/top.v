@@ -1,6 +1,7 @@
 `default_nettype none
 
 `include "debouncer2.v"
+`include "VbsGenerator.v"
 
 module top(
     input  wire      clk,
@@ -43,7 +44,7 @@ module top(
     wire      debugE0;
     wire      debugF0;
 
-    SoC_tiny soC(
+    SoC_es23 soC(
         .clk(clkDiv),
         .reset(~btn),
         .addr(addr),

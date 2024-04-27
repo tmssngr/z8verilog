@@ -9,6 +9,7 @@ call :simulate Alu
 call :simulate Ps2Rx
 call :simulate SerialTx
 call :simulate SerialRx
+call :simulate VbsGenerator
 call :test SoC Xcf
 call :test SoC srp_inc_dec
 call :test SoC ld
@@ -32,6 +33,7 @@ call :test SoC isr_external
 call :test SoC_tiny u8830
 call :test SoC_tiny jtc2k-isr
 call :test SoC_tiny jtc2k
+call :test SoC_es23 jtc4k-es23
 
 pause
 goto :repeat
