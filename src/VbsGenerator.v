@@ -3,54 +3,67 @@
 
 module VideoRam(
     input wire       clk,
-    input wire[10:0] addr,
+    input wire[12:0] addr,
     output reg[7:0]  data
 );
-    reg [7:0] memory[0:2047];
+    reg [7:0] mem0[0:2047];
+    reg [7:0] mem1[0:2047];
+    reg [7:0] mem2[0:2047];
+    reg [7:0] mem3[0:2047];
     integer i;
     initial begin
         for (i = 0; i < 2048; i = i + 1) begin
-            memory[i] = i;
+            mem0[i] = i;
+            mem1[i] = i;
+            mem2[i] = i;
         end
-        memory[11'h000] = 8'b00010000;
-        memory[11'h028] = 8'b00111000;
-        memory[11'h050] = 8'b01101100;
-        memory[11'h080] = 8'b11000110;
-        memory[11'h0A8] = 8'b11111110;
-        memory[11'h0D0] = 8'b11000110;
-        memory[11'h100] = 8'b11000110;
-        memory[11'h128] = 8'h0;
+        for (i = 0; i < 2048; i = i + 1) begin
+            mem3[i] = i;
+        end
+        mem0[11'h000] = 8'b00010000;
+        mem0[11'h028] = 8'b00111000;
+        mem0[11'h050] = 8'b01101100;
+        mem0[11'h080] = 8'b11000110;
+        mem0[11'h0A8] = 8'b11111110;
+        mem0[11'h0D0] = 8'b11000110;
+        mem0[11'h100] = 8'b11000110;
+        mem0[11'h128] = 8'h0;
 
-        memory[11'h027] = 8'b00000000;
-        memory[11'h04F] = 8'b01111000;
-        memory[11'h077] = 8'b00001100;
-        memory[11'h0A7] = 8'b01111100;
-        memory[11'h0CF] = 8'b11001100;
-        memory[11'h0F7] = 8'b11001100;
-        memory[11'h127] = 8'b01110110;
-        memory[11'h14F] = 8'b0;
+        mem0[11'h027] = 8'b00000000;
+        mem0[11'h04F] = 8'b01111000;
+        mem0[11'h077] = 8'b00001100;
+        mem0[11'h0A7] = 8'b01111100;
+        mem0[11'h0CF] = 8'b11001100;
+        mem0[11'h0F7] = 8'b11001100;
+        mem0[11'h127] = 8'b01110110;
+        mem0[11'h14F] = 8'b0;
 
-        memory[11'h780] = 8'b11111110;
-        memory[11'h790] = 8'b01100010;
-        memory[11'h7a0] = 8'b01100000;
-        memory[11'h7b0] = 8'b01111100;
-        memory[11'h7c0] = 8'b01100000;
-        memory[11'h7d0] = 8'b01100010;
-        memory[11'h7e0] = 8'b11111110;
-        memory[11'h7f0] = 8'b0;
+        mem3[11'h780] = 8'b11111110;
+        mem3[11'h790] = 8'b01100010;
+        mem3[11'h7a0] = 8'b01100000;
+        mem3[11'h7b0] = 8'b01111100;
+        mem3[11'h7c0] = 8'b01100000;
+        mem3[11'h7d0] = 8'b01100010;
+        mem3[11'h7e0] = 8'b11111110;
+        mem3[11'h7f0] = 8'b0;
 
-        memory[11'h78F] = 8'h0;
-        memory[11'h79F] = 8'b01111100;
-        memory[11'h7aF] = 8'b11000110;
-        memory[11'h7bF] = 8'b11111110;
-        memory[11'h7cF] = 8'b11000000;
-        memory[11'h7dF] = 8'b11000110;
-        memory[11'h7eF] = 8'b01111100;
-        memory[11'h7fF] = 8'h0;
+        mem3[11'h78F] = 8'h0;
+        mem3[11'h79F] = 8'b01111100;
+        mem3[11'h7aF] = 8'b11000110;
+        mem3[11'h7bF] = 8'b11111110;
+        mem3[11'h7cF] = 8'b11000000;
+        mem3[11'h7dF] = 8'b11000110;
+        mem3[11'h7eF] = 8'b01111100;
+        mem3[11'h7fF] = 8'h0;
     end
 
     always @(posedge clk) begin
-        data <= memory[addr];
+        case (addr[12:11])
+            0 : data <= mem0[addr[10:0]];
+            1 : data <= mem1[addr[10:0]];
+            2 : data <= mem2[addr[10:0]];
+            default : data <= mem3[addr[10:0]];
+        endcase
     end
 endmodule
 
@@ -82,7 +95,7 @@ module VbsGenerator(
 
     reg[7:0] shiftReg = 0;
 
-    reg[10:0] addr = 0;
+    reg[12:0] addr = 0;
     wire[7:0] data;
     wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
 
