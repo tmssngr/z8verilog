@@ -64,7 +64,7 @@ module VbsGenerator(
 
     reg[7:0] shiftReg = 0;
 
-    wire[10:0] addr = {yCounter[7:1], xCounter[6:3]};
+    reg[10:0] addr = 0;
     wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
 
     always @(posedge clk) begin
@@ -87,6 +87,7 @@ module VbsGenerator(
             if (xRange) begin
                 if (loadShiftReg) begin
                     shiftReg <= memory[addr];
+                    addr <= addr + 1;
                 end
 
                 if (xCounter == 7'b1111_111) begin
@@ -110,6 +111,7 @@ module VbsGenerator(
                 if (vCounter == 34) begin
                     yRange <= 1;
                     yCounter <= 0;
+                    addr <= 0;
                 end
             end
             else begin
