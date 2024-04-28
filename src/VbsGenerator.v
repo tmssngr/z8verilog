@@ -18,25 +18,25 @@ module VbsGenerator(
     integer i;
     initial begin
         for (i = 0; i < 2048; i = i + 1) begin
-            memory[i] = 0;
+            memory[i] = i;
         end
         memory[11'h000] = 8'b00010000;
-        memory[11'h010] = 8'b00111000;
-        memory[11'h020] = 8'b01101100;
-        memory[11'h030] = 8'b11000110;
-        memory[11'h040] = 8'b11111110;
-        memory[11'h050] = 8'b11000110;
-        memory[11'h060] = 8'b11000110;
-        memory[11'h070] = 8'h0;
+        memory[11'h028] = 8'b00111000;
+        memory[11'h050] = 8'b01101100;
+        memory[11'h080] = 8'b11000110;
+        memory[11'h0A8] = 8'b11111110;
+        memory[11'h0D0] = 8'b11000110;
+        memory[11'h100] = 8'b11000110;
+        memory[11'h128] = 8'h0;
 
-        memory[11'h00F] = 8'b00000000;
-        memory[11'h01F] = 8'b01111000;
-        memory[11'h02F] = 8'b00001100;
-        memory[11'h03F] = 8'b01111100;
-        memory[11'h04F] = 8'b11001100;
-        memory[11'h05F] = 8'b11001100;
-        memory[11'h06F] = 8'b01110110;
-        memory[11'h07F] = 8'b0;
+        memory[11'h027] = 8'b00000000;
+        memory[11'h04F] = 8'b01111000;
+        memory[11'h077] = 8'b00001100;
+        memory[11'h0A7] = 8'b01111100;
+        memory[11'h0CF] = 8'b11001100;
+        memory[11'h0F7] = 8'b11001100;
+        memory[11'h127] = 8'b01110110;
+        memory[11'h14F] = 8'b0;
 
         memory[11'h780] = 8'b11111110;
         memory[11'h790] = 8'b01100010;
@@ -59,8 +59,10 @@ module VbsGenerator(
 
     reg xRange = 0;
     reg yRange = 0;
-    reg[7:0] xCounter = 0;
+    reg[8:0] xCounter = 0;
     reg[7:0] yCounter = 0;
+    reg[1:0] offsetCounter = 0;
+    wire[3:0] offset = xCounter[8:3] == 6'b10_0111 && offsetCounter[1] ? 4'd9 : 4'd1;
 
     reg[7:0] shiftReg = 0;
 
@@ -87,17 +89,19 @@ module VbsGenerator(
             if (xRange) begin
                 if (loadShiftReg) begin
                     shiftReg <= memory[addr];
-                    addr <= addr + 1;
+                    addr <= addr + offset;
                 end
 
-                if (xCounter == 7'b1111_111) begin
+                if (xCounter[8:3] == 6'b10_0111 && xCounter[2:0] == 3'b111) begin // 27 << 3 + 7 = 319
                     xRange <= 0;
-                    if (yCounter == 8'b1111_1111) begin
+                    if (yCounter == 8'hBF) begin
                         yRange <= 0;
                     end
                     else begin
                         yCounter <= yCounter + 1'b1;
                     end
+
+                    offsetCounter <= offsetCounter[1] ? 0 : offsetCounter + 1;
                 end
                 else begin
                     xCounter <= xCounter + 1'b1;
@@ -112,6 +116,7 @@ module VbsGenerator(
                     yRange <= 1;
                     yCounter <= 0;
                     addr <= 0;
+                    offsetCounter <= 0;
                 end
             end
             else begin
