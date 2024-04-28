@@ -1,19 +1,11 @@
 `ifndef VBS_GENERATOR
 `define VBS_GENERATOR
 
-module VbsGenerator(
-    input wire  clk, // assuming 8MHz
-    output reg  sync,
-    output wire pixel
+module VideoRam(
+    input wire       clk,
+    input wire[10:0] addr,
+    output reg[7:0]  data
 );
-    parameter LINE_COUNT = 313;
-    reg[8:0] hCounter = 0; // perfect fit 64us * 8
-    reg[8:0] vCounter = 0;
-
-    initial begin
-        sync = 1;
-    end
-
     reg [7:0] memory[0:2047];
     integer i;
     initial begin
@@ -57,6 +49,30 @@ module VbsGenerator(
         memory[11'h7fF] = 8'h0;
     end
 
+    always @(posedge clk) begin
+        data <= memory[addr];
+    end
+endmodule
+
+module VbsGenerator(
+    input wire  clk, // assuming 8MHz
+    output reg  sync,
+    output wire pixel
+);
+    parameter LINE_COUNT = 313;
+    reg[8:0] hCounter = 0; // perfect fit 64us * 8
+    reg[8:0] vCounter = 0;
+
+    initial begin
+        sync = 1;
+    end
+
+    VideoRam ram(
+        .clk(clk),
+        .addr(addr),
+        .data(data)
+    );
+
     reg xRange = 0;
     reg yRange = 0;
     reg[8:0] xCounter = 0;
@@ -67,6 +83,7 @@ module VbsGenerator(
     reg[7:0] shiftReg = 0;
 
     reg[10:0] addr = 0;
+    wire[7:0] data;
     wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
 
     always @(posedge clk) begin
@@ -88,7 +105,7 @@ module VbsGenerator(
 
             if (xRange) begin
                 if (loadShiftReg) begin
-                    shiftReg <= memory[addr];
+                    shiftReg <= data;
                     addr <= addr + offset;
                 end
 
