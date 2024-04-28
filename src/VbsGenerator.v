@@ -1,6 +1,76 @@
 `ifndef VBS_GENERATOR
 `define VBS_GENERATOR
 
+module VideoRam(
+    input wire       clk,
+    input wire[12:0] addr,
+    output reg[7:0]  data
+);
+    reg [7:0] mem0[0:2047];
+    reg [7:0] mem1[0:2047];
+    reg [7:0] mem2[0:2047];
+    reg [7:0] mem3[0:2047];
+    integer i;
+    initial begin
+        for (i = 0; i < 2048; i = i + 1) begin
+            mem0[i] = i / 10000;
+            mem1[i] = i / 10000;
+            mem2[i] = i / 10000;
+        end
+        for (i = 0; i < 2048; i = i + 1) begin
+            mem3[i] = i / 10000;
+        end
+        mem0[11'h000] = 8'b00010000;
+        mem0[11'h028] = 8'b00111000;
+        mem0[11'h050] = 8'b01101100;
+        mem0[11'h080] = 8'b11000110;
+        mem0[11'h0A8] = 8'b11111110;
+        mem0[11'h0D0] = 8'b11000110;
+        mem0[11'h100] = 8'b11000110;
+        mem0[11'h128] = 8'h0;
+
+        mem0[11'h027] = 8'b00000000;
+        mem0[11'h04F] = 8'b01111000;
+        mem0[11'h077] = 8'b00001100;
+        mem0[11'h0A7] = 8'b01111100;
+        mem0[11'h0CF] = 8'b11001100;
+        mem0[11'h0F7] = 8'b11001100;
+        mem0[11'h127] = 8'b01110110;
+        mem0[11'h14F] = 8'b0;
+
+        mem3[11'h6A8] = 8'b11111110;
+        mem3[11'h6D0] = 8'b01100010;
+        mem3[11'h700] = 8'b01100000;
+        mem3[11'h728] = 8'b01111100;
+        mem3[11'h750] = 8'b01100000;
+        mem3[11'h780] = 8'b01100010;
+        mem3[11'h7A8] = 8'b11111110;
+        mem3[11'h7D0] = 8'b0;
+ 
+        mem3[11'h6CF] = 8'h0;
+        mem3[11'h6F7] = 8'b01111100;
+        mem3[11'h727] = 8'b11000110;
+        mem3[11'h74F] = 8'b11111110;
+        mem3[11'h777] = 8'b11000000;
+        mem3[11'h7A7] = 8'b11000110;
+        mem3[11'h7CF] = 8'b01111100;
+        mem3[11'h7F7] = 8'h0;
+    end
+
+    always @(posedge clk) begin
+        case (addr[12:11])
+            0: 
+                data <= mem0[addr[10:0]];
+            1: 
+                data <= mem1[addr[10:0]];
+            2: 
+                data <= mem2[addr[10:0]];
+            default: 
+                data <= mem3[addr[10:0]];
+        endcase
+    end
+endmodule
+
 module VbsGenerator(
     input wire  clk, // assuming 8MHz
     output reg  sync,
@@ -14,57 +84,23 @@ module VbsGenerator(
         sync = 1;
     end
 
-    reg [7:0] memory[0:2047];
-    integer i;
-    initial begin
-        for (i = 0; i < 2048; i = i + 1) begin
-            memory[i] = 0;
-        end
-        memory[11'h000] = 8'b00010000;
-        memory[11'h010] = 8'b00111000;
-        memory[11'h020] = 8'b01101100;
-        memory[11'h030] = 8'b11000110;
-        memory[11'h040] = 8'b11111110;
-        memory[11'h050] = 8'b11000110;
-        memory[11'h060] = 8'b11000110;
-        memory[11'h070] = 8'h0;
-
-        memory[11'h00F] = 8'b00000000;
-        memory[11'h01F] = 8'b01111000;
-        memory[11'h02F] = 8'b00001100;
-        memory[11'h03F] = 8'b01111100;
-        memory[11'h04F] = 8'b11001100;
-        memory[11'h05F] = 8'b11001100;
-        memory[11'h06F] = 8'b01110110;
-        memory[11'h07F] = 8'b0;
-
-        memory[11'h780] = 8'b11111110;
-        memory[11'h790] = 8'b01100010;
-        memory[11'h7a0] = 8'b01100000;
-        memory[11'h7b0] = 8'b01111100;
-        memory[11'h7c0] = 8'b01100000;
-        memory[11'h7d0] = 8'b01100010;
-        memory[11'h7e0] = 8'b11111110;
-        memory[11'h7f0] = 8'b0;
-
-        memory[11'h78F] = 8'h0;
-        memory[11'h79F] = 8'b01111100;
-        memory[11'h7aF] = 8'b11000110;
-        memory[11'h7bF] = 8'b11111110;
-        memory[11'h7cF] = 8'b11000000;
-        memory[11'h7dF] = 8'b11000110;
-        memory[11'h7eF] = 8'b01111100;
-        memory[11'h7fF] = 8'h0;
-    end
+    VideoRam ram(
+        .clk(clk),
+        .addr(addr),
+        .data(data)
+    );
 
     reg xRange = 0;
     reg yRange = 0;
-    reg[7:0] xCounter = 0;
+    reg[8:0] xCounter = 0;
     reg[7:0] yCounter = 0;
+    reg[1:0] offsetCounter = 0;
+    wire[3:0] offset = xCounter[8:3] == 6'b10_0111 && offsetCounter[1] ? 4'd9 : 4'd1;
 
     reg[7:0] shiftReg = 0;
 
-    reg[10:0] addr = 0;
+    reg[12:0] addr = 0;
+    wire[7:0] data;
     wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
 
     always @(posedge clk) begin
@@ -86,18 +122,20 @@ module VbsGenerator(
 
             if (xRange) begin
                 if (loadShiftReg) begin
-                    shiftReg <= memory[addr];
-                    addr <= addr + 1;
+                    shiftReg <= data;
+                    addr <= addr + offset;
                 end
 
-                if (xCounter == 7'b1111_111) begin
+                if (xCounter[8:3] == 6'b10_0111 && xCounter[2:0] == 3'b111) begin // 27 << 3 + 7 = 319
                     xRange <= 0;
-                    if (yCounter == 8'b1111_1111) begin
+                    if (yCounter == 8'hBF) begin
                         yRange <= 0;
                     end
                     else begin
                         yCounter <= yCounter + 1'b1;
                     end
+
+                    offsetCounter <= offsetCounter[1] ? 0 : offsetCounter + 1;
                 end
                 else begin
                     xCounter <= xCounter + 1'b1;
@@ -112,6 +150,7 @@ module VbsGenerator(
                     yRange <= 1;
                     yCounter <= 0;
                     addr <= 0;
+                    offsetCounter <= 0;
                 end
             end
             else begin
