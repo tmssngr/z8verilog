@@ -18,7 +18,7 @@ module VideoRam(
             mem2[i] = i;
         end
         for (i = 0; i < 2048; i = i + 1) begin
-            mem3[i] = i;
+            mem3[i] = 0;
         end
         mem0[11'h000] = 8'b00010000;
         mem0[11'h028] = 8'b00111000;
