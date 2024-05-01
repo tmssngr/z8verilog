@@ -138,4 +138,4 @@ VCD info: dumpfile SoC.vcd opened for output.
 
 0812: read 1st byte 00
 0813: read 2nd byte 00
-testSoC_tiny: SUCCESS
+testSoC_jtc2k: SUCCESS

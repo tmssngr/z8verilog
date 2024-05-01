@@ -29,9 +29,9 @@ call :test SoC ret_external
 call :test SoC timer
 call :test SoC isr
 call :test SoC isr_external
-call :test SoC_tiny u8830
-call :test SoC_tiny jtc2k-isr
-call :test SoC_tiny jtc2k
+call :test SoC_jtc2k u8830
+call :test SoC_jtc2k jtc2k-isr
+call :test SoC_jtc2k jtc2k
 
 pause
 goto :repeat
