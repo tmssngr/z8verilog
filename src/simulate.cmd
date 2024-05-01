@@ -10,6 +10,8 @@ call :simulate Ps2Rx
 call :simulate SerialTx
 call :simulate SerialRx
 call :simulate VbsGenerator
+pause
+goto :repeat
 call :test SoC Xcf
 call :test SoC srp_inc_dec
 call :test SoC ld
