@@ -32,6 +32,7 @@ call :test SoC isr_external
 call :test SoC_jtc2k u8830
 call :test SoC_jtc2k jtc2k-isr
 call :test SoC_jtc2k jtc2k
+call :test SoC_jtc4k jtc4k
 
 pause
 goto :repeat
