@@ -1,12 +1,13 @@
 module testSoC_tiny();
 
+    reg clk = 0;
+
 `include "assert.vh"
 `include "alu.vh"
 `include "states.vh"
 `include "sfr.vh"
 `include "check_commands.vh"
 
-    reg clk = 0;
     wire sync;
     wire pixel;
 

@@ -77,6 +77,16 @@ module RAM8k(
     input  wire        write,
     input  wire        strobe
 );
+    wire enable0 = addr[12:11] == 2'b00;
+    wire enable1 = addr[12:11] == 2'b01;
+    wire enable2 = addr[12:11] == 2'b10;
+    wire enable3 = addr[12:11] == 2'b11;
+
+    wire [7:0] dataOut0;
+    wire [7:0] dataOut1;
+    wire [7:0] dataOut2;
+    wire [7:0] dataOut3;
+
     RAM2k ram0(
         .clk(clk),
         .addr(addr[10:0]),
@@ -109,16 +119,6 @@ module RAM8k(
         .write(enable3 & write),
         .strobe(enable3 & strobe)
     );
-
-    wire enable0 = addr[12:11] == 2'b00;
-    wire enable1 = addr[12:11] == 2'b01;
-    wire enable2 = addr[12:11] == 2'b10;
-    wire enable3 = addr[12:11] == 2'b11;
-
-    wire [7:0] dataOut0;
-    wire [7:0] dataOut1;
-    wire [7:0] dataOut2;
-    wire [7:0] dataOut3;
 
     assign dataOut = enable0 ? dataOut0 :
                      enable1 ? dataOut1 :

@@ -19,7 +19,6 @@ module Ps2Rx #(
         dataReady <= 0;
     end
 
-    reg [3:0] state = STATE_IDLE;
     localparam STATE_IDLE       = 0;
     localparam STATE_START_BIT  = 1;
     localparam STATE_DATA_BIT0  = 2;
@@ -32,6 +31,8 @@ module Ps2Rx #(
     localparam STATE_DATA_BIT7  = 9;
     localparam STATE_PARITY_BIT = 10;
     localparam STATE_STOP_BIT   = 11;
+
+    reg [3:0] state = STATE_IDLE;
 
     reg                     prevClk = 1;
     reg                     parity = 0;
