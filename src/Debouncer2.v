@@ -1,8 +1,7 @@
 `default_nettype none
 
 module Debouncer2 #(
-    parameter counterBits = 4,
-    parameter max = 4'hF
+    parameter counterBits = 4
 )
 (
     input wire clk,
@@ -22,7 +21,7 @@ module Debouncer2 #(
 
     always @(posedge clk) begin
         if (in1 == prev1 & in2 == prev2) begin
-            if (counter == max) begin
+            if (counter == {counterBits{1'b1}}) begin
                 out1 <= prev1;
                 out2 <= prev2;
             end
