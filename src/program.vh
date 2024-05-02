@@ -28,7 +28,13 @@
 			$readmemh("ub8830.mem", memory);
 		end
 		else if (initFile == "rom08.mem") begin
-			$readmemh("testcases/jtc2k/rom08.mem", memory);
+			$readmemh("testcases/jtc6k/rom08.mem", memory);
+		end
+		else if (initFile == "rom10.mem") begin
+			$readmemh("testcases/jtc6k/rom10.mem", memory);
+		end
+		else if (initFile == "rom18.mem") begin
+			$readmemh("testcases/jtc6k/rom18.mem", memory);
 		end
 	end
 
