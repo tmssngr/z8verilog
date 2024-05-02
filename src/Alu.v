@@ -64,7 +64,7 @@ module Alu(
                 // after add
                 { cL, out } = { 1'b0, a_ } +
                     (flags[FLAG_INDEX_H] || (a_[3] && (a_[2] || a_[1])) ? 9'h6 : 9'h0);
-                outFlags[FLAG_INDEX_C] = cL;
+                outFlags[FLAG_INDEX_C] = cL | cin;
             end
             else begin
                 // after sub
@@ -81,7 +81,7 @@ module Alu(
                     1'h0,
                     ((flags[FLAG_INDEX_C] || (a_[7] && (a_[6] || a_[5]))) ? 4'h6 : 4'h0)
                 };
-                outFlags[FLAG_INDEX_C] = cH;
+                outFlags[FLAG_INDEX_C] = cH | cin;
             end
             else begin
                 // after sub

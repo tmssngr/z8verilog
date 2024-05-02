@@ -88,5 +88,14 @@
         `assertRegister('h10, 'h00);
         `assertRegister('h11, 'h01);
 
+	chk_ld_r_IM(4'h0, 8'h96,
+	            8'h10);
+        `assertRegister('h10, 'h96);
+	chk_alu2_r_r(ALU2_ADD, 0, 0,
+	             8'h10, 8'h2C, FLAG_C | FLAG_V);
+	chk_da(8'hE0,
+	       8'h10, 8'h92, FLAG_C | FLAG_S | FLAG_V);
+        `assertRegister('h10, 'h92);
+
 
 	chk_jp(16'h000C);

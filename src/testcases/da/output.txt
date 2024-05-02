@@ -224,9 +224,37 @@ VCD info: dumpfile SoC.vcd opened for output.
     flags = 1100_0000
     reg[10] = 00
 
-003c: read 1st byte 8d
-003d: read 2nd byte 00
-003e: read 3rd byte 0c
+003c: read 1st byte 0c
+003d: read 2nd byte 96
+  0c 96
+    ld r0, #96
+    reg[10] = 96
+
+003e: read 1st byte 02
+003f: read 2nd byte 00
+  02 00
+    add r0, r0
+
+0040: read 1st byte 40
+    alu:    96       96    =>    2c
+         10010110 10010110 => 00101100
+    flags = 1001_0000
+    reg[10] = 2c
+0041: read 2nd byte e0
+  40 e0
+   da e0
+    alu:    2c       96    =>    32
+         00101100 10010110 => 00110010
+    flags = 1001_0000
+    reg[10] = 32
+    alu:    32       96    =>    92
+         00110010 10010110 => 10010010
+    flags = 1011_0000
+    reg[10] = 92
+
+0042: read 1st byte 8d
+0043: read 2nd byte 00
+0044: read 3rd byte 0c
   8d 00 0c
     jp    , 000c
 

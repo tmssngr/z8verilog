@@ -42,5 +42,10 @@ label(L0_);
     asm_alu2_r_r(ALU2_ADD, 0, 1);
     asm_alu1(ALU1_DA, 8'h10);
 
+
+    asm_ld_r_IM(0, 'h96);
+    asm_alu2_r_r(ALU2_ADD, 0, 0);
+    asm_alu1(ALU1_DA, 8'hE0);
+
     asm_jp(JC_ALWAYS, L0_);
 end
