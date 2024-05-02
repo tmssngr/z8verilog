@@ -1,49 +1,17 @@
 `ifndef VBS_GENERATOR
 `define VBS_GENERATOR
 
-module VRAM (
-    input  wire        clk,
-    input  wire [10:0] addr,
-    output reg   [7:0] dataOut,
-    input  wire        strobe
-);
-    reg [7:0] memory[0 : 2047];
-
-    integer i;
-    initial begin
-        for (i = 0; i < 2048; i = i + 1) begin
-            memory[i] = 0;
-        end
-        memory[11'h000] = 8'b00010000;
-        memory[11'h028] = 8'b00111000;
-        memory[11'h050] = 8'b01101100;
-        memory[11'h080] = 8'b11000110;
-        memory[11'h0A8] = 8'b11111110;
-        memory[11'h0D0] = 8'b11000110;
-        memory[11'h100] = 8'b11000110;
-        memory[11'h128] = 8'h0;
-
-        memory[11'h027] = 8'b00000000;
-        memory[11'h04F] = 8'b01111000;
-        memory[11'h077] = 8'b00001100;
-        memory[11'h0A7] = 8'b01111100;
-        memory[11'h0CF] = 8'b11001100;
-        memory[11'h0F7] = 8'b11001100;
-        memory[11'h127] = 8'b01110110;
-        memory[11'h14F] = 8'b0;
-    end
-
-    always @(posedge clk) begin
-        if (strobe) begin
-            dataOut <= memory[addr];
-        end
-    end
-endmodule
+`include "Memory.v"
 
 module VbsGenerator(
-    input wire  clk, // assuming 8MHz
-    output reg  sync,
-    output wire pixel
+    input wire       clk, // assuming 8MHz
+    output reg       sync,
+    output wire      pixel,
+    input wire[12:0] cAddr,
+    input wire[7:0]  cDataIn,
+    input wire       cStrobe,
+    input wire       cWrite,
+    output wire[7:0] cDataOut
 );
     parameter LINE_COUNT = 313;
     reg[8:0] hCounter = 0; // perfect fit 64us * 8
@@ -53,15 +21,24 @@ module VbsGenerator(
         sync = 1;
     end
 
-    reg[10:0] addr = 0;
-    wire[7:0] data;
-    wire strobe;
-    VRAM ram(
+    reg[12:0] vAddr = 0;
+    wire[7:0] vData;
+    wire      vStrobe;
+
+    wire[12:0] rAddr;
+    wire       rStrobe;
+    RAM8k ram(
         .clk(clk),
-        .addr(addr),
-        .dataOut(data),
-        .strobe(strobe)
+        .addr(rAddr),
+        .dataIn(cDataIn),
+        .dataOut(vData),
+        .write(cWrite),
+        .strobe(rStrobe)
     );
+
+    assign rAddr = cStrobe ? cAddr : vAddr;
+    assign rStrobe = cStrobe | vStrobe;
+    assign cDataOut = vData;
 
     reg xRange = 0;
     reg yRange = 0;
@@ -73,7 +50,7 @@ module VbsGenerator(
 
     reg[7:0] shiftReg = 0;
 
-    assign strobe = xRange & yRange & xBitCounter == 0;
+    assign vStrobe = xRange & yRange & xBitCounter == 0;
     wire loadShiftReg = xRange & yRange & xBitCounter == 1;
 
     always @(posedge clk) begin
@@ -85,10 +62,10 @@ module VbsGenerator(
             sync <= ~sync;
         end
 
-        shiftReg <= {shiftReg[6:0], 1'b0};
+        shiftReg <= {shiftReg[6:0], 1'b1};
 
         if (yRange) begin
-            if (hCounter == 95) begin
+            if (hCounter == 94) begin
                 xRange <= 1;
                 // xByteCounter <= 0;
                 // xBitCounter <= 0;
@@ -98,8 +75,8 @@ module VbsGenerator(
                 xBitCounter <= xBitCounter + 1'b1;
 
                 if (loadShiftReg) begin
-                    shiftReg <= data;
-                    addr <= addr + offset;
+                    shiftReg <= vData;
+                    vAddr <= vAddr + offset;
                     xByteCounter <= xByteCounter + 1'b1;
                     if (xByteCounter == 39) begin
                         xRange <= 0;
@@ -116,7 +93,7 @@ module VbsGenerator(
                 if (vCounter == 34) begin
                     yRange <= 1;
                     yCounter <= 0;
-                    addr <= 0;
+                    vAddr <= 0;
                     offsetCounter <= 0;
                 end
 
@@ -142,7 +119,7 @@ module VbsGenerator(
         end
     end
 
-    assign pixel = shiftReg[7];
+    assign pixel = ~shiftReg[7];
 /* rect
     parameter xStart = 96;
     parameter xEnd = 486;
