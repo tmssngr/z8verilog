@@ -71,10 +71,14 @@ module VbsGenerator(
     reg[1:0] offsetCounter = 0;
     wire[3:0] offset = xByteCounter == 39 && offsetCounter[1] ? 4'd9 : 4'd1;
 
+    reg needsLoadingFromRAM = 0;
+    reg[7:0] ramData = 0;
     reg[7:0] shiftReg = 0;
 
+    reg cStrobe = 0;
     assign strobe = xRange & yRange & xBitCounter == 0;
-    wire loadShiftReg = xRange & yRange & xBitCounter == 1;
+    wire loadFromRAM = xRange & yRange & needsLoadingFromRAM & (~cStrobe | xBitCounter == 6);
+    wire loadShiftReg = xRange & yRange & xBitCounter == 7;
 
     always @(posedge clk) begin
         hCounter <= hCounter + 1'b1;
@@ -88,18 +92,23 @@ module VbsGenerator(
         shiftReg <= {shiftReg[6:0], 1'b0};
 
         if (yRange) begin
-            if (hCounter == 95) begin
+            if (hCounter == 87) begin
                 xRange <= 1;
-                // xByteCounter <= 0;
-                // xBitCounter <= 0;
             end
 
             if (xRange) begin
                 xBitCounter <= xBitCounter + 1'b1;
 
-                if (loadShiftReg) begin
-                    shiftReg <= data;
+                if (xBitCounter == 0) begin
+                    needsLoadingFromRAM <= 1;
+                end
+                else if (loadFromRAM) begin
+                    ramData <= data;
                     addr <= addr + offset;
+                    needsLoadingFromRAM <= 0;
+                end
+                else if (loadShiftReg) begin
+                    shiftReg <= ramData;
                     xByteCounter <= xByteCounter + 1'b1;
                     if (xByteCounter == 39) begin
                         xRange <= 0;
