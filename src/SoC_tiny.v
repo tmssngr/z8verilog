@@ -115,10 +115,12 @@ module SoC_tiny(
         end
 
 
-        if (loadDelay)
+        if (loadDelay) begin
             pixels <= memDataRead;
-        else if (clkDivider)
+        end
+        else if (clkDivider) begin
             pixels <= { pixels[6:0], 1'b1 };
+        end
     end
 
     Processor proc(
