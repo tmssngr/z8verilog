@@ -800,6 +800,7 @@ task chk_jr_false;
             `assertOpState(OPSTATE4);
         @(negedge clk);
             `assertOpState(OPSTATE5);
+            `assertPc(addr);
         @(negedge clk);
             `assertOpState(OPSTATE6);
         @(negedge clk);
