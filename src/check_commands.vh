@@ -1231,8 +1231,8 @@ task chk_alu2_R_IM;
             `assertOpState(OPSTATE4);
         @(negedge clk);
             assertCommandFinished();
-            `assertRegister({expDst}, {expResult});
-            `assertFlags({expFlags});
+            assertRegister(expDst, expResult);
+            `assertFlags(expFlags);
     end
 endtask
 task chk_alu2_IR_IM;
