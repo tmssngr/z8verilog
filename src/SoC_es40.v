@@ -201,6 +201,8 @@ module SoC_es40(
         .memDataWrite(memDataWrite),
         .memWrite(memWrite),
         .memStrobe(memStrobe),
+        .serialIn(serialIn),
+        .serialOut(serialOut),
         .isIsr(isIsr),
         .port2Out(port2),
         .port3Out(port3)
