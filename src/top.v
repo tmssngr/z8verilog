@@ -1,6 +1,6 @@
 `default_nettype none
 
-`include "debouncer2.v"
+`include "debouncer.v"
 
 module top(
     input  wire      clk,

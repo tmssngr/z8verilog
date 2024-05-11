@@ -1,5 +1,36 @@
 `default_nettype none
 
+module Debouncer #(
+    parameter counterBits = 4
+)
+(
+    input wire clk,
+    input wire in,
+    output reg out
+);
+    reg [counterBits - 1:0] counter = 0;
+    reg prev = 0;
+
+    initial begin
+        out <= 0;
+    end
+
+    always @(posedge clk) begin
+        if (in == prev) begin
+            if (counter == {counterBits{1'b1}}) begin
+                out <= prev;
+            end
+            else begin
+                counter <= counter + 1'b1;
+            end
+        end
+        else begin
+            counter <= 0;
+            prev <= in;
+        end
+    end
+endmodule
+
 module Debouncer2 #(
     parameter counterBits = 4
 )
