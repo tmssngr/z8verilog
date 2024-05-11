@@ -21,8 +21,50 @@
                 if (pre0[0] == 0) begin
                     tmr[1] <= 0;
                 end
-                // IRQ4
-                irq[4] <= 1;
+                if (p3m[6]) begin
+                    if (sioRxState != SIO_IDLE) begin
+                        sioRxCounter <= sioRxCounter + 1'b1;
+                        if (sioRxCounter == 7) begin
+                            sioRxState <= sioRxState + 1'b1;
+                            if (sioRxState == SIO_START) begin
+                                // no start bit any more -> restart
+                                if (serialIn) begin
+                                    sioRxState <= SIO_IDLE;
+                                end
+                            end
+                            else if (sioRxState == SIO_STOP1) begin
+                                sioRxState <= SIO_IDLE;
+                                if (serialIn) begin
+                                    sioRx <= sioRxShiftRegister;
+                                    // IRQ3
+                                    irq[3] <= 1;
+                                end
+                            end
+                            else begin
+                                sioRxShiftRegister <= {serialIn, sioRxShiftRegister[7:1]};
+                            end
+                        end
+                    end
+                    if (sioTxState != SIO_IDLE) begin
+                        sioTxCounter <= sioTxCounter + 1'b1;
+                        if (sioTxCounter == 15) begin
+                            if (sioTxState == SIO_STOP2) begin
+                                // IRQ4
+                                irq[4] <= 1;
+                                sioTxState <= SIO_IDLE;
+                            end
+                            else begin
+                                serialOut <= sioTx[0];
+                                sioTx <= {1'b1, sioTx[7:1]};
+                                sioTxState <= sioTxState + 1'b1;
+                            end
+                        end
+                    end
+                end
+                else begin
+                    // IRQ4
+                    irq[4] <= 1;
+                end
             end
             else begin
                 t0counter <= t0counter - 9'b1;
@@ -60,5 +102,16 @@
         end
         else begin
             pre1counter <= pre1counter - 9'b1;
+        end
+    end
+
+// SIO RX =================================================
+    sioRxPrevIn <= serialIn;
+    if (sioRxState == SIO_IDLE) begin
+        if (sioRxPrevIn & ~serialIn) begin
+            sioRxState <= sioRxState + 1'b1;
+            sioRxCounter <= 0;
+            // reload T0
+            tmr[0] <= 1;
         end
     end

@@ -75,6 +75,8 @@ on a Tang Tano 9k:
   - [x] basics
   - [ ] special external modes
   - [ ] UART
+    - [x] basics
+    - [ ] parity handling
 - [ ] interrupt handling
   - [x] basics (launching the right interrupt)
   - [ ] handle priorities

@@ -1,0 +1,1093 @@
+VCD info: dumpfile SoC.vcd opened for output.
+
+000c: read 1st byte e6
+000d: read 2nd byte f7
+000e: read 3rd byte 40
+  e6 f7 40
+    ld f7, #40
+    reg[f7] = 40
+
+000f: read 1st byte e6
+0010: read 2nd byte f4
+0011: read 3rd byte 01
+  e6 f4 01
+    ld f4, #01
+    reg[f4] = 01
+
+0012: read 1st byte e6
+0013: read 2nd byte f5
+0014: read 3rd byte 05
+  e6 f5 05
+    ld f5, #05
+    reg[f5] = 05
+
+0015: read 1st byte e6
+0016: read 2nd byte f1
+0017: read 3rd byte 03
+  e6 f1 03
+    ld f1, #03
+    reg[f1] = 03
+
+0018: read 1st byte e6
+loading timer t0 with 01 (pre: 01)
+0019: read 2nd byte f0
+timer t0 overflow
+001a: read 3rd byte a5
+  e6 f0 a5
+    ld f0, #a5
+timer t0 overflow
+    reg[f0] = a5
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+timer t0 overflow
+001d: read 3rd byte 10
+  76 fa 10
+     tm fa, #10
+timer t0 overflow
+
+001e: read 1st byte 6b
+    alu:    00       10    =>    00
+         00000000 00010000 => 00000000
+    flags = 0100_0000
+timer t0 overflow
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+001b: read 1st byte 76
+timer t0 overflow
+001c: read 2nd byte fa
+001d: read 3rd byte 10
+timer t0 overflow
+  76 fa 10
+     tm fa, #10
+
+001e: read 1st byte 6b
+timer t0 overflow
+    alu:    10       10    =>    10
+         00010000 00010000 => 00010000
+    flags = 0000_0000
+001f: read 2nd byte fb
+  6b fb
+    jr   z, fb
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+timer t0 overflow
+0021: read 2nd byte fe
+  8b fe
+    jr    , fe
+timer t0 overflow
+timer t0 overflow
+
+0020: read 1st byte 8b
+testSoC: SUCCESS
