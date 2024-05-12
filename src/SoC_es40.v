@@ -1,9 +1,10 @@
+`default_nettype none
+
 `include "Memory.v"
 `include "Processor.v"
 `include "Ps2Decoder.v"
 `include "VbsGenerator.v"
-
-`default_nettype none
+`include "VideoRAM.v"
 
 module SoC_es40(
     input  wire        clk,
@@ -113,17 +114,33 @@ module SoC_es40(
     wire vbsSync, vbsPixel;
     wire vramStrobe, vramEnable;
     wire [7:0] vramRead;
+    wire [8:0] videoX;
+    wire [7:0] videoY;
+    wire       videoData;
+    wire       videoVisible;
     VbsGenerator vbs(
         .clk(clk),
-        .sync(vbsSync),
+        .sync(videoSync),
         .pixel(vbsPixel),
+
+        .x(videoX),
+        .y(videoY),
+        .visible(videoVisible),
+        .data(videoData)
+    );
+    VideoRAM vram(
+        .clk(clk),
         .cAddr(memAddr[12:0]),
         .cDataIn(memDataWrite),
         .cDataOut(vramRead),
         .cStrobe(vramStrobe & videoPane),
-        .cWrite(vramStrobe & memWrite & videoPane)
+        .cWrite(vramStrobe & memWrite & videoPane),
+
+        .x(videoX),
+        .y(videoY),
+        .visible(videoVisible),
+        .pixel(videoData)
     );
-    assign videoSync = vbsSync;
     assign videoPixel = videoSync & vbsPixel;
 
     // 15 14 13 12   11 10 9 8   7 6 5 4   3 2 1 0
