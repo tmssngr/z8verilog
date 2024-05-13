@@ -269,6 +269,8 @@ module Processor(
     wire [15:0] nextRelativePc = pc + { {8{second[7]}}, second };
     reg incPc = 0;
     reg loadPc = 0;
+    reg incSp = 0;
+    reg decSp = 0;
     reg canFetch = 1;
     reg readMem = 0;
     reg writeMem = 0;
@@ -369,6 +371,14 @@ module Processor(
         incPc <= 0;
         loadPc <= 0;
 
+        if (incSp) begin
+            sp <= sp + 16'b1;
+        end else if (decSp) begin
+            sp <= sp - 16'b1;
+        end
+        incSp <= 0;
+        decSp <= 0;
+
         case (fetchState)
         FETCH_INSTR0: begin
         end
@@ -407,6 +417,7 @@ module Processor(
                 opType <= OP_ISR;
                 opState <= OPSTATE0;
                 isIsr <= 1;
+                decSp <= 1;
             end
             else begin
                 second <= memDataRead;
@@ -490,6 +501,7 @@ module Processor(
                     opType <= OP_PUSH;
                     opState <= OPSTATE2;
                     canFetch <= 0;
+                    decSp <= 1;
                 end
                 4'h8: begin
 `ifdef BENCH
@@ -751,6 +763,7 @@ module Processor(
 `endif
                     opType <= OP_CALL;
                     canFetch <= 0;
+                    decSp <= 1;
                 end
                 4'hE: begin
 `ifdef BENCH
@@ -843,6 +856,7 @@ module Processor(
 `endif
                     opType <= OP_CALL;
                     canFetch <= 0;
+                    decSp <= 1;
                 end
                 4'hE: begin
 `ifdef BENCH
@@ -1256,10 +1270,10 @@ module Processor(
                 aluA <= stackInternal
                     ? readRegister8(addr[7:0])
                     : memDataRead;
+                incSp <= 1;
             end
             OPSTATE3: begin
                 aluMode <= ALU1_LD;
-                sp <= sp + 16'b1;
                 writeRegister <= 1;
                 canFetch <= 1;
             end
@@ -1270,8 +1284,10 @@ module Processor(
             OPSTATE0: begin
                 register <= readRegister8(register);
             end
+            OPSTATE1: begin
+                decSp <= 1;
+            end
             OPSTATE2: begin
-                sp <= sp - 16'b1;
             end
             OPSTATE3: begin
                 aluA <= readRegister8(register);
@@ -1370,10 +1386,23 @@ module Processor(
             // push PCL, PCH
             case (opState)
             OPSTATE0: begin
-                sp <= sp - 16'b1;
                 aluA <= pc[7:0];
             end
-            OPSTATE1,
+            OPSTATE1: begin
+                if (stackInternal) begin
+                    aluMode <= ALU1_LD;
+                    register <= spL;
+                    writeRegister <= 1;
+                end
+                else begin
+                    addr <= sp;
+                    writeMem <= 1;
+                end
+                decSp <= 1;
+            end
+            OPSTATE2: begin
+                aluA <= pc[15:8];
+            end
             OPSTATE3: begin
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
@@ -1384,10 +1413,6 @@ module Processor(
                     addr <= sp;
                     writeMem <= 1;
                 end
-            end
-            OPSTATE2: begin
-                sp <= sp - 16'b1;
-                aluA <= pc[15:8];
             end
             OPSTATE4: begin
                 addr[15:8] = isCallDA 
@@ -1411,9 +1436,9 @@ module Processor(
             OPSTATE0: begin
                 addr <= sp;
                 readMem <= ~stackInternal;
+                incSp <= 1;
             end
             OPSTATE1: begin
-                sp <= sp + 16'b1;
                 readMem <= ~stackInternal;
                 opType <= OP_RET;
                 opState <= OPSTATE0;
@@ -1435,9 +1460,9 @@ module Processor(
                 end
                 addr <= sp;
                 readMem <= ~stackInternal;
+                incSp <= 1;
             end
             OPSTATE1: begin
-                sp <= sp + 16'b1;
                 readMem <= ~stackInternal;
             end
             OPSTATE2: begin
@@ -1446,9 +1471,9 @@ module Processor(
                     : memDataRead; // temp
                 addr <= sp;
                 readMem <= ~stackInternal;
+                incSp <= 1;
             end
             OPSTATE3: begin
-                sp <= sp + 16'b1;
                 readMem <= ~stackInternal;
             end
             OPSTATE4: begin
@@ -1536,8 +1561,8 @@ module Processor(
             // todo check IPR
             case (opState)
             OPSTATE0: begin
-                sp <= sp - 16'b1;
                 pc <= pc - (isInstrSize1 ? 16'd1 : 16'd2);
+                decSp <= 1;
             end
             OPSTATE1: begin
                 aluA <= pc[7:0];
@@ -1550,7 +1575,7 @@ module Processor(
                     addr <= sp;
                     writeMem <= 1;
                 end
-                sp <= sp - 16'b1;
+                decSp <= 1;
             end
             OPSTATE2: begin
                 aluA <= pc[15:8];
@@ -1563,7 +1588,6 @@ module Processor(
                     addr <= sp;
                     writeMem <= 1;
                 end
-                sp <= sp - 16'b1;
             end
             OPSTATE3: begin
                 aluA <= flags;
@@ -1648,7 +1672,9 @@ module Processor(
             writeMem <= 0;
             incPc <= 0;
             loadPc <= 0;
-            fetchState <= 0;
+            incSp <= 0;
+            decSp <= 0;
+            fetchState <= FETCH_INSTR0;
             opType <= 0;
             opState <= 0;
             writeFlags <= 0;
