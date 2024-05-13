@@ -804,7 +804,7 @@ module Processor(
                     $display("    ld @%h, %h", third, second);
                     expectedCycles <= 10;
 `endif
-                    aluA <= readRegister8(r8(second));
+                    register <= readRegister8(r8(third));
                     opType <= OP_LD;
                     canFetch <= 0;
                 end
@@ -1111,7 +1111,7 @@ module Processor(
                         register <= r8(third);
                     end
                     4'hF: begin
-                        register <= readRegister8(r8(third));
+                        aluA <= readRegister8(r8(second));
                     end
                     endcase
                 end

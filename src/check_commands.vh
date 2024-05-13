@@ -311,10 +311,10 @@ task chk_ld_IR_R;
     input[7:0] value;
     begin
         chk_3byteOp('hF5, src, dst);
-            `assert(uut.proc.aluA, value);
             `assertOpType(OP_LD);
             `assertOpState(OPSTATE0);
         @(negedge clk);
+            `assert(uut.proc.aluA, value);
             `assert(uut.proc.aluMode, ALU1_LD);
             `assert(uut.proc.register, register);
             `assert(uut.proc.writeRegister, 1);
