@@ -41,7 +41,8 @@ module Processor(
     reg  [7:0] instruction;
     wire [3:0] instrH = instruction[7:4];
     wire [3:0] instrL = instruction[3:0];
-    wire isCallDA = instrH == 4'hD && instrL == 4'h6;
+    wire isCallIRR = instrH == 4'hD & instrL == 4'h4;
+    wire isCallDA = instrH == 4'hD & instrL == 4'h6;
     wire isInstrSize1 = firstL[3:1] == 3'b111;
     // call IRR is treated as 3 byte command
     wire isInstrSize3 = firstL[3:2] == 2'b01  // columns 04-07
@@ -430,7 +431,7 @@ module Processor(
         end
 
         FETCH_THIRD1: begin
-            incPc <= instruction != 8'hD4;
+            incPc <= ~isCallIRR;
         end
 
         FETCH_THIRD2: begin
