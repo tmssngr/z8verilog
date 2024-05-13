@@ -1274,14 +1274,13 @@ module Processor(
                 sp <= sp - 16'b1;
             end
             OPSTATE3: begin
+                aluA <= readRegister8(register);
                 if (stackInternal) begin
                     aluMode <= ALU1_LD;
-                    aluA <= readRegister8(register);
                     register <= spL;
                     writeRegister <= 1;
                 end
                 else begin
-                    aluA <= readRegister8(register);
                     addr <= sp;
                     writeMem <= 1;
                 end
