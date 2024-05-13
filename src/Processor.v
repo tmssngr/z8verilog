@@ -24,7 +24,9 @@ module Processor(
     wire [7:0] spH = sp[15:8];
     wire [7:0] spL = sp[7:0];
 
-    reg [15:0] addr;
+    reg [7:0] addrL;
+    reg [7:0] addrH;
+    wire [15:0] addr = {addrH, addrL};
 
     reg [7:0] first;
     wire [3:0] firstH = first[7:4];
@@ -470,7 +472,7 @@ module Processor(
                     $display("    jp @%h", second);
                     expectedCycles <= 8;
 `endif
-                    addr[7:0] = readRegister8(r8({second[7:1], 1'b1}));
+                    addrL = readRegister8(r8({second[7:1], 1'b1}));
                     opType <= OP_JP_IRR;
                     canFetch <= 0;
                 end
@@ -1263,7 +1265,7 @@ module Processor(
         OP_POP: begin
             case (opState)
             OPSTATE0: begin
-                addr <= sp;
+                {addrH, addrL} <= sp;
                 readMem <= ~stackInternal;
             end
             OPSTATE1: begin
@@ -1271,7 +1273,7 @@ module Processor(
             end
             OPSTATE2: begin
                 aluA <= stackInternal
-                    ? readRegister8(addr[7:0])
+                    ? readRegister8(addrL)
                     : memDataRead;
                 incSp <= 1;
             end
@@ -1300,7 +1302,7 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
             end
@@ -1323,13 +1325,13 @@ module Processor(
 `ifdef BENCH
                 expectedCycles <= flagsOut[FLAG_INDEX_Z] ? 10 : 12;
 `endif
-                addr[7:0] = nextRelativePcL;
+                addrL = nextRelativePcL;
                 if (flagsOut[FLAG_INDEX_Z]) begin
                     opState <= OPSTATE4;
                 end
             end
             OPSTATE3: begin
-                addr[15:8] = nextRelativePcH;
+                addrH = nextRelativePcH;
                 loadPc <= 1;
             end
             OPSTATE4: begin
@@ -1341,7 +1343,7 @@ module Processor(
         OP_JP_IRR: begin
             case (opState)
             OPSTATE0: begin
-                addr[15:8] = readRegister8(r8({second[7:1], 1'b0}));
+                addrH = readRegister8(r8({second[7:1], 1'b0}));
                 loadPc <= 1;
                 canFetch <= 1;
                 fetchState <= FETCH_INSTR0;
@@ -1351,7 +1353,8 @@ module Processor(
         OP_JP: begin
             case (opState)
             OPSTATE0: begin
-                addr <= {second, third};
+                addrL <= third;
+                addrH <= second;
                 if (takeBranch) begin
                     loadPc <= 1;
                     fetchState <= FETCH_INSTR0;
@@ -1368,10 +1371,10 @@ module Processor(
         OP_JR: begin
             case (opState)
             OPSTATE0: begin
-                addr[7:0] = nextRelativePcL;
+                addrL = nextRelativePcL;
             end
             OPSTATE1: begin
-                addr[15:8] = nextRelativePcH;
+                addrH = nextRelativePcH;
             end
             OPSTATE3: begin
                 if (takeBranch) begin
@@ -1400,7 +1403,7 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
                 decSp <= 1;
@@ -1415,17 +1418,17 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
             end
             OPSTATE4: begin
-                addr[15:8] = isCallDA 
+                addrH = isCallDA 
                     ? second
                     : readRegister8(r8({second[7:1], 1'b0}));
             end
             OPSTATE5: begin
-                addr[7:0] = isCallDA
+                addrL = isCallDA
                     ? third
                     : readRegister8(r8({second[7:1], 1'b1}));
                 loadPc <= 1;
@@ -1439,7 +1442,7 @@ module Processor(
             // flags, PCH, PCL
             case (opState)
             OPSTATE0: begin
-                addr <= sp;
+                {addrH, addrL} <= sp;
                 readMem <= ~stackInternal;
                 incSp <= 1;
             end
@@ -1458,12 +1461,12 @@ module Processor(
                 if (instrH[0]) begin
                     aluMode <= ALU1_LD;
                     aluA <= stackInternal
-                        ? readRegister8(addr[7:0])
+                        ? readRegister8(addrL)
                         : memDataRead;
                     register <= FLAGS;
                     writeRegister <= 1;
                 end
-                addr <= sp;
+                {addrH, addrL} <= sp;
                 readMem <= ~stackInternal;
                 incSp <= 1;
             end
@@ -1472,9 +1475,9 @@ module Processor(
             end
             OPSTATE2: begin
                 aluA <= stackInternal
-                    ? readRegister8(addr[7:0])
+                    ? readRegister8(addrL)
                     : memDataRead; // temp
-                addr <= sp;
+                {addrH, addrL} <= sp;
                 readMem <= ~stackInternal;
                 incSp <= 1;
             end
@@ -1482,9 +1485,9 @@ module Processor(
                 readMem <= ~stackInternal;
             end
             OPSTATE4: begin
-                addr[15:8] <= aluA;
-                addr[7:0] <= stackInternal
-                    ? readRegister8(addr[7:0])
+                addrH <= aluA;
+                addrL <= stackInternal
+                    ? readRegister8(addrL)
                     : memDataRead;
                 loadPc <= 1;
                 fetchState <= FETCH_INSTR0;
@@ -1503,10 +1506,10 @@ module Processor(
         OP_LDC: begin
             case (opState)
             OPSTATE0: begin
-                addr[15:8] <= readRegister4({secondL[3:1], 1'b0});
+                addrH <= readRegister4({secondL[3:1], 1'b0});
             end
             OPSTATE1: begin
-                addr[7:0] <= readRegister4({secondL[3:1], 1'b1});
+                addrL <= readRegister4({secondL[3:1], 1'b1});
                 if (instrH[0] == 0) begin
                     readMem <= 1;
                 end
@@ -1538,7 +1541,7 @@ module Processor(
             end
             OPSTATE5: begin
                 if (instrL[0] == 1) begin
-                    aluA <= addr[7:0];
+                    aluA <= addrL;
                     register <= r4({secondL[3:1], 1'b1});
                     aluMode <= ALU1_INC;
                     writeRegister <= 1;
@@ -1549,7 +1552,7 @@ module Processor(
             end
             OPSTATE6: begin
                 if (instrL[0] == 1) begin
-                    aluA <= addr[15:8];
+                    aluA <= addrH;
                     aluB <= aluOut;
                     register[0] <= 1'b0;
                     aluMode <= ALU1_INCW;
@@ -1577,7 +1580,7 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
                 decSp <= 1;
@@ -1590,7 +1593,7 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
             end
@@ -1602,33 +1605,34 @@ module Processor(
                     writeRegister <= 1;
                 end
                 else begin
-                    addr <= sp;
+                    {addrH, addrL} <= sp;
                     writeMem <= 1;
                 end
             end
             OPSTATE4: begin
+                addrH <= 0;
                 if (enabledAndRequestedInterrupts[0]) begin
-                    addr <= 16'h0000;
+                    addrL <= 8'h00;
                     irq[0] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[1]) begin
-                    addr <= 16'h0002;
+                    addrL <= 8'h02;
                     irq[1] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[2]) begin
-                    addr <= 16'h0004;
+                    addrL <= 8'h04;
                     irq[2] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[3]) begin
-                    addr <= 16'h0006;
+                    addrL <= 8'h06;
                     irq[3] <= 0;
                 end
                 else if (enabledAndRequestedInterrupts[4]) begin
-                    addr <= 16'h0008;
+                    addrL <= 8'h08;
                     irq[4] <= 0;
                 end
                 else begin
-                    addr <= 16'h000A;
+                    addrL <= 8'h0A;
                     irq[5] <= 0;
                 end
                 readMem <= 1;
@@ -1638,7 +1642,7 @@ module Processor(
             end
             OPSTATE6: begin
                 pc[15:8] <= memDataRead;
-                addr[0] <= 1;
+                addrL[0] <= 1;
                 readMem <= 1;
             end
             OPSTATE7: begin
