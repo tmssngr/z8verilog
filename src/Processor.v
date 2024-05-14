@@ -728,47 +728,46 @@ module Processor(
             // Column 4
             // ================================================================
             4'h4: begin
+                canFetch <= 0;
+                register <= r8(second);
+                
+                if (isAlu2Row) begin
+                    opType <= OP_ALU2;
+                end
+                else if (instrH == 4'hE) begin
+                    opType <= OP_LD;
+                end
+                else begin
+                    opType <= OP_CALL;
+                    decSp <= 1;
+                end
+
+`ifdef BENCH
                 case (instrH)
                 4'h8,
                 4'h9,
                 4'hC,
                 4'hF: begin
-`ifdef BENCH
                     $display("    ? %h", instruction);
-`endif
                     opType <= OP_ILLEGAL;
                 end
                 4'hD: begin
-`ifdef BENCH
                     $display("    call @%h", second);
                     expectedCycles <= 20;
-`endif
-                    opType <= OP_CALL;
-                    canFetch <= 0;
-                    decSp <= 1;
                 end
                 4'hE: begin
-`ifdef BENCH
                     $display("    ld %h, %h", third, second);
                     expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 // x4
                 default: begin
-`ifdef BENCH
                     $display("    %s %h, %h",
                             alu2OpName(instrH),
                             third, second);
                     expectedCycles <= 10;
-`endif
-                    register <= r8(second);
-                    opType <= OP_ALU2;
-                    canFetch <= 0;
                 end
                 endcase
+`endif
             end
             // ================================================================
             // Column 5
