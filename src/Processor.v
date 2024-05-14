@@ -865,56 +865,52 @@ module Processor(
             // Column 7
             // ================================================================
             4'h7: begin
+                canFetch <= 0;
+
+                if (isAlu2Row) begin
+                    opType <= OP_ALU2;
+                end
+                else begin
+                    opType <= OP_LD;
+                end
+
+                if (isAlu2Row | instrH == 4'hE) begin
+                    register <= readRegister8(r8(second));
+                end
+                else begin
+                    register <= readRegister4(secondL);
+                end
+
+`ifdef BENCH
                 case (instrH)
                 4'h8,
                 4'h9,
                 4'hF: begin
-`ifdef BENCH
                     $display("    ? %h", instruction);
-`endif
                     opType <= OP_ILLEGAL;
                 end
                 4'hC: begin
-`ifdef BENCH
                     $display("    ld r%h, @r%h+%h", 
                             secondH, secondL, third);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister4(secondL);
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 4'hD: begin
-`ifdef BENCH
                     $display("    ld @r%h+%h, r%h", 
                             secondL, third, secondH);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister4(secondL);
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 4'hE: begin
-`ifdef BENCH
                     $display("    ld @%h, #%h", second, third);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 default: begin
-`ifdef BENCH
                     $display("    %s @%h, #%h",
                             alu2OpName(instrH),
                             second, third);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    opType <= OP_ALU2;
-                    canFetch <= 0;
                 end
                 endcase
+`endif
             end
             // ================================================================
             // Column 8
