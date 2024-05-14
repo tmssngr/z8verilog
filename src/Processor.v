@@ -47,6 +47,7 @@ module Processor(
     wire [3:0] instrL = instruction[3:0];
     wire isCallIRR = instrH == 4'hD & instrL == 4'h4;
     wire isCallDA = instrH == 4'hD & instrL == 4'h6;
+    wire isAlu2Row = ~instrH[3] || instrH[2:1] == 2'b01 /*A or B*/;
     wire isInstrSize1 = firstL[3:1] == 3'b111;
     // call IRR is treated as 3 byte command
     wire isInstrSize3 = firstL[3:2] == 2'b01  // columns 04-07
@@ -613,66 +614,52 @@ module Processor(
             // Column 2
             // ================================================================
             4'h2: begin
+                if (isAlu2Row) begin
+                    register <= r4(secondL);
+                    opType <= OP_ALU2;
+                end
+                else begin
+                    register <= r4(secondH);
+                    opType <= OP_LDC;
+                    canFetch <= 0;
+                end
+
+`ifdef BENCH
                 case (instrH)
                 4'h8: begin
-`ifdef BENCH
                     $display("    lde r%h, Irr%h",
                             secondH, secondL);
                     expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    opType <= OP_LDC;
-                    canFetch <= 0;
                 end
                 4'h9: begin
-`ifdef BENCH
                     $display("    lde Irr%h, r%h",
                             secondL, secondH);
                     expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    opType <= OP_LDC;
-                    canFetch <= 0;
                 end
                 4'hC: begin
-`ifdef BENCH
                     $display("    ldc r%h, Irr%h",
                             secondH, secondL);
                     expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    opType <= OP_LDC;
-                    canFetch <= 0;
                 end
                 4'hD: begin
-`ifdef BENCH
                     $display("    ldc Irr%h, r%h",
                             secondL, secondH);
                     expectedCycles <= 12;
-`endif
-                    register <= r4(secondH);
-                    opType <= OP_LDC;
-                    canFetch <= 0;
                 end
                 4'hE,
                 4'hF: begin
-`ifdef BENCH
                     $display("    ? %h", second);
-`endif
                     opType <= OP_ILLEGAL;
                 end
                 // x2
                 default: begin
-`ifdef BENCH
                     $display("    %s r%h, r%h",
                             alu2OpName(instrH),
                             secondH, secondL);
                     expectedCycles <= 6;
-`endif
-                    register <= r4(secondL);
-                    opType <= OP_ALU2;
                 end
                 endcase
+`endif
             end
             // ================================================================
             // Column 3
