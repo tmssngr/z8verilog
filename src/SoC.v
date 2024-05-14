@@ -9,7 +9,9 @@ module SoC(
     input  wire        reset,
     output wire [15:0] addr,
     output wire  [7:0] port2,
-    output wire  [3:0] port3
+    output wire  [3:0] port3,
+    input  wire        serialIn,
+    output wire        serialOut
 );
     wire [15:0] memAddr;
     wire [7:0]  memDataRead, rom00Read, rom08Read, ramRead;
@@ -69,6 +71,8 @@ module SoC(
         .memDataWrite(memDataWrite),
         .memWrite(memWrite),
         .memStrobe(memStrobe),
+        .serialIn(serialIn),
+        .serialOut(serialOut),
         .isIsr(isIsr),
         .port2Out(port2),
         .port3Out(port3)

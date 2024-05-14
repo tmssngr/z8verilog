@@ -27,6 +27,7 @@ call :test SoC push_pop_external
 call :test SoC ret
 call :test SoC ret_external
 call :test SoC timer
+call :test SoC sio
 call :test SoC isr
 call :test SoC isr_external
 call :test SoC_tiny u8830

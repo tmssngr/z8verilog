@@ -1,6 +1,8 @@
 module testSoC();
 
     reg clk = 0;
+    reg serialIn = 1;
+    wire serialOut;
 
 `include "assert.vh"
 `include "alu.vh"
@@ -10,7 +12,9 @@ module testSoC();
 
     SoC uut(
         .clk(clk),
-        .reset(1'b0)
+        .reset(1'b0),
+        .serialIn(serialIn),
+        .serialOut(serialOut)
     );
 
     always

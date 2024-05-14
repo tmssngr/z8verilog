@@ -46,3 +46,16 @@ localparam OPSTATE7 = OPSTATE6 + 1;
 localparam OPSTATE8 = OPSTATE7 + 1;
 localparam OPSTATE9 = OPSTATE8 + 1;
 localparam OPSTATE10 = OPSTATE9 + 1;
+
+localparam SIO_IDLE  = 0;
+localparam SIO_START = SIO_IDLE  + 1;
+localparam SIO_BIT0  = SIO_START + 1;
+localparam SIO_BIT1  = SIO_BIT0  + 1;
+localparam SIO_BIT2  = SIO_BIT1  + 1;
+localparam SIO_BIT3  = SIO_BIT2  + 1;
+localparam SIO_BIT4  = SIO_BIT3  + 1;
+localparam SIO_BIT5  = SIO_BIT4  + 1;
+localparam SIO_BIT6  = SIO_BIT5  + 1;
+localparam SIO_BIT7  = SIO_BIT6  + 1;
+localparam SIO_STOP1 = SIO_BIT7  + 1;
+localparam SIO_STOP2 = SIO_STOP1 + 1;

@@ -10,6 +10,8 @@ module Processor(
     output wire  [7:0] memDataWrite,
     output wire        memWrite,
     output wire        memStrobe,
+    input  wire        serialIn,
+    output reg         serialOut,
     output reg         isIsr,
     output wire  [7:0] port2Out,
     output wire  [3:0] port3Out
@@ -56,12 +58,32 @@ module Processor(
     reg [8:0] t0counter = 0;
     reg [7:0] t0load = 0;
 
+    task loadT0;
+        begin
+`ifdef BENCH
+            $display("loading timer t0 with %h (pre: %h)", t0load, pre0[7:2]);
+`endif
+            pre0counter <= { pre0[7:2] == 0, pre0 | 2'b11 };
+            t0counter <= { t0load == 0, t0load };
+        end
+    endtask;
+
     reg [8:0] pre1counter = 0;
     reg [7:0] pre1 = 0;
     reg [8:0] t1counter = 0;
     reg [7:0] t1load = 0;
 
     reg [7:0] tmr = 0;
+
+    reg [7:0] sioRx = 8'hFF;
+    reg [3:0] sioRxState;
+    reg [3:0] sioRxCounter;
+    reg [7:0] sioRxShiftRegister;
+    reg       sioRxPrevIn = 0;
+
+    reg [7:0] sioTx;
+    reg [3:0] sioTxState;
+    reg [3:0] sioTxCounter;
 
     reg [7:0] ipr = 0;
     reg [7:0] irq = 0;
@@ -139,7 +161,7 @@ module Processor(
         2:            readRegister8 = port2;
         3:            readRegister8 = port3;
         8'b0???_????: readRegister8 = registers[r[6:0]];
-        // SIO
+        SIO:          readRegister8 = sioRx;
         // TMR is not readable
         T1:           readRegister8 = t1counter[7:0];
         // PRE1
@@ -303,13 +325,25 @@ module Processor(
 `endif
             casez (register)
             8'b0???_????: registers[register] <= aluOut;
-            //SIO:          sioOut              <= aluOut;
+            SIO: begin
+                sioTx                         <= aluOut;
+                sioTxCounter <= 0;
+                sioTxState <= SIO_START;
+                // reload T0
+                tmr[0] <= 1;
+            end
             TMR:          tmr                 <= aluOut;
             T1:           t1load              <= aluOut;
             PRE1:         pre1                <= aluOut;
             T0:           t0load              <= aluOut;
             PRE0:         pre0                <= aluOut;
-            P3M:          p3m                 <= aluOut;
+            P3M: begin
+                p3m                           <= aluOut;
+                if (p3m[7] != aluOut[7]) begin
+                    sioTxState <= SIO_IDLE;
+                    sioRxState <= SIO_IDLE;
+                end
+            end
             P01M:         p01m                <= aluOut;
             IPR:          ipr                 <= aluOut;
             IRQ:          irq                 <= aluOut;
@@ -1653,6 +1687,12 @@ module Processor(
             opState <= 0;
             writeFlags <= 0;
             writeRegister <= 0;
+
+            serialOut <= 1;
+            sioRx <= 8'hFF;
+            sioRxPrevIn <= 0;
+            sioRxState <= SIO_IDLE;
+            sioTxState <= SIO_IDLE;
 
             isIsr <= 0;
         end

@@ -21,6 +21,15 @@ module top(
         .clkoutd(clkDiv)
     );
 
+    wire serialInData;
+    Debouncer #(
+        .counterBits(4)
+    ) serialInDebouncer(
+        .clk(clk),
+        .in(serialIn),
+        .out(serialInData)
+    );
+
     wire       ps2Clk;
     wire       ps2Data;
     Debouncer2 ps2debouncer(
@@ -51,7 +60,7 @@ module top(
         .port3(port3),
         .ps2Clk(ps2Clk),
         .ps2Data(ps2Data),
-        .serialIn(serialIn),
+        .serialIn(serialInData),
         .serialOut(serialOut),
 
         .debugShift(debugShift),
