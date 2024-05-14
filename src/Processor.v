@@ -773,48 +773,49 @@ module Processor(
             // Column 5
             // ================================================================
             4'h5: begin
+                canFetch <= 0;
+
+                if (isAlu2Row | !instrH[0]) begin
+                    register <= readRegister8(r8(second));
+                end
+                else begin
+                    register <= readRegister8(r8(third));
+                end
+
+                if (isAlu2Row) begin
+                    opType <= OP_ALU2;
+                end
+                else begin
+                    opType <= OP_LD;
+                end
+
+`ifdef BENCH
                 case (instrH)
                 4'h8,
                 4'h9,
                 4'hC,
                 4'hD:
                 begin
-`ifdef BENCH
                     $display("    ? %h", instruction);
-`endif
                     opType <= OP_ILLEGAL;
                 end
                 4'hE: begin
-`ifdef BENCH
                     $display("    ld %h, @%h", third, second);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 4'hF: begin
-`ifdef BENCH
                     $display("    ld @%h, %h", third, second);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(third));
-                    opType <= OP_LD;
-                    canFetch <= 0;
                 end
                 // x5
                 default: begin
-`ifdef BENCH
                     $display("    %s %h, @%h",
                             alu2OpName(instrH),
                             third, second);
                     expectedCycles <= 10;
-`endif
-                    register <= readRegister8(r8(second));
-                    opType <= OP_ALU2;
-                    canFetch <= 0;
                 end
                 endcase
+`endif
             end
             // ================================================================
             // Column 6
