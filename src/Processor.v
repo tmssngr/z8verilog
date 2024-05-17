@@ -66,7 +66,7 @@ module Processor(
             pre0counter <= { pre0[7:2] == 0, pre0 | 2'b11 };
             t0counter <= { t0load == 0, t0load };
         end
-    endtask;
+    endtask
 
     reg [8:0] pre1counter = 0;
     reg [7:0] pre1 = 0;
