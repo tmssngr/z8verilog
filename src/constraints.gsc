@@ -1,0 +1,1 @@
+GLOBAL syn_looplimit=3000
