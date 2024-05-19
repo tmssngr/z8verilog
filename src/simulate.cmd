@@ -33,6 +33,7 @@ call :test SoC isr_external
 call :test SoC_tiny u8830
 call :test SoC_tiny jtc2k-isr
 call :test SoC_tiny jtc2k
+call :test SoC_es40 jtc6k
 
 pause
 goto :repeat
