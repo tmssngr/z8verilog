@@ -128,6 +128,134 @@ module RAM8k(
                      enable2 ? dataOut2 : dataOut3;
 endmodule
 
+module DualPortRAM2k(
+    input  wire        r_clk,
+    input  wire [10:0] r_addr,
+    output reg   [7:0] r_data,
+    input  wire        r_strobe,
+
+    input  wire        clk,
+    input  wire [10:0] addr,
+    input  wire  [7:0] dataIn,
+    output reg   [7:0] dataOut,
+    input  wire        write,
+    input  wire        strobe
+);
+    reg [7:0] memory[0 : 1 << 12 - 1];
+
+    always @(posedge r_clk) begin
+        if (r_strobe) begin
+            r_data <= memory[r_addr];
+        end
+    end
+
+    always @(posedge clk) begin
+        if (strobe) begin
+            if (write) begin
+                memory[addr] <= dataIn;
+                dataOut <= dataIn;
+            end
+            else begin
+                dataOut <= memory[addr];
+            end
+        end
+    end
+endmodule
+
+module DualPortRAM8k(
+    input  wire        r_clk,
+    input  wire [12:0] r_addr,
+    output wire  [7:0] r_data,
+    input  wire        r_strobe,
+
+    input  wire        clk,
+    input  wire [12:0] addr,
+    input  wire  [7:0] dataIn,
+    output wire  [7:0] dataOut,
+    input  wire        write,
+    input  wire        strobe
+);
+    wire r_enable0 = r_addr[12:11] == 2'b00;
+    wire r_enable1 = r_addr[12:11] == 2'b01;
+    wire r_enable2 = r_addr[12:11] == 2'b10;
+    wire r_enable3 = r_addr[12:11] == 2'b11;
+
+    wire [7:0] r_data0;
+    wire [7:0] r_data1;
+    wire [7:0] r_data2;
+    wire [7:0] r_data3;
+
+    wire enable0 = addr[12:11] == 2'b00;
+    wire enable1 = addr[12:11] == 2'b01;
+    wire enable2 = addr[12:11] == 2'b10;
+    wire enable3 = addr[12:11] == 2'b11;
+
+    wire [7:0] dataOut0;
+    wire [7:0] dataOut1;
+    wire [7:0] dataOut2;
+    wire [7:0] dataOut3;
+
+    DualPortRAM2k ram0(
+        .r_clk(r_clk),
+        .r_addr(r_addr[10:0]),
+        .r_data(r_data0),
+        .r_strobe(r_enable0 & r_strobe),
+
+        .clk(clk),
+        .addr(addr[10:0]),
+        .dataIn(dataIn),
+        .dataOut(dataOut0),
+        .write(enable0 & write),
+        .strobe(enable0 & strobe)
+    );
+    DualPortRAM2k ram1(
+        .r_clk(r_clk),
+        .r_addr(r_addr[10:0]),
+        .r_data(r_data1),
+        .r_strobe(r_enable1 & r_strobe),
+
+        .clk(clk),
+        .addr(addr[10:0]),
+        .dataIn(dataIn),
+        .dataOut(dataOut1),
+        .write(enable1 & write),
+        .strobe(enable1 & strobe)
+    );
+    DualPortRAM2k ram2(
+        .r_clk(r_clk),
+        .r_addr(r_addr[10:0]),
+        .r_data(r_data2),
+        .r_strobe(r_enable2 & r_strobe),
+
+        .clk(clk),
+        .addr(addr[10:0]),
+        .dataIn(dataIn),
+        .dataOut(dataOut2),
+        .write(enable2 & write),
+        .strobe(enable2 & strobe)
+    );
+    DualPortRAM2k ram3(
+        .r_clk(r_clk),
+        .r_addr(r_addr[10:0]),
+        .r_data(r_data3),
+        .r_strobe(r_enable3 & r_strobe),
+
+        .clk(clk),
+        .addr(addr[10:0]),
+        .dataIn(dataIn),
+        .dataOut(dataOut3),
+        .write(enable3 & write),
+        .strobe(enable3 & strobe)
+    );
+
+    assign r_data = r_enable0 ? r_data0 :
+                    r_enable1 ? r_data1 :
+                    r_enable2 ? r_data2 : r_data3;
+    assign dataOut = enable0 ? dataOut0 :
+                     enable1 ? dataOut1 :
+                     enable2 ? dataOut2 : dataOut3;
+endmodule
+
 module ROM2k#(
     parameter initFile = ""
 ) (
