@@ -7,8 +7,11 @@
     <FileList>
         <File path="src/Alu.v" type="file.verilog" enable="1"/>
         <File path="src/SoC_tiny.v" type="file.verilog" enable="1"/>
+        <File path="src/display_signal.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
+        <File path="src/hdmi.v" type="file.verilog" enable="1"/>
         <File path="src/top.v" type="file.verilog" enable="1"/>
         <File path="src/tangnano9k.cst" type="file.cst" enable="1"/>
+        <File path="src/constraints.gsc" type="file.gsc" enable="1"/>
     </FileList>
 </Project>

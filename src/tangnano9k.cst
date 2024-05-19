@@ -32,5 +32,14 @@ IO_PORT "rawPs2Data" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
 IO_LOC  "btn" 3;
 IO_PORT "btn" PULL_MODE=UP;
 
+IO_LOC  "hdmi_tx_p[0]" 71,70;
+IO_PORT "hdmi_tx_p[0]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[1]" 73,72;
+IO_PORT "hdmi_tx_p[1]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[2]" 75,74;
+IO_PORT "hdmi_tx_p[2]" PULL_MODE=NONE DRIVE=8;
+IO_LOC  "hdmi_tx_p[3]" 69,68;
+IO_PORT "hdmi_tx_p[3]" PULL_MODE=NONE DRIVE=8;
+
 IO_LOC  "clk" 52;
 IO_PORT "clk" PULL_MODE=UP;

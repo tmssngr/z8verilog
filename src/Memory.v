@@ -1,3 +1,6 @@
+`ifndef MEMORY
+`define MEMORY
+
 `default_nettype none
 
 module Memory #(
@@ -146,3 +149,5 @@ module ROM2k#(
         .strobe(strobe)
     );
 endmodule
+
+`endif
