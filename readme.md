@@ -9,6 +9,11 @@ So far it already can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku
 on a Tang Tano 9k:
 ![Tang Nano 9k](images/schematic-ju+te.png)
 
+## Notes for Gowin-IDE
+
+- in *Project | Configuration*, page *Synthesize* set *Verilog Language* to **System Verilog 2017**
+
+- use right most toolbar buttons to *Synthesize*, *Run Place and Route*, or *Run All*
 
 ## State of the Z8 Softcore
 
