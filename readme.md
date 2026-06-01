@@ -9,6 +9,13 @@ So far it already can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku
 on a Tang Tano 9k:
 ![Tang Nano 9k](images/schematic-ju+te.png)
 
+## Notes for Gowin-IDE 1.9.11.03 Education
+- in *Project | Configuration*, page *Synthesize* set *Verilog Language* to **System Verilog 2017**
+- use right most toolbar buttons to *Synthesize*, *Run Place and Route*, or *Run All*
+- Programmer:
+  - in *Cable Setting* dialog change *Port* from *USB Debugger A/0/386/null* to **USB Debugger A/1/385/null**
+  - *SRAM Program* -> temporary
+  - *Embedded Flash Mode* -> permanently
 
 ## State of the Z8 Softcore
 
