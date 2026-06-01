@@ -2,7 +2,6 @@
 
 `include "debouncer.v"
 `include "VbsGenerator.v"
-`include "VideoRAM.v"
 
 module top(
     input  wire      clk,
@@ -34,7 +33,9 @@ module top(
 
     wire       ps2Clk;
     wire       ps2Data;
-    Debouncer2 ps2debouncer(
+    Debouncer2 #(
+        .counterBits(5)
+    ) ps2debouncer(
         .clk(clk),
         .in1(rawPs2Clk),
         .in2(rawPs2Data),
@@ -54,33 +55,7 @@ module top(
     wire      debugE0;
     wire      debugF0;
 
-    wire [8:0] videoX;
-    wire [7:0] videoY;
-    wire       videoData;
-    wire       videoVisible;
-    wire       videoValid;
-    VbsGenerator vbs(
-        .clk(clkDiv),
-        .sync(videoSync),
-        .pixel(videoPixel),
-
-        .x(videoX),
-        .y(videoY),
-        .visible(videoVisible),
-        .data(videoData),
-        .valid(videoValid)
-    );
-    VideoRAM vram(
-        .clk(clkDiv),
-        .x(videoX),
-        .y(videoY),
-        .visible(videoVisible),
-        .valid(videoValid),
-        .pixel(videoData)
-    );
-
-/*
-    SoC_tiny soC(
+    SoC_es40 soC(
         .clk(clkDiv),
         .reset(~btn),
         .addr(addr),
@@ -103,17 +78,16 @@ module top(
 
     assign leds[5] = ps2Data;//port2[5];
     assign leds[4] = ps2Clk;//port2[4];
-*/    /*
+    /*
     assign leds[3] = ~debugShift;
     assign leds[2] = ~debugCtrl;
     assign leds[1] = ~debugAlt;
     */
-/*    assign leds[3] = ~port2[3];
+    assign leds[3] = ~port2[3];
     assign leds[2] = ~port2[2];
     assign leds[1] = ~port2[1];
     assign leds[0] = ~port2[0];
 
     assign videoSync = sync;
     assign videoPixel = pixel;
-*/
 endmodule
