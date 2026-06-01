@@ -18,8 +18,8 @@ module VbsGenerator_es40(
     parameter V_PIXEL_COUNT = 192;
     parameter H_BYTE_COUNT = H_PIXEL_COUNT / 8;
     parameter LAST_H_BYTE = H_BYTE_COUNT - 1;
-    parameter H_FRONT_PORCH = 94;
-    parameter V_FRONT_PORCH = 34;
+    parameter H_FRONT_PORCH = 128;
+    parameter V_FRONT_PORCH = 73;
     reg[8:0] hCounter = 0; // perfect fit 64us * 8
     reg[8:0] vCounter = 0;
 
