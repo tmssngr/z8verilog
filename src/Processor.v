@@ -97,7 +97,7 @@ module Processor(
     //                  || | || +--- Stack: 0 external,  1 internal
     //                  || | ++----- P1 Mode: 00 Output, 01 Input, 10 AD0-AD7, 11 tristate
     //                  || +-------- Memory timing: 0 normal, 1 extended
-    //                  ++---------- P04-P07 Mode: 00 output, 01 input, 1x A12-A15 
+    //                  ++---------- P04-P07 Mode: 00 output, 01 input, 1x A12-A15
     reg [7:0] p3m = 0;
     wire stackInternal = p01m[2];
     reg [7:0] port2;
@@ -439,7 +439,7 @@ module Processor(
             case (fetchState)
             FETCH_INSTR0: begin
             end
-            
+
             FETCH_INSTR1: begin
                 incPc <= canFetch;
             end
@@ -576,7 +576,7 @@ module Processor(
                     end
                     default: begin
 `ifdef BENCH
-                        $display("   %s %h", 
+                        $display("   %s %h",
                                 alu1OpName(instrH), second);
                         expectedCycles <= instrH == 4'hF ? 8 : 6;
 `endif
@@ -646,7 +646,7 @@ module Processor(
                     end
                     default: begin
 `ifdef BENCH
-                        $display("   %s @%h", 
+                        $display("   %s @%h",
                                 alu1OpName(instrH), second);
                         expectedCycles <= instrH == 4'hF ? 8 : 6;
 `endif
@@ -948,7 +948,7 @@ module Processor(
                     end
                     4'hC: begin
 `ifdef BENCH
-                        $display("    ld r%h, @r%h+%h", 
+                        $display("    ld r%h, @r%h+%h",
                                 secondH, secondL, third);
                         expectedCycles <= 10;
 `endif
@@ -958,7 +958,7 @@ module Processor(
                     end
                     4'hD: begin
 `ifdef BENCH
-                        $display("    ld @r%h+%h, r%h", 
+                        $display("    ld @r%h+%h, r%h",
                                 secondL, third, secondH);
                         expectedCycles <= 10;
 `endif
@@ -1250,7 +1250,7 @@ module Processor(
                 case (opState)
                 OPSTATE0: begin
                     aluMode <= instrH & 7;
-                    register <= instrL & 1 
+                    register <= instrL & 1
                         ? readRegister8(r8(second))
                         : r8(second);
                 end
@@ -1457,7 +1457,7 @@ module Processor(
                     aluA <= pc[15:8];
                 end
                 OPSTATE4: begin
-                    addr[15:8] = isCallDA 
+                    addr[15:8] = isCallDA
                         ? second
                         : readRegister8(r8({second[7:1], 1'b0}));
                 end
