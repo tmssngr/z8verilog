@@ -74,6 +74,7 @@ module Ps2Decoder #(
             shiftRight <= 0;
             ctrl <= 0;
             alt <= 0;
+            softReset <= 0;
         end
         else begin
             if (dataReady != prevDataReady) begin
