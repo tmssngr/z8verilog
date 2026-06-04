@@ -1,3 +1,3 @@
-    @(negedge clk);
+    cpuStep();
 
 #1000000

@@ -9,35 +9,35 @@
 	// isr
         `assertFetchState(FETCH_SECOND2);
         assertRegister(IMR, 8'h90);
-    @(negedge clk);
+    cpuStep();
 		`assertOpType(OP_ISR);
 		`assertOpState(0);
         assertRegister(IMR, 8'h10);
 		`assertPc(16'h001E);
 		`assert(uut.proc.sp, 16'h80);
 		`assert(uut.proc.canFetch, 0);
-    @(negedge clk);
+    cpuStep();
 		`assertOpState(1);
 		`assertPc(16'h001C);
 		`assert(uut.proc.sp, 16'h7F);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.register, 8'h7F);
         `assert(uut.proc.writeRegister, 1);
 		`assertOpState(2);
-    @(negedge clk);
+    cpuStep();
         `assertRegister(8'h7F, 8'h1C);
 
         `assert(uut.proc.register, 8'h7E);
         `assert(uut.proc.writeRegister, 1);
 		`assertOpState(3);
-    @(negedge clk);
+    cpuStep();
         `assertRegister(8'h7F, 8'h1C);
         `assertRegister(8'h7E, 8'h00);
 
         `assert(uut.proc.register, 8'h7D);
         `assert(uut.proc.writeRegister, 1);
 		`assertOpState(4);
-    @(negedge clk);
+    cpuStep();
         `assertRegister(8'h7F, 8'h1C); // PCL
         `assertRegister(8'h7E, 8'h00); // PCH
         `assertRegister(8'h7D, 8'h00); // FLAGS
@@ -45,19 +45,19 @@
 		`assert(uut.proc.addr, 16'h0008);
         `assert(uut.proc.readMem, 1);
 		`assertOpState(5);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.readMem, 1);
 		`assertOpState(6);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.pc[15:8], 8'h00);
 		`assert(uut.proc.addr, 16'h0009);
 
         `assert(uut.proc.readMem, 1);
 		`assertOpState(7);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.readMem, 1);
 		`assertOpState(8);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.pc, 16'h001E);
 		`assert(uut.proc.canFetch, 1);
         assertRegister(IRQ, 8'h00);

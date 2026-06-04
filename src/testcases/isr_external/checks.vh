@@ -17,24 +17,24 @@
 	// isr
         `assertFetchState(FETCH_SECOND2);
         assertRegister(IMR, 8'h90);
-    @(negedge clk);
+    cpuStep();
 		`assertOpType(OP_ISR);
 		`assertOpState(0);
         assertRegister(IMR, 8'h10);
 		`assertPc(16'h001F);
 		`assert(uut.proc.sp, 16'h0000);
 		`assert(uut.proc.canFetch, 0);
-    @(negedge clk);
+    cpuStep();
 		`assertOpState(1);
 		`assertPc(16'h001E);
 		`assert(uut.proc.sp, 16'hFFFF);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.aluA, 8'h1E);
         `assert(uut.proc.addr, 16'hFFFF);
 		`assert(uut.proc.writeMem, 1);
 		`assert(uut.proc.sp, 16'hFFFE);
 		`assertOpState(2);
-    @(negedge clk);
+    cpuStep();
         `assertRam(16'hFFFF, 8'h1E);
 
         `assert(uut.proc.aluA, 8'h00);
@@ -42,7 +42,7 @@
 		`assert(uut.proc.writeMem, 1);
 		`assert(uut.proc.sp, 16'hFFFD);
 		`assertOpState(3);
-    @(negedge clk);
+    cpuStep();
         `assertRam(16'hFFFF, 8'h1E);
         `assertRam(16'hFFFE, 8'h00);
 
@@ -50,7 +50,7 @@
         `assert(uut.proc.addr, 16'hFFFD);
     	`assert(uut.proc.writeMem, 1);
 		`assertOpState(4);
-    @(negedge clk);
+    cpuStep();
         `assertRam(16'hFFFF, 8'h1E); // PCL
         `assertRam(16'hFFFE, 8'h00); // PCH
         `assertRam(16'hFFFD, FLAG_C); // FLAGS
@@ -58,19 +58,19 @@
 		`assert(uut.proc.addr, 16'h0008);
         `assert(uut.proc.readMem, 1);
 		`assertOpState(5);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.readMem, 1);
 		`assertOpState(6);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.pc[15:8], 8'h00);
 		`assert(uut.proc.addr, 16'h0009);
 
         `assert(uut.proc.readMem, 1);
 		`assertOpState(7);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.readMem, 1);
 		`assertOpState(8);
-    @(negedge clk);
+    cpuStep();
         `assert(uut.proc.pc, 16'h0021);
 //    $display("here");
 		`assert(uut.proc.canFetch, 1);

@@ -22,13 +22,13 @@ module testSoC();
 
     initial begin
         `assert(uut.proc.autoReset, 1);
-        @(negedge clk);
+        cpuStep();
         `assert(uut.proc.autoReset, 0);
         `assertPc(16'h000C);
         chk_fetch();
 
 `include "checks.vh"
-        @(negedge clk);
+        cpuStep();
         $display("%m: SUCCESS");
         $finish(0);
     end
