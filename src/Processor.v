@@ -154,30 +154,46 @@ module Processor(
             r8 = r;
     endfunction
 
+    function [7:0] readNormalRegister8(
+        input [6:0] r
+    );
+        case (r)
+        2:       readNormalRegister8 = port2;
+        3:       readNormalRegister8 = port3;
+        default: readNormalRegister8 = registers[r];
+        endcase
+    endfunction
+
+    function [7:0] readSpecialRegister8(
+        input [7:0] r
+    );
+        case (r)
+        SIO:     readSpecialRegister8 = sioRx;
+        // TMR is not readable
+        T1:      readSpecialRegister8 = t1counter[7:0];
+        // PRE1
+        T0:      readSpecialRegister8 = t0counter[7:0];
+        // PRE0
+        P3M:     readSpecialRegister8 = p3m;
+        P01M:    readSpecialRegister8 = p01m;
+        IPR:     readSpecialRegister8 = ipr;
+        IRQ:     readSpecialRegister8 = irq;
+        IMR:     readSpecialRegister8 = imr;
+        FLAGS:   readSpecialRegister8 = flags;
+        RP:      readSpecialRegister8 = { rp, 4'h0 };
+        SPH:     readSpecialRegister8 = spH;
+        SPL:     readSpecialRegister8 = spL;
+        default: readSpecialRegister8 = 0;
+        endcase
+    endfunction
+
     function [7:0] readRegister8(
         input [7:0] r
     );
-        casez (r)
-        2:            readRegister8 = port2;
-        3:            readRegister8 = port3;
-        8'b0???_????: readRegister8 = registers[r[6:0]];
-        SIO:          readRegister8 = sioRx;
-        // TMR is not readable
-        T1:           readRegister8 = t1counter[7:0];
-        // PRE1
-        T0:           readRegister8 = t0counter[7:0];
-        // PRE0
-        P3M:          readRegister8 = p3m;
-        P01M:         readRegister8 = p01m;
-        IPR:          readRegister8 = ipr;
-        IRQ:          readRegister8 = irq;
-        IMR:          readRegister8 = imr;
-        FLAGS:        readRegister8 = flags;
-        RP:           readRegister8 = { rp, 4'h0 };
-        SPH:          readRegister8 = spH;
-        SPL:          readRegister8 = spL;
-        default:      readRegister8 = 0;
-        endcase
+        if (r[7])
+            readRegister8 = readSpecialRegister8(r);
+        else
+            readRegister8 = readNormalRegister8(r[6:0]);
     endfunction
 
     function [7:0] readRegister4(
