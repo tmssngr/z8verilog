@@ -31,7 +31,7 @@ module VbsGenerator_es23(
     assign pixel = shiftReg[7];
 
     wire[10:0] videoAddr = {yCounter[7:1], xCounter[6:3]};
-    wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0;
+    wire loadShiftReg = xRange & yRange & xCounter[2:0] == 0 & yCounter[0] == 0;
 
     always @(posedge clk) begin
         if (clkEnable & strobe) begin
