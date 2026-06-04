@@ -1,18 +1,14 @@
 `default_nettype none
 
-module Memory #(
-    parameter addrBusWidth = 8,
-    parameter isRom = 1,
-    parameter initFile = ""
-) (
-    input  wire                      clk,
-    input  wire [addrBusWidth - 1:0] addr,
-    input  wire                [7:0] dataIn,
-    output reg                 [7:0] dataOut,
-    input  wire                      write,
-    input  wire                      strobe
+module RAM2k(
+    input  wire        clk,
+    input  wire [10:0] addr,
+    input  wire  [7:0] dataIn,
+    output reg   [7:0] dataOut,
+    input  wire        write,
+    input  wire        strobe
 );
-    localparam size = 1 << addrBusWidth;
+    localparam size = 1 << 11;
     reg [7:0] memory[0 : size - 1];
 `ifdef BENCH
     integer i, file;
@@ -20,22 +16,12 @@ module Memory #(
         for (i = 0; i < size; i = i + 1) begin
             memory[i] = 8'h0;
         end
-
-        file = $fopen("memory.txt", "w");
-    end
-`endif
-
-    `include "program.vh"
-
-`ifdef BENCH
-    initial begin
-        $fclose(file);
     end
 `endif
 
     always @(posedge clk) begin
         if (strobe) begin
-            if (write & ~isRom) begin
+            if (write) begin
                 memory[addr] <= dataIn;
                 dataOut <= dataIn;
             end
@@ -44,28 +30,6 @@ module Memory #(
             end
         end
     end
-endmodule
-
-
-module RAM2k(
-    input  wire        clk,
-    input  wire [10:0] addr,
-    input  wire  [7:0] dataIn,
-    output wire  [7:0] dataOut,
-    input  wire        write,
-    input  wire        strobe
-);
-    Memory #(
-        .addrBusWidth(11),
-        .isRom(0)
-    ) ram(
-        .clk(clk),
-        .addr(addr),
-        .dataOut(dataOut),
-        .dataIn(dataIn),
-        .write(write),
-        .strobe(strobe)
-    );
 endmodule
 
 
@@ -130,19 +94,33 @@ module ROM2k#(
 ) (
     input  wire        clk,
     input  wire [10:0] addr,
-    output wire  [7:0] dataOut,
+    output reg   [7:0] dataOut,
     input  wire        strobe
 );
-    Memory #(
-        .addrBusWidth(11),
-        .isRom(1),
-        .initFile(initFile)
-    ) rom(
-        .clk(clk),
-        .addr(addr),
-        .dataOut(dataOut),
-        .dataIn(8'b0),
-        .write(1'b0),
-        .strobe(strobe)
-    );
+    localparam size = 1 << 11;
+    reg [7:0] memory[0 : size - 1];
+`ifdef BENCH
+    integer i, file;
+    initial begin
+        for (i = 0; i < size; i = i + 1) begin
+            memory[i] = 8'h0;
+        end
+
+        file = $fopen("memory.txt", "w");
+    end
+`endif
+
+    `include "program.vh"
+
+`ifdef BENCH
+    initial begin
+        $fclose(file);
+    end
+`endif
+
+    always @(posedge clk) begin
+        if (strobe) begin
+            dataOut <= memory[addr];
+        end
+    end
 endmodule
