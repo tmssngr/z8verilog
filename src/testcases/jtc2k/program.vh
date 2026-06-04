@@ -1,8 +1,8 @@
 initial begin
 	if (initFile == "rom00.mem") begin
-		$readmemh("../../ub8830.mem", memory);
+		$readmemh("../../roms/ub8830.mem", memory);
 	end
-	else if (initFile) begin
-		$readmemh(initFile, memory);
+	else if (initFile == "jtc2k-rom08.mem") begin
+		$readmemh("../../roms/jtc2k-rom08.mem", memory);
 	end
 end

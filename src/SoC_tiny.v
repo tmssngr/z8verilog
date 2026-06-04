@@ -43,7 +43,7 @@ module SoC_tiny(
     );
 
     ROM2k #(
-        .initFile("rom08.mem")
+        .initFile("jtc2k-rom08.mem")
     ) rom08(
         .clk(clk),
         .addr(memAddr[10:0]),
