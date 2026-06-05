@@ -21,8 +21,6 @@ module SoC(
     wire        rom00Enable, rom08Enable, ramEnable, keyboardEnable;
     wire        vramRead;
     wire        isIsr;
-    reg         clkDivider = 0;
-    reg [7:0]   pixels;
 
     ROM2k #(
         .initFile("rom00.mem")
