@@ -1,3 +1,6 @@
+`ifndef MEMORY
+`define MEMORY
+
 `default_nettype none
 
 module RAM2k(
@@ -131,3 +134,5 @@ module ROM2k#(
         end
     end
 endmodule
+
+`endif
