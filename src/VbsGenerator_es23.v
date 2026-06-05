@@ -57,7 +57,7 @@ module VbsGenerator_es23(
             shiftReg <= {shiftReg[6:0], 1'b0};
 
             if (yRange) begin
-                if (hCounter == 48) begin
+                if (hCounter == 80) begin
                     xRange <= 1;
                     xCounter <= 0;
                 end
@@ -85,7 +85,7 @@ module VbsGenerator_es23(
             if (hCounter == {8{1'b1}}) begin
                 if (vCounter != LINE_COUNT - 1) begin
                     vCounter <= vCounter + 1'b1;
-                    if (vCounter == 34) begin
+                    if (vCounter == 43) begin
                         yRange <= 1;
                         yCounter <= 0;
                     end
