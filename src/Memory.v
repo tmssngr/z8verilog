@@ -2,6 +2,7 @@
 
 module RAM2k(
     input  wire        clk,
+    input  wire        clkEnable,
     input  wire [10:0] addr,
     input  wire  [7:0] dataIn,
     output reg   [7:0] dataOut,
@@ -20,7 +21,7 @@ module RAM2k(
 `endif
 
     always @(posedge clk) begin
-        if (strobe) begin
+        if (clkEnable & strobe) begin
             if (write) begin
                 memory[addr] <= dataIn;
                 dataOut <= dataIn;
@@ -35,6 +36,7 @@ endmodule
 
 module RAM8k(
     input  wire        clk,
+    input  wire        clkEnable,
     input  wire [12:0] addr,
     input  wire  [7:0] dataIn,
     output wire  [7:0] dataOut,
@@ -53,6 +55,7 @@ module RAM8k(
 
     RAM2k ram0(
         .clk(clk),
+        .clkEnable(clkEnable),
         .addr(addr[10:0]),
         .dataIn(dataIn),
         .dataOut(dataOut0),
@@ -61,6 +64,7 @@ module RAM8k(
     );
     RAM2k ram1(
         .clk(clk),
+        .clkEnable(clkEnable),
         .addr(addr[10:0]),
         .dataIn(dataIn),
         .dataOut(dataOut1),
@@ -69,6 +73,7 @@ module RAM8k(
     );
     RAM2k ram2(
         .clk(clk),
+        .clkEnable(clkEnable),
         .addr(addr[10:0]),
         .dataIn(dataIn),
         .dataOut(dataOut2),
@@ -77,6 +82,7 @@ module RAM8k(
     );
     RAM2k ram3(
         .clk(clk),
+        .clkEnable(clkEnable),
         .addr(addr[10:0]),
         .dataIn(dataIn),
         .dataOut(dataOut3),
@@ -93,6 +99,7 @@ module ROM2k#(
     parameter initFile = ""
 ) (
     input  wire        clk,
+    input  wire        clkEnable,
     input  wire [10:0] addr,
     output reg   [7:0] dataOut,
     input  wire        strobe
@@ -119,7 +126,7 @@ module ROM2k#(
 `endif
 
     always @(posedge clk) begin
-        if (strobe) begin
+        if (clkEnable & strobe) begin
             dataOut <= memory[addr];
         end
     end

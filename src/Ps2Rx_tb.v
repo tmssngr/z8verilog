@@ -18,6 +18,7 @@ module testPs2Rx();
         .readAt(1)
     ) uut(
         .clk(clk),
+        .clkEnable(1'b1),
         .ps2Clk(ps2Clk),
         .ps2Data(ps2Data),
         .reset(reset),
@@ -43,7 +44,7 @@ module testPs2Rx();
         @(negedge clk);
         `assert(dataReady, 0);
         @(negedge clk);
-        
+
         ps2Data = 0; // start bit
         clkPulse();
 

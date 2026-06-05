@@ -15,6 +15,9 @@
 
 task cpuStep;
     begin
+        while (uut.proc.clkEnable == 1'b0) begin
+            @(negedge clk);
+        end
         @(negedge clk);
     end
 endtask

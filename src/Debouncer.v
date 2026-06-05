@@ -1,3 +1,6 @@
+`ifndef DEBOUNCER
+`define DEBOUNCER
+
 `default_nettype none
 
 module Debouncer #(
@@ -36,6 +39,7 @@ module Debouncer2 #(
 )
 (
     input wire clk,
+    input wire clkEnable,
     input wire in1,
     input wire in2,
     output reg out1,
@@ -51,19 +55,23 @@ module Debouncer2 #(
     end
 
     always @(posedge clk) begin
-        if (in1 == prev1 & in2 == prev2) begin
-            if (counter == {counterBits{1'b1}}) begin
-                out1 <= prev1;
-                out2 <= prev2;
+        if (clkEnable) begin
+            if (in1 == prev1 & in2 == prev2) begin
+                if (counter == {counterBits{1'b1}}) begin
+                    out1 <= prev1;
+                    out2 <= prev2;
+                end
+                else begin
+                    counter <= counter + 1'b1;
+                end
             end
             else begin
-                counter <= counter + 1'b1;
+                counter <= 0;
+                prev1 <= in1;
+                prev2 <= in2;
             end
-        end
-        else begin
-            counter <= 0;
-            prev1 <= in1;
-            prev2 <= in2;
         end
     end
 endmodule
+
+`endif // DEBOUNCER

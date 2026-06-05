@@ -4,6 +4,7 @@
 
 module Processor(
     input  wire        clk,
+    input  wire        clkEnable,
     input  wire        reset,
     output wire [15:0] memAddr,
     input  wire  [7:0] memDataRead,
@@ -309,7 +310,7 @@ module Processor(
 `endif
 
     always @(posedge clk) begin
-        if (isReset) begin
+        if (isReset & clkEnable) begin
             autoReset <= 0;
             pc <= 16'h000C;
 
@@ -341,7 +342,7 @@ module Processor(
 
             isIsr <= 0;
         end
-        else begin
+        else if (clkEnable) begin
             if (writeFlags) begin
 `ifdef BENCH
                 $display("    alu:    %h       %h    =>    %h", aluA, aluB, aluOut);

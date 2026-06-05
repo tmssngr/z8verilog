@@ -30,16 +30,6 @@ module top(
         .out(serialInData)
     );
 
-    wire       ps2Clk;
-    wire       ps2Data;
-    Debouncer2 ps2debouncer(
-        .clk(clk),
-        .in1(rawPs2Clk),
-        .in2(rawPs2Data),
-        .out1(ps2Clk),
-        .out2(ps2Data)
-    );
-
     wire [7:0] port2;
     wire [3:0] port3;
     wire [15:0] addr;
@@ -58,8 +48,8 @@ module top(
         .addr(addr),
         .port2(port2),
         .port3(port3),
-        .ps2Clk(ps2Clk),
-        .ps2Data(ps2Data),
+        .rawPs2Clk(rawPs2Clk),
+        .rawPs2Data(rawPs2Data),
         .serialIn(serialInData),
         .serialOut(serialOut),
 
@@ -73,8 +63,8 @@ module top(
         .videoPixel(pixel)
     );
 
-    assign leds[5] = ps2Data;//port2[5];
-    assign leds[4] = ps2Clk;//port2[4];
+    assign leds[5] = rawPs2Data;//port2[5];
+    assign leds[4] = rawPs2Clk;//port2[4];
     /*
     assign leds[3] = ~debugShift;
     assign leds[2] = ~debugCtrl;

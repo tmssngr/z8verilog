@@ -22,10 +22,13 @@ module SoC(
     wire        vramRead;
     wire        isIsr;
 
+    wire cpuCe = 1'b1;
+
     ROM2k #(
         .initFile("rom00.mem")
     ) rom00(
         .clk(clk),
+        .clkEnable(cpuCe),
         .addr(memAddr[10:0]),
         .dataOut(rom00Read),
         .strobe(rom00Strobe)
@@ -35,6 +38,7 @@ module SoC(
         .initFile("rom08.mem")
     ) rom08(
         .clk(clk),
+        .clkEnable(cpuCe),
         .addr(memAddr[10:0]),
         .dataOut(rom08Read),
         .strobe(rom08Strobe)
@@ -42,6 +46,7 @@ module SoC(
 
     RAM8k ram(
         .clk(clk),
+        .clkEnable(cpuCe),
         .addr(memAddr[12:0]),
         .dataOut(ramRead),
         .dataIn(memDataWrite),
@@ -63,6 +68,7 @@ module SoC(
 
     Processor proc(
         .clk(clk),
+        .clkEnable(cpuCe),
         .reset(reset),
         .memAddr(memAddr),
         .memDataRead(memDataRead),
