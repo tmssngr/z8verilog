@@ -31,10 +31,15 @@ module SoC_tiny4k(
     wire        rom00Enable, rom08Enable, rom20Enable, ramEnable, keyboardEnable;
     wire        vramRead;
     wire        isIsr;
+    reg         cpuPhase = 0;
     reg         clkDivider = 0;
     reg [7:0]   pixels;
 
-    wire cpuCe = 1'b1;
+    always @(posedge clk) begin
+        cpuPhase <= ~cpuPhase;
+    end
+
+    wire cpuCe = cpuPhase;
 
     ROM2k #(
         .initFile("rom00.mem")

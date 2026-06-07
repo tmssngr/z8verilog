@@ -10,6 +10,7 @@ module testSoC_tiny4k();
 task cpuStep;
     begin
         @(negedge clk);
+        @(negedge clk);
     end
 endtask
 
