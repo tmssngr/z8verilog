@@ -2,9 +2,13 @@
 
 The project is about implementing a Zilog Z8 microcontroller in Verilog.
 
-So far it already can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku.php/tiny):
+So far it can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku.php/tiny) which generates the TV-video output using a timer interrupt:
 
-![Video Output](images/IMG_2479s.jpg)
+![2k Ju+Te-Computer](images/IMG_2479s.jpg)
+
+and its 320x192 pixels extension (here only one 8kB video RAM for monochrome output) with separate video processor:
+
+![6k ES4.0](images/jtc-6k.jpg)
 
 on a Tang Tano 9k:
 ![Tang Nano 9k](images/schematic-ju+te.png)
