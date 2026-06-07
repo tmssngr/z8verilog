@@ -7,7 +7,7 @@
 //Device Version: C
 //Created Time: Thu Feb 15 19:32:16 2024
 
-module Gowin_rPLL (clkout, clkoutd, clkin);
+module Gowin_rPLL_4MHz (clkout, clkoutd, clkin);
 
 output wire clkout;
 output wire clkoutd;
@@ -61,4 +61,4 @@ defparam rpll_inst.CLKOUTD_SRC = "CLKOUT";
 defparam rpll_inst.CLKOUTD3_SRC = "CLKOUT";
 defparam rpll_inst.DEVICE = "GW1NR-9C";
 
-endmodule //Gowin_rPLL
+endmodule //Gowin_rPLL_4MHz
