@@ -13,15 +13,6 @@
 `include "jump_conditions.vh"
 `include "flags.vh"
 
-task cpuStep;
-    begin
-        while (uut.proc.clkEnable == 1'b0) begin
-            @(negedge clk);
-        end
-        @(negedge clk);
-    end
-endtask
-
 task chk_fetch;
     begin
             `assertFetchState(FETCH_INSTR0);

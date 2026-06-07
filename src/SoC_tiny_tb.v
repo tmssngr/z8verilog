@@ -6,6 +6,14 @@ module testSoC_tiny();
 `include "alu.vh"
 `include "states.vh"
 `include "sfr.vh"
+
+task cpuStep;
+    begin
+        @(negedge clk);
+    end
+endtask
+
+
 `include "check_commands.vh"
 
     wire sync;
