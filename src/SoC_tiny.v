@@ -31,15 +31,15 @@ module SoC_tiny(
     wire        rom00Enable, rom08Enable, ramEnable, keyboardEnable;
     wire        vramRead;
     wire        isIsr;
-    reg         cpuPhase = 0;
+    reg [1:0]   cpuPhase = 2'b00;
     reg         clkDivider = 0;
     reg [7:0]   pixels;
 
     always @(posedge clk) begin
-        cpuPhase <= ~cpuPhase;
+        cpuPhase <= cpuPhase + 2'b01;
     end
-
-    wire cpuCe = cpuPhase;
+	// cpuCe must only be high one time in four clock cycles
+    wire cpuCe = cpuPhase[1] & cpuPhase[0];
 
     ROM2k #(
         .initFile("rom00.mem")

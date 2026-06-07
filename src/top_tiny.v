@@ -15,7 +15,7 @@ module top(
 );
     wire clkOut_unused;
     wire clkDiv;
-    Gowin_rPLL_8MHz pll(
+    Gowin_rPLL_16MHz pll(
         .clkin(clk),
         .clkout(clkOut_unused),
         .clkoutd(clkDiv)
