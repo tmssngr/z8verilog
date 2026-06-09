@@ -129,20 +129,21 @@ module SoC_es40(
 
     reg[3:0] planeMask = 0;
     wire videoPane = planeMask[3];
-    wire vbsSync, vbsPixel;
+    wire syncH, syncV, vbsPixel;
     wire vramStrobe, vramEnable;
     wire [7:0] vramRead;
     VbsGenerator_es40 vbs(
         .clk(clk),
-        .sync(vbsSync),
-        .pixel(vbsPixel),
         .cAddr(memAddr[12:0]),
         .cDataIn(memDataWrite),
         .cDataOut(vramRead),
         .cStrobe(vramStrobe & videoPane),
-        .cWrite(vramStrobe & memWrite & videoPane)
+        .cWrite(vramStrobe & memWrite & videoPane),
+        .o_syncH(syncH),
+        .o_syncV(syncV),
+        .o_pixel(vbsPixel)
     );
-    assign videoSync = vbsSync;
+    assign videoSync = ~(syncH != syncV);
     assign videoPixel = videoSync & vbsPixel;
 
     // 15 14 13 12   11 10 9 8   7 6 5 4   3 2 1 0
