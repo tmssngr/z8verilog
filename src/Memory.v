@@ -113,7 +113,7 @@ module DualPortRAM2k(
 );
     reg [7:0] memory[0 : 1 << 12 - 1];
 
-    always @(posedge r_clk) begin
+    always @(*) begin
         if (r_strobe) begin
             r_data <= memory[r_addr];
         end
@@ -123,11 +123,8 @@ module DualPortRAM2k(
         if (strobe) begin
             if (write) begin
                 memory[addr] <= dataIn;
-                dataOut <= dataIn;
             end
-            else begin
-                dataOut <= memory[addr];
-            end
+            dataOut <= memory[addr];
         end
     end
 endmodule
