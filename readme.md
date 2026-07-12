@@ -8,7 +8,7 @@ So far it can run the [Tiny computer](https://hc-ddr.hucki.net/wiki/doku.php/tin
 
 and its 320x192 pixels extension (here only one 8kB video RAM for monochrome output) with separate video processor:
 
-![6k ES4.0](images/jtc-6k.jpg)
+![6k ES4.0](images/jtc6k-es40-hdmi.jpg)
 
 on a Tang Tano 9k:
 ![Tang Nano 9k](images/schematic-ju+te.png)
