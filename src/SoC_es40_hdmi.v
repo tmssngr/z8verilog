@@ -188,7 +188,7 @@ module SoC_es40(
 
         .vClk(hdmi_clk),
         .x(x),
-        .y(y),
+        .y(y - 13'd48),
         .visible(1'b1),
         .valid(videoValid),
         .pixel(videoData)
