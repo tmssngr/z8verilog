@@ -25,11 +25,11 @@ module SoC_es40(
     output wire        videoPixel
 );
     wire [15:0] memAddr;
-    wire [7:0]  memDataRead, rom00Read, rom08Read, rom10Read, rom18Read, ramRead;
+    wire [7:0]  memDataRead, rom00Read, rom08Read, rom10Read, rom18Read, ramE0Read;
     wire [7:0]  memDataWrite;
     wire        memWrite;
-    wire        memStrobe, rom00Strobe, rom08Strobe, rom10Strobe, rom18Strobe, ramStrobe;
-    wire        rom00Enable, rom08Enable, rom10Enable, rom18Enable, ramEnable, keyboardEnable;
+    wire        memStrobe, rom00Strobe, rom08Strobe, rom10Strobe, rom18Strobe, ramE0Strobe;
+    wire        rom00Enable, rom08Enable, rom10Enable, rom18Enable, ramE0Enable, keyboardEnable;
     wire        isIsr;
     reg         cpuPhase = 0;
     // Keep one real 8 MHz clock. The CPU advances every other cycle and memory
@@ -80,14 +80,14 @@ module SoC_es40(
         .strobe(rom18Strobe)
     );
 
-    RAM8k ram(
+    RAM8k ramE0(
         .clk(clk),
         .clkEnable(cpuCe),
         .addr(memAddr[12:0]),
-        .dataOut(ramRead),
+        .dataOut(ramE0Read),
         .dataIn(memDataWrite),
         .write(memWrite),
-        .strobe(ramStrobe)
+        .strobe(ramE0Strobe)
     );
 
     wire       ps2Clk;
@@ -152,21 +152,21 @@ module SoC_es40(
     assign rom18Enable    = memAddr[15:11] == 5'b0001_1;  // 1800-1FFF
     wire   planeMaskEnable = memAddr[15:10] == 6'b0110_00; // 6000-63FF
     assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 7F0x
-    assign ramEnable      = memAddr[15:13] == 5'b111;     // E000-FFFF;
+    assign ramE0Enable    = memAddr[15:13] == 5'b111;     // E000-FFFF;
     assign vramEnable     = memAddr[15:13] == 3'b010;     // 4000-5fff
     assign rom00Strobe = memStrobe & rom00Enable;
     assign rom08Strobe = memStrobe & rom08Enable;
     assign rom10Strobe = memStrobe & rom10Enable;
     assign rom18Strobe = memStrobe & rom18Enable;
     assign vramStrobe  = memStrobe & vramEnable;
-    assign ramStrobe   = memStrobe & ramEnable & ~vramEnable;
+    assign ramE0Strobe = memStrobe & ramE0Enable & ~vramEnable;
     assign memDataRead = keyboardEnable ? keybits :
                          rom00Enable    ? rom00Read :
                          rom08Enable    ? rom08Read :
                          rom10Enable    ? rom10Read :
                          rom18Enable    ? rom18Read :
                          vramEnable     ? vramRead :
-                         ramEnable      ? ramRead : 0;
+                         ramE0Enable    ? ramE0Read : 0;
     assign addr = memAddr;
 
     always @(posedge clk) begin
