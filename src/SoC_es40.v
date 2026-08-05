@@ -25,11 +25,11 @@ module SoC_es40(
     output wire        videoPixel
 );
     wire [15:0] memAddr;
-    wire [7:0]  memDataRead, rom00Read, rom08Read, rom10Read, rom18Read, ramC0Read, ramE0Read;
+    wire [7:0]  memDataRead, rom00Read, rom08Read, rom10Read, rom18Read, ram80Read, ramC0Read, ramE0Read;
     wire [7:0]  memDataWrite;
     wire        memWrite;
-    wire        memStrobe, rom00Strobe, rom08Strobe, rom10Strobe, rom18Strobe, ramC0Strobe, ramE0Strobe;
-    wire        rom00Enable, rom08Enable, rom10Enable, rom18Enable, ramC0Enable, ramE0Enable, keyboardEnable;
+    wire        memStrobe, rom00Strobe, rom08Strobe, rom10Strobe, rom18Strobe, ram80Strobe, ramC0Strobe, ramE0Strobe;
+    wire        rom00Enable, rom08Enable, rom10Enable, rom18Enable, ram80Enable, ramC0Enable, ramE0Enable, keyboardEnable;
     wire        isIsr;
     reg         cpuPhase = 0;
     // Keep one real 8 MHz clock. The CPU advances every other cycle and memory
@@ -78,6 +78,16 @@ module SoC_es40(
         .addr(memAddr[10:0]),
         .dataOut(rom18Read),
         .strobe(rom18Strobe)
+    );
+
+    RAM8k ram80(
+        .clk(clk),
+        .clkEnable(cpuCe),
+        .addr(memAddr[12:0]),
+        .dataOut(ram80Read),
+        .dataIn(memDataWrite),
+        .write(memWrite),
+        .strobe(ram80Strobe)
     );
 
     RAM8k ramC0(
@@ -163,6 +173,7 @@ module SoC_es40(
     wire   planeMaskEnable = memAddr[15:10] == 6'b0110_00; // 6000-63FF
     assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 7F0x
     assign vramEnable     = memAddr[15:13] == 3'b010;     // 4000-5fff
+    assign ram80Enable    = memAddr[15:14] == 2'b10;      // 8000-9FFF and also at A000-BFFF (to be more flexible)
     assign ramC0Enable    = memAddr[15:13] == 3'b110;     // C000-DFFF;
     assign ramE0Enable    = memAddr[15:13] == 3'b111;     // E000-FFFF;
     assign rom00Strobe = memStrobe & rom00Enable;
@@ -170,6 +181,7 @@ module SoC_es40(
     assign rom10Strobe = memStrobe & rom10Enable;
     assign rom18Strobe = memStrobe & rom18Enable;
     assign vramStrobe  = memStrobe & vramEnable;
+    assign ram80Strobe = memStrobe & ram80Enable;
     assign ramC0Strobe = memStrobe & ramC0Enable;
     assign ramE0Strobe = memStrobe & ramE0Enable;
     assign memDataRead = keyboardEnable ? keybits :
@@ -178,6 +190,7 @@ module SoC_es40(
                          rom10Enable    ? rom10Read :
                          rom18Enable    ? rom18Read :
                          vramEnable     ? vramRead :
+                         ram80Enable    ? ram80Read :
                          ramC0Enable    ? ramC0Read :
                          ramE0Enable    ? ramE0Read : 0;
     assign addr = memAddr;
