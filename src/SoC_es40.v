@@ -159,7 +159,7 @@ module SoC_es40(
     assign rom10Strobe = memStrobe & rom10Enable;
     assign rom18Strobe = memStrobe & rom18Enable;
     assign vramStrobe  = memStrobe & vramEnable;
-    assign ramE0Strobe = memStrobe & ramE0Enable & ~vramEnable;
+    assign ramE0Strobe = memStrobe & ramE0Enable;
     assign memDataRead = keyboardEnable ? keybits :
                          rom00Enable    ? rom00Read :
                          rom08Enable    ? rom08Read :
