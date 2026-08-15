@@ -33,6 +33,16 @@
 		else if (initFile == "jtc6k-es40-rom18.mem") begin
 			$readmemh("roms/jtc6k-es40-rom18.mem", memory);
 		end
+
+		else if (initFile == "jtc6k-es45-rom08.mem") begin
+			$readmemh("roms/jtc6k-es45-rom08.mem", memory);
+		end
+		else if (initFile == "jtc6k-es45-rom10.mem") begin
+			$readmemh("roms/jtc6k-es45-rom10.mem", memory);
+		end
+		else if (initFile == "jtc6k-es45-rom18.mem") begin
+			$readmemh("roms/jtc6k-es45-rom18.mem", memory);
+		end
 	end
 
 `endif
