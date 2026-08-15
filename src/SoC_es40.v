@@ -51,7 +51,7 @@ module SoC_es40(
     );
 
     ROM2k #(
-        .initFile("jtc6k-rom08.mem")
+        .initFile("jtc6k-es40-rom08.mem")
     ) rom08(
         .clk(clk),
         .clkEnable(cpuCe),
@@ -61,7 +61,7 @@ module SoC_es40(
     );
 
     ROM2k #(
-        .initFile("jtc6k-rom10.mem")
+        .initFile("jtc6k-es40-rom10.mem")
     ) rom10(
         .clk(clk),
         .clkEnable(cpuCe),
@@ -71,7 +71,7 @@ module SoC_es40(
     );
 
     ROM2k #(
-        .initFile("jtc6k-rom18.mem")
+        .initFile("jtc6k-es40-rom18.mem")
     ) rom18(
         .clk(clk),
         .clkEnable(cpuCe),
