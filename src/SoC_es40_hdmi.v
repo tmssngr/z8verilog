@@ -170,7 +170,7 @@ module SoC_es40(
         .hve_sync(hve_sync),
     //24'h9fdf61; // green
     //24'hFFC000; // amber
-        .rgb(videoData & videoValid ? 24'hFFC000 : 24'h0),
+        .rgb(videoData & videoValid ? 24'h72EFD1 : 24'h0),
         .hdmi_tx_n(hdmi_tx_n),
         .hdmi_tx_p(hdmi_tx_p)
     );
