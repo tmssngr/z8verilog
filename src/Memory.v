@@ -98,35 +98,58 @@ module RAM8k(
                      enable2 ? dataOut2 : dataOut3;
 endmodule
 
-module DualPortRAM2k(
+module SemiDualPortRAM2k(
+    input  wire        w_clk,
+    input  wire [10:0] w_addr,
+    input  wire  [7:0] w_data,
+    input  wire        w_enable,
     input  wire        r_clk,
     input  wire [10:0] r_addr,
     output reg   [7:0] r_data,
+    input  wire        r_enable
+);
+    localparam size = 1 << 11;
+    // A simultaneous read and write of one address has no defined result.
+    reg [7:0] memory[0 : size - 1] /* synthesis syn_ramstyle = "no_rw_check" */;
+
+    always @(posedge w_clk) begin
+        if (w_enable) begin
+            memory[w_addr] <= w_data;
+        end
+    end
+
+    always @(posedge r_clk) begin
+        if (r_enable) begin
+            r_data <= memory[r_addr];
+        end
+    end
+endmodule
+
+module DualPortRAM2k(
+    input  wire        r_clk,
+    input  wire [10:0] r_addr,
+    output wire  [7:0] r_data,
     input  wire        r_strobe,
 
     input  wire        clk,
     input  wire [10:0] addr,
     input  wire  [7:0] dataIn,
-    output reg   [7:0] dataOut,
+    output wire  [7:0] dataOut,
     input  wire        write,
     input  wire        strobe
 );
-    reg [7:0] memory[0 : 1 << 12 - 1];
+    wire write_enable = strobe & write;
 
-    always @(*) begin
-        if (r_strobe) begin
-            r_data <= memory[r_addr];
-        end
-    end
-
-    always @(posedge clk) begin
-        if (strobe) begin
-            if (write) begin
-                memory[addr] <= dataIn;
-            end
-            dataOut <= memory[addr];
-        end
-    end
+    // Mirror writes so the CPU and video each have one synchronous read port.
+    // This avoids the unsupported dual-port read-before-write mode.
+    RAM2k cpu_ram(
+        .clk(clk), .clkEnable(1'b1), .addr(addr), .dataIn(dataIn),
+        .dataOut(dataOut), .write(write), .strobe(strobe)
+    );
+    SemiDualPortRAM2k video_ram(
+        .w_clk(clk), .w_addr(addr), .w_data(dataIn), .w_enable(write_enable),
+        .r_clk(r_clk), .r_addr(r_addr), .r_data(r_data), .r_enable(r_strobe)
+    );
 endmodule
 
 module DualPortRAM8k(
@@ -215,12 +238,25 @@ module DualPortRAM8k(
         .strobe(enable3 & strobe)
     );
 
-    assign r_data = r_enable0 ? r_data0 :
-                    r_enable1 ? r_data1 :
-                    r_enable2 ? r_data2 : r_data3;
-    assign dataOut = enable0 ? dataOut0 :
-                     enable1 ? dataOut1 :
-                     enable2 ? dataOut2 : dataOut3;
+    reg [1:0] r_bank;
+    reg [1:0] bank;
+    always @(posedge r_clk) begin
+        if (r_strobe) begin
+            r_bank <= r_addr[12:11];
+        end
+    end
+    always @(posedge clk) begin
+        if (strobe) begin
+            bank <= addr[12:11];
+        end
+    end
+
+    assign r_data = r_bank == 2'b00 ? r_data0 :
+                    r_bank == 2'b01 ? r_data1 :
+                    r_bank == 2'b10 ? r_data2 : r_data3;
+    assign dataOut = bank == 2'b00 ? dataOut0 :
+                     bank == 2'b01 ? dataOut1 :
+                     bank == 2'b10 ? dataOut2 : dataOut3;
 endmodule
 
 module ROM2k#(
