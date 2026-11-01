@@ -138,8 +138,8 @@ module SoC_es23(
     assign rom00Enable    = memAddr[15:11] == 5'b0000_0;  // 0000-07FF
     assign rom08Enable    = memAddr[15:11] == 5'b0000_1;  // 0800-0FFF
     assign rom10Enable    = memAddr[15:11] == 5'b0001_0;  // 1000-17FF
-    assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 6000-7FFF; only 7F0x are used
-    assign ramEnable      = memAddr[15:13] == 5'b111;     // E000-FFFF;
+    assign keyboardEnable = memAddr[15:10] == 6'b011111;  // 7C00-7FFF (read)
+    assign ramEnable      = memAddr[15:13] == 5'b111;     // E000-FFFF
     assign vramEnable     = memAddr[15:11] == 5'b1111_1;
     assign rom00Strobe = memStrobe & rom00Enable;
     assign rom08Strobe = memStrobe & rom08Enable;

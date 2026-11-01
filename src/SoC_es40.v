@@ -171,11 +171,11 @@ module SoC_es40(
     assign rom10Enable    = memAddr[15:11] == 5'b0001_0;  // 1000-17FF
     assign rom18Enable    = memAddr[15:11] == 5'b0001_1;  // 1800-1FFF
     wire   planeMaskEnable = memAddr[15:10] == 6'b0110_00; // 6000-63FF
-    assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 7F0x
+    assign keyboardEnable = memAddr[15:10] == 6'b011111;  // 7C00-7FFF (read)
     assign vramEnable     = memAddr[15:13] == 3'b010;     // 4000-5fff
     assign ram80Enable    = memAddr[15:14] == 2'b10;      // 8000-9FFF and also at A000-BFFF (to be more flexible)
-    assign ramC0Enable    = memAddr[15:13] == 3'b110;     // C000-DFFF;
-    assign ramE0Enable    = memAddr[15:13] == 3'b111;     // E000-FFFF;
+    assign ramC0Enable    = memAddr[15:13] == 3'b110;     // C000-DFFF
+    assign ramE0Enable    = memAddr[15:13] == 3'b111;     // E000-FFFF
     assign rom00Strobe = memStrobe & rom00Enable;
     assign rom08Strobe = memStrobe & rom08Enable;
     assign rom10Strobe = memStrobe & rom10Enable;
