@@ -33,6 +33,7 @@ module Ps2Decoder #(
     reg        receivedF0 = 0;
     reg [3:0]  column = 0;
     reg [3:0]  columnMask = 0;
+    reg [8:0]  activeKey = 0; // {E0 prefix, scan code} of the active ordinary key
 
     reg  shiftLeft = 0;
     reg  shiftRight = 0;
@@ -62,6 +63,7 @@ module Ps2Decoder #(
         begin
             column <= col;
             columnMask <= 1 << row;
+            activeKey <= {receivedE0, data};
         end
     endtask
 
@@ -73,6 +75,7 @@ module Ps2Decoder #(
                 prevDataReady <= 0;
                 column <= 0;
                 columnMask <= 0;
+                activeKey <= 0;
                 shiftLeft <= 0;
                 shiftRight <= 0;
                 ctrl <= 0;
@@ -100,8 +103,11 @@ module Ps2Decoder #(
                             8'h59: shiftRight <= ~receivedF0;
                             default: begin
                                 if (receivedF0) begin
-                                    column <= 0;
-                                    columnMask <= 0;
+                                    if (activeKey == {receivedE0, data}) begin
+                                        column <= 0;
+                                        columnMask <= 0;
+                                        activeKey <= 0;
+                                    end
                                     softReset <= 0;
                                 end
                                 else if (receivedE0) begin
@@ -225,6 +231,7 @@ module Ps2DecoderMulti #(
     reg        receivedF0 = 0;
     reg [3:0]  column = 0;
     reg [3:0]  columnMask = 0;
+    reg [8:0]  activeKey = 0; // {E0 prefix, scan code} of the active ordinary key
 
     reg  shiftLeft = 0;
     reg  shiftRight = 0;
@@ -254,6 +261,7 @@ module Ps2DecoderMulti #(
         begin
             column <= col;
             columnMask <= 1 << row;
+            activeKey <= {receivedE0, data};
         end
     endtask
 
@@ -265,6 +273,7 @@ module Ps2DecoderMulti #(
                 prevDataReady <= 0;
                 column <= 0;
                 columnMask <= 0;
+                activeKey <= 0;
                 shiftLeft <= 0;
                 shiftRight <= 0;
                 ctrl <= 0;
@@ -304,8 +313,11 @@ module Ps2DecoderMulti #(
                             */
                             default: begin
                                 if (receivedF0) begin
-                                    column <= 0;
-                                    columnMask <= 0;
+                                    if (activeKey == {receivedE0, data}) begin
+                                        column <= 0;
+                                        columnMask <= 0;
+                                        activeKey <= 0;
+                                    end
                                     softReset <= 0;
                                 end
                                 else if (receivedE0) begin
