@@ -192,7 +192,7 @@ module SoC_es40(
                          vramEnable     ? vramRead :
                          ram80Enable    ? ram80Read :
                          ramC0Enable    ? ramC0Read :
-                         ramE0Enable    ? ramE0Read : 0;
+                         ramE0Enable    ? ramE0Read : memAddr[7:0];
     assign addr = memAddr;
 
     always @(posedge clk) begin
