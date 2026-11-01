@@ -107,12 +107,13 @@ module Ps2Decoder #(
                                 if (receivedE0) altRight <= ~receivedF0;
                                 else            altLeft <= ~receivedF0;
                             end
-                            8'h12: shiftLeft  <= ~receivedF0;
+                            // Extended Shift codes are synthetic, e.g. Print Screen.
+                            8'h12: if (~receivedE0) shiftLeft <= ~receivedF0;
                             8'h14: begin
                                 if (receivedE0) ctrlRight <= ~receivedF0;
                                 else            ctrlLeft <= ~receivedF0;
                             end
-                            8'h59: shiftRight <= ~receivedF0;
+                            8'h59: if (~receivedE0) shiftRight <= ~receivedF0;
                             default: begin
                                 if (receivedF0) begin
                                     if (activeKey == {receivedE0, data}) begin
@@ -317,12 +318,13 @@ module Ps2DecoderMulti #(
                                 if (receivedE0) altRight <= ~receivedF0;
                                 else            altLeft <= ~receivedF0;
                             end
-                            8'h12: shiftLeft  <= ~receivedF0;
+                            // Extended Shift codes are synthetic, e.g. Print Screen.
+                            8'h12: if (~receivedE0) shiftLeft <= ~receivedF0;
                             8'h14: begin
                                 if (receivedE0) ctrlRight <= ~receivedF0;
                                 else            ctrlLeft <= ~receivedF0;
                             end
-                            8'h59: shiftRight <= ~receivedF0;
+                            8'h59: if (~receivedE0) shiftRight <= ~receivedF0;
                             /*
                               | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
                             --+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
