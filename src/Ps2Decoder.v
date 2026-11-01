@@ -37,9 +37,13 @@ module Ps2Decoder #(
 
     reg  shiftLeft = 0;
     reg  shiftRight = 0;
-    reg  ctrl = 0;
-    reg  alt = 0;
+    reg  ctrlLeft = 0;
+    reg  ctrlRight = 0;
+    reg  altLeft = 0;
+    reg  altRight = 0;
     wire shift = shiftLeft | shiftRight;
+    wire ctrl = ctrlLeft | ctrlRight;
+    wire alt = altLeft | altRight;
 
     Ps2Rx #(
         .counterBits(counterBits),
@@ -78,8 +82,10 @@ module Ps2Decoder #(
                 activeKey <= 0;
                 shiftLeft <= 0;
                 shiftRight <= 0;
-                ctrl <= 0;
-                alt <= 0;
+                ctrlLeft <= 0;
+                ctrlRight <= 0;
+                altLeft <= 0;
+                altRight <= 0;
                 softReset <= 0;
             end
             else begin
@@ -97,9 +103,15 @@ module Ps2Decoder #(
                             receivedE0 <= 0;
                             receivedF0 <= 0;
                             case (data)
-                            8'h11: alt        <= ~receivedF0;
+                            8'h11: begin
+                                if (receivedE0) altRight <= ~receivedF0;
+                                else            altLeft <= ~receivedF0;
+                            end
                             8'h12: shiftLeft  <= ~receivedF0;
-                            8'h14: ctrl       <= ~receivedF0;
+                            8'h14: begin
+                                if (receivedE0) ctrlRight <= ~receivedF0;
+                                else            ctrlLeft <= ~receivedF0;
+                            end
                             8'h59: shiftRight <= ~receivedF0;
                             default: begin
                                 if (receivedF0) begin
@@ -235,9 +247,13 @@ module Ps2DecoderMulti #(
 
     reg  shiftLeft = 0;
     reg  shiftRight = 0;
-    reg  ctrl = 0;
-    reg  alt = 0;
+    reg  ctrlLeft = 0;
+    reg  ctrlRight = 0;
+    reg  altLeft = 0;
+    reg  altRight = 0;
     wire shift = shiftLeft | shiftRight;
+    wire ctrl = ctrlLeft | ctrlRight;
+    wire alt = altLeft | altRight;
 
     Ps2Rx #(
         .counterBits(counterBits),
@@ -276,8 +292,10 @@ module Ps2DecoderMulti #(
                 activeKey <= 0;
                 shiftLeft <= 0;
                 shiftRight <= 0;
-                ctrl <= 0;
-                alt <= 0;
+                ctrlLeft <= 0;
+                ctrlRight <= 0;
+                altLeft <= 0;
+                altRight <= 0;
                 softReset <= 0;
             end
             else begin
@@ -295,9 +313,15 @@ module Ps2DecoderMulti #(
                             receivedE0 <= 0;
                             receivedF0 <= 0;
                             case (data)
-                            8'h11: alt        <= ~receivedF0;
+                            8'h11: begin
+                                if (receivedE0) altRight <= ~receivedF0;
+                                else            altLeft <= ~receivedF0;
+                            end
                             8'h12: shiftLeft  <= ~receivedF0;
-                            8'h14: ctrl       <= ~receivedF0;
+                            8'h14: begin
+                                if (receivedE0) ctrlRight <= ~receivedF0;
+                                else            ctrlLeft <= ~receivedF0;
+                            end
                             8'h59: shiftRight <= ~receivedF0;
                             /*
                               | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
