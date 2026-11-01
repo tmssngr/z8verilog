@@ -21,12 +21,18 @@ module top(
         .clkoutd(clkDiv)
     );
 
+    // Synchronize and filter UART input in the same clock domain as the SoC.
+    reg [1:0] serialInSync = 2'b11;
+    always @(posedge clkDiv) begin
+        serialInSync <= {serialInSync[0], serialIn};
+    end
+
     wire serialInData;
     Debouncer #(
         .counterBits(4)
     ) serialInDebouncer(
-        .clk(clk),
-        .in(serialIn),
+        .clk(clkDiv),
+        .in(serialInSync[1]),
         .out(serialInData)
     );
 
