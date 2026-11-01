@@ -374,7 +374,7 @@ module Processor(
                 PRE0:         pre0                <= aluOut;
                 P3M: begin
                     p3m                           <= aluOut;
-                    if (p3m[7] != aluOut[7]) begin
+                    if (p3m[6] != aluOut[6]) begin
                         sioTxState <= SIO_IDLE;
                         sioRxState <= SIO_IDLE;
                     end

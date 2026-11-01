@@ -107,7 +107,7 @@
 
 // SIO RX =================================================
     sioRxPrevIn <= serialIn;
-    if (sioRxState == SIO_IDLE) begin
+    if (p3m[6] && sioRxState == SIO_IDLE) begin
         if (sioRxPrevIn & ~serialIn) begin
             sioRxState <= sioRxState + 1'b1;
             sioRxCounter <= 0;
