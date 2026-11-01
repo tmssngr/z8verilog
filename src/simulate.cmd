@@ -32,6 +32,7 @@ call :test SoC timer
 call :test SoC sio
 call :test SoC isr
 call :test SoC isr_external
+call :simulate Processor
 call :test SoC_tiny u8830
 call :test SoC_tiny jtc2k-isr
 call :test SoC_tiny jtc2k

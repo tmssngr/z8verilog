@@ -321,6 +321,7 @@ module Processor(
             p3m <= 0;
             p01m <= 8'b01_0_01_1_01;
             irq <= 0;
+            imr[7] <= 0;
             rp <= 0;
 
             canFetch <= 1;
