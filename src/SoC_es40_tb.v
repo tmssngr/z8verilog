@@ -16,9 +16,6 @@ task cpuStep;
     end
 endtask
 
-
-`include "check_commands.vh"
-
     wire sync;
     wire pixel;
 
