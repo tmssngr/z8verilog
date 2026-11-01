@@ -152,6 +152,15 @@ module SoC_es40(
     wire videoPane = color[3];
     wire vramStrobe, vramEnable;
     wire [7:0] vramRead;
+    localparam [23:0] DEFAULT_FOREGROUND = 24'h72EFD1;
+    reg [23:0] foregroundRgb = DEFAULT_FOREGROUND;
+    reg [23:0] foregroundSync = DEFAULT_FOREGROUND;
+    reg [23:0] foregroundPixel = DEFAULT_FOREGROUND;
+
+    always @(posedge hdmi_clk) begin
+        foregroundSync <= foregroundRgb;
+        foregroundPixel <= foregroundSync;
+    end
 
     reg [12:0] x, y;
     reg [2:0] hve_sync;
@@ -180,7 +189,7 @@ module SoC_es40(
         .hve_sync(hve_sync),
     //24'h9fdf61; // green
     //24'hFFC000; // amber
-        .rgb(videoData & videoValid ? 24'h72EFD1 : 24'h0),
+        .rgb(videoData & videoValid ? foregroundPixel : 24'h0),
         .hdmi_tx_n(hdmi_tx_n),
         .hdmi_tx_p(hdmi_tx_p)
     );
@@ -210,7 +219,7 @@ module SoC_es40(
     assign rom10Enable    = memAddr[15:11] == 5'b0001_0;  // 1000-17FF
     assign rom18Enable    = memAddr[15:11] == 5'b0001_1;  // 1800-1FFF
     wire   colorEnable    = memAddr[15:10] == 6'b0110_00; // 6000-63FF
-    assign keyboardEnable = memAddr[15:4]  == 12'h7F0;    // 7F0x
+    assign keyboardEnable = memAddr[15:10] == 6'b011111;  // 7C00-7FFF: keyboard reads, RGB writes
     assign vramEnable     = memAddr[15:13] == 3'b010;     // 4000-5fff
     assign ram80Enable    = memAddr[15:14] == 2'b10;      // 8000-9FFF and also at A000-BFFF (to be more flexible)
     assign ramC0Enable    = memAddr[15:13] == 3'b110;     // C000-DFFF;
@@ -235,6 +244,16 @@ module SoC_es40(
     assign addr = memAddr;
 
     always @(posedge clk) begin
+        if (reset | softReset)
+            foregroundRgb <= DEFAULT_FOREGROUND;
+        else if (keyboardEnable & memStrobe & memWrite) begin
+            // Write-only RGB bytes; reads still return the keyboard matrix.
+            case (memAddr[1:0])
+            2'b00: foregroundRgb[23:16] <= memDataWrite;
+            2'b01: foregroundRgb[15:8] <= memDataWrite;
+            2'b10: foregroundRgb[7:0] <= memDataWrite;
+            endcase
+        end
         if (colorEnable & memStrobe & memWrite) begin
             color <= memDataWrite[7:4];
         end
