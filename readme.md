@@ -33,6 +33,13 @@ RAM/ROM are supported. The shared output is `build\project.fs`, with build logs
 alongside it. Before synthesis, the script clears the previous bitstream; if a
 build stage fails, it removes any partial output.
 
+For `jtc_es40_hdmi.gprj`, run `build_es40_hdmi.cmd` instead. It uses the HDMI pin
+constraints and `src/constraints_es40_hdmi.py` for the 4 MHz SoC, 25.2 MHz pixel, and
+126 MHz serializer clocks. Update those timing constraints if you change the
+HDMI PLL settings. It also produces `build\project.fs` for the programming scripts.
+The build generates `build\jtc_es40_hdmi.cst` with explicit negative HDMI pin
+locations required by nextpnr, based on the project's Gowin constraints.
+
 After building, use either programming script from a Command Prompt:
 
 | Script | openFPGALoader option | Target |
