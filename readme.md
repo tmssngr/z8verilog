@@ -21,6 +21,33 @@ on a Tang Tano 9k:
   - *SRAM Program* -> temporary
   - *Embedded Flash Mode* -> permanently
 
+## OSS CAD Suite on Windows
+
+Extract the [Windows x64 OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build/releases/latest)
+to `C:\oss-cad-suite`, then run `build_es40.cmd` from a Command Prompt. If installed
+elsewhere, adjust the environment path near the top of the script.
+
+The script builds the source set from `jtc_es40.gprj` for the Tang Nano 9K using
+Yosys, nextpnr-himbaechel, and Apicula. The existing rPLL wrapper and inferred
+RAM/ROM are supported. The shared output is `build\project.fs`, with build logs
+alongside it. Before synthesis, the script clears the previous bitstream; if a
+build stage fails, it removes any partial output.
+
+After building, use either programming script from a Command Prompt:
+
+| Script | openFPGALoader option | Target |
+| --- | --- | --- |
+| `flash_sram.cmd` | `-m` | SRAM: runs immediately until power-off; preserves embedded flash. |
+| `flash_embedded_flash.cmd` | `-f` | Embedded configuration flash: retained and loaded at power-on. |
+
+Both scripts use `build\project.fs` and initialize the OSS CAD Suite environment.
+They resolve the bitstream relative to the script location, so they can be run
+from any current directory. Adjust their environment paths too if needed.
+The filename is independent of the built project; the target board is Tang Nano 9K.
+See the [openFPGALoader programming guide](https://trabucayre.github.io/openFPGALoader/guide/first-steps.html)
+and [Gowin driver](https://github.com/trabucayre/openFPGALoader/blob/master/src/gowin.cpp)
+for SRAM and embedded flash selection.
+
 ## State of the Z8 Softcore
 
 - [x] implement all operations
