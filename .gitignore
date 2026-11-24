@@ -5,3 +5,4 @@
 *.vcd
 /impl/
 *.gprj.user
+/build/
